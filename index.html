@@ -3,6 +3,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="英语启蒙">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>英语启蒙地图</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -70,7 +78,7 @@ h1, h2, h3, p { margin: 0; }
   border-right: .5px solid var(--sep); display: flex; flex-direction: column; gap: 18px; overflow-y: auto;
 }
 .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
-.app-ico { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #fff; background: linear-gradient(180deg, #FB5C74, #FA233B); }
+.app-ico { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #fff; background: linear-gradient(180deg, #6AA4FF, #3A5BE0); }
 .app-ico .ico { width: 17px; height: 17px; stroke-width: 2.4; }
 .brand b { font-size: 17px; font-weight: 700; }
 .s-search { position: relative; display: block; }
@@ -445,6 +453,66 @@ body.swiping { background: var(--card); overflow: hidden; }
   .chip[aria-pressed="true"] i { background: var(--on-accent); }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0s !important; scroll-behavior: auto !important; } }
+
+/* ---------- 第三批 ---------- */
+.icon-btn { flex: none; height: 30px; padding: 0 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--label-2); background: var(--fill); transition: background .2s ease, color .2s ease, transform var(--t-bouncy) var(--spring-bouncy); -webkit-tap-highlight-color: transparent; }
+.icon-btn .ico { width: 15px; height: 15px; }
+.icon-btn:active { transform: scale(.94); transition: transform .12s var(--press); }
+.icon-btn[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+@media (max-width: 760px) { .icon-btn span { display: none; } .icon-btn { width: 34px; padding: 0; justify-content: center; } .player-bar .elapsed { display: none; } }
+
+/* 只听声音 */
+.listen { position: absolute; left: 0; right: 0; top: 0; bottom: 52px; z-index: 2; overflow: hidden; display: grid; place-items: center; color: #fff; background: #1c1c1e; }
+.listen-bg { position: absolute; inset: -40px; }
+.listen-bg img { width: 100%; height: 100%; object-fit: cover; filter: blur(40px) saturate(160%) brightness(.65); transform: scale(1.1); }
+.listen-card { position: relative; display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); padding: 16px; max-width: 92%; }
+.listen-art { flex: none; width: clamp(96px, 22vw, 210px); aspect-ratio: 1; border-radius: 10px; overflow: hidden; box-shadow: 0 18px 50px rgba(0, 0, 0, .45); }
+.listen-art img { width: 100%; height: 100%; object-fit: cover; }
+.listen-txt { display: grid; gap: 4px; min-width: 0; }
+.listen-label { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; opacity: .75; letter-spacing: .03em; }
+.listen-label .ico { width: 14px; height: 14px; }
+.listen-txt b { font-size: clamp(18px, 2.6vw, 28px); font-weight: 700; line-height: 1.15; }
+.listen-txt > span:not(.listen-label):not(.eq) { font-size: 14px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40ch; }
+.eq { display: flex; align-items: flex-end; gap: 3px; height: 18px; margin-top: 8px; }
+.eq i { width: 3px; height: 100%; border-radius: 2px; background: #fff; opacity: .85; transform-origin: bottom; animation: eq 1.1s ease-in-out infinite; }
+.eq i:nth-child(2) { animation-delay: -.3s; } .eq i:nth-child(3) { animation-delay: -.6s; } .eq i:nth-child(4) { animation-delay: -.15s; } .eq i:nth-child(5) { animation-delay: -.45s; }
+@keyframes eq { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .eq i { animation: none; transform: scaleY(.5); } }
+
+/* 全屏 */
+.player:fullscreen, .player:-webkit-full-screen { border-radius: 0; aspect-ratio: auto; width: 100%; height: 100%; max-width: none; }
+.player.pseudo-fs { position: fixed; inset: 0; z-index: 90; border-radius: 0; aspect-ratio: auto; max-width: none; width: 100%; height: 100%; box-shadow: none;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+.player.pseudo-fs iframe { top: env(safe-area-inset-top, 0px); left: env(safe-area-inset-left, 0px); width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
+.fs-close { display: none; position: absolute; z-index: 7; top: calc(12px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); height: 36px; padding: 0 14px;
+  border-radius: 18px; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #fff; background: rgba(0, 0, 0, .45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.fs-close .ico { width: 15px; height: 15px; }
+.player:fullscreen .fs-close, .player:-webkit-full-screen .fs-close, .player.pseudo-fs .fs-close { display: inline-flex; }
+body.fs-lock { overflow: hidden; }
+/* 伪全屏时侧栏、标签栏让开；内容区不再单独参与页面转场层级，避免被侧栏盖住 */
+body.fs-lock .side, body.fs-lock .tabbar { display: none; }
+body.fs-lock .main { view-transition-name: none; position: relative; z-index: 100; }
+
+/* 儿童模式 */
+body.kid .side, body.kid .tabbar, body.kid .m-search, body.kid .gear { display: none !important; }
+body.kid .main { margin-left: 0; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); max-width: 1180px; margin-inline: auto; }
+body.kid .album-actions a, body.kid .album-info .tip, body.kid .album-info .meta, body.kid .player-bar .src, body.kid .foot, body.kid .album-info .why { display: none; }
+body.kid .back { font-size: 18px; font-weight: 600; }
+.kid-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding-bottom: 6px; }
+.kid-h h1 { font-size: clamp(30px, 5vw, 40px); font-weight: 800; letter-spacing: .01em; }
+.kid-h p { color: var(--label-2); font-size: 15px; margin-top: 2px; }
+.kid-exit { flex: none; height: 36px; padding: 0 14px; border-radius: 18px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--label-2); background: var(--fill-2); }
+.kid-exit .ico { width: 15px; height: 15px; }
+.kid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 22px 18px; }
+.kid-grid .art { border-radius: 18px; }
+.kid-grid .t-name { font-size: 17px; font-weight: 600; text-align: center; margin-top: 4px; }
+.kid-grid .a-title { font-size: clamp(18px, 2vw, 24px); }
+.kid-note { color: var(--label-2); font-size: 14px; text-align: center; }
+@media (max-width: 760px) { .kid-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; } }
+.mini-seg { display: flex; gap: 2px; padding: 2px; background: var(--fill-2); border-radius: 8px; }
+.mini-seg button { height: 28px; padding: 0 12px; border-radius: 6px; font-size: 13px; }
+.mini-seg button[aria-checked="true"] { background: var(--bg); font-weight: 600; box-shadow: 0 2px 6px rgba(0, 0, 0, .12); }
+a.cell2 { text-decoration: none; }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -461,6 +529,10 @@ body.swiping { background: var(--card); overflow: hidden; }
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-shrink" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
 </svg>
@@ -501,7 +573,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-07 第二批 v3';
+const APP_VERSION = '2026-11-07 第三批 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -677,12 +749,13 @@ function detailView() {
     : back.mode === 'detail' ? ITEMS[back.value].cn : '搜索';
   const more = ITEMS.filter(i => i.t === it.t && i.id !== it.id && i.s.some(x => it.s.includes(x)));
   const m = media(it);
+  const kid = !!settings.kid;
   const actions = m
     ? `<button class="btn btn-accent" type="button" data-play="${it.id}">${ic('i-play')}${progress[it.n] ? (m.episodes.length > 1 ? `继续播放 · 第 ${progress[it.n].ep + 1} 集` : '继续播放') : '播放'}</button>
        <a class="btn btn-gray" href="https://www.bilibili.com/video/${m.bvid}" target="_blank" rel="noopener">在 B站打开</a>`
     : LINKS[it.t].map(([l, fn], i) =>
         `<a class="btn ${i ? 'btn-gray' : 'btn-accent'}" href="${fn(it.q)}" target="_blank" rel="noopener">${i ? '' : ic('i-play')}${l}</a>`).join('');
-  return `<button class="back" type="button" data-back="1">${ic('i-left')}${esc(backLabel)}</button>
+  return `<button class="back" type="button" data-back="1">${ic('i-left')}${esc(kid ? '返回' : backLabel)}</button>
     ${m ? `<section class="stage-player" id="stagePlayer" hidden>
       <div class="player" id="player"></div>
       <div class="player-bar">
@@ -690,6 +763,8 @@ function detailView() {
         <span class="now" id="nowTitle"></span>
         <span class="elapsed" id="elapsed" title="本集已播放时间（页面估算）"></span>
         <span class="quota" id="quota" hidden></span>
+        <button class="icon-btn" type="button" id="listenBtn" data-listen="1" aria-pressed="false">${ic('i-headphones')}<span>只听声音</span></button>
+        <button class="icon-btn" type="button" data-fs="1">${ic('i-expand')}<span>全屏</span></button>
         <button class="btn btn-gray sm" type="button" id="nextBtn" data-next="1">下一集${ic('i-right')}</button>
       </div>
     </section>` : ''}
@@ -710,8 +785,8 @@ function detailView() {
       <ol class="eps" id="eps">${m.episodes.map((e, i) => `<li><button class="ep" type="button" data-ep="${i}">
         <span class="ep-n">${i + 1}</span><span class="ep-t">${esc(e.title)}</span><span class="ep-d">${fmtDur(e.duration)}</span></button></li>`).join('')}</ol>
     </section>` : ''}
-    <div class="fit">适合阶段 ${it.s.map(sid => `<button type="button" data-stage="${sid}">${stageById(sid).age}</button>`).join('')}</div>
-    ${more.length ? shelf('more', '同类推荐', more) : ''}
+    ${kid ? '' : `<div class="fit">适合阶段 ${it.s.map(sid => `<button type="button" data-stage="${sid}">${stageById(sid).age}</button>`).join('')}</div>`}
+    ${!kid && more.length ? shelf('more', '同类推荐', more) : ''}
     <p class="foot" style="border:0;padding:0">${m ? '视频由 B站播放器播放，本站不存储视频。登录 B站后可看高清。' : '链接为平台搜索页，请优先选择官方账号或正版资源。'}</p>`;
 }
 
@@ -726,7 +801,7 @@ const fmtMin = s => s >= 3600 ? `${Math.floor(s / 3600)} 小时 ${Math.round(s %
 const loadJSON = (k, d) => { try { return Object.assign(d, JSON.parse(store.get(k) || '{}')); } catch (e) { return d; } };
 const saveJSON = (k, v) => store.set(k, JSON.stringify(v));
 
-const settings = loadJSON('settings', { limit: 0, pin: '', autoNext: true, strict: false });
+const settings = loadJSON('settings', { limit: 0, pin: '', autoNext: true, strict: false, kid: false, listen: 'auto' });
 const progress = loadJSON('progress', {});   // 资源名 → { ep, t, at }
 const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 function usage() {
@@ -756,7 +831,7 @@ function stopPlayer() {
   player.item = null; player.locked = false;
 }
 
-function playItem(id, idx, { resume = false } = {}) {
+function playItem(id, idx, { resume = false, instant = false } = {}) {
   const it = ITEMS[id], m = media(it);
   if (!m) return;
   const saved = progress[it.n];
@@ -764,7 +839,7 @@ function playItem(id, idx, { resume = false } = {}) {
   idx = Math.max(0, Math.min(m.episodes.length - 1, idx));
   const box = $('player'), wrap = $('stagePlayer');
   if (!box || !wrap) return;
-  const first = wrap.hidden;
+  const first = wrap.hidden && !instant;
   const e = m.episodes[idx];
   // 续播：B站外嵌播放器无法可靠地从指定秒数开始（未登录时只给试看片段，带起始时间会直接跳到片尾），
   // 所以按“集”续播，并提示上次看到的位置，家长可以拖动进度条。
@@ -772,6 +847,7 @@ function playItem(id, idx, { resume = false } = {}) {
   const startAt = 0;
   const mount = () => {
     if (player.item != null && (player.item !== id || player.idx !== idx)) saveProgress();
+    const sameItem = player.item === id;
     clearInterval(player.tick); clearInterval(player.countdown);
     wrap.hidden = false;
     player.item = id; player.idx = idx; player.t = startAt; player.dur = e.duration || 0; player.locked = false; player.pulsed = false; player.upShown = false; player.endShown = false;
@@ -784,7 +860,10 @@ function playItem(id, idx, { resume = false } = {}) {
     if (remaining() <= 0) { lockPlayer(); return; }
     const sandbox = settings.strict ? ' sandbox="allow-scripts allow-same-origin allow-presentation allow-storage-access-by-user-activation"' : '';
     box.innerHTML = `<iframe src="${esc(biliEmbed(e, startAt))}" title="${esc(e.title)}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-      allowfullscreen referrerpolicy="strict-origin-when-cross-origin" scrolling="no"${sandbox}></iframe><div class="shield" aria-hidden="true"></div>`;
+      allowfullscreen referrerpolicy="strict-origin-when-cross-origin" scrolling="no"${sandbox}></iframe><div class="shield" aria-hidden="true"></div>
+      <button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button>`;
+    if (!sameItem) player.listen = wantListen(it);
+    applyListen();
     if (lastPos) toast(`上次看到 ${fmtDur(lastPos)}，可以拖动进度条接着看`, 4200);
     updateQuota();
     player.tick = setInterval(onTick, 1000);
@@ -794,6 +873,74 @@ function playItem(id, idx, { resume = false } = {}) {
     transition(mount, { dir: 'none', from: $('albumArt'), to: () => box });
     setTimeout(() => wrap.scrollIntoView({ behavior: reduceMotion() ? 'instant' : 'smooth', block: 'start' }), 60);
   } else mount();
+}
+
+/* 只听声音：在播放器上盖一张“正在播放”的封面卡片，只露出底部控制条。
+   默认规则：18 个月以下的宝宝，儿歌自动只放声音（屏幕时间建议）。家长可在设置里改成“总是/关闭”，播放时也能随时切换。 */
+function wantListen(it) {
+  if (settings.listen === 'on') return true;
+  if (settings.listen === 'off') return false;
+  return it.t === 'song' && months < 18;
+}
+function applyListen() {
+  const box = $('player'); if (!box || player.item == null) return;
+  box.querySelector('.listen')?.remove();
+  const b = $('listenBtn');
+  if (b) { b.setAttribute('aria-pressed', String(!!player.listen)); b.querySelector('span').textContent = player.listen ? '显示画面' : '只听声音'; }
+  if (!player.listen || player.locked) return;
+  const it = ITEMS[player.item], m = media(it), e = m.episodes[player.idx];
+  const img = m.cover ? `<img src="${esc(coverUrl(m.cover, 360))}" alt="" referrerpolicy="no-referrer">` : '';
+  const el = document.createElement('div');
+  el.className = 'listen';
+  el.innerHTML = `<div class="listen-bg">${img}</div>
+    <div class="listen-card">${img ? `<div class="listen-art">${img}</div>` : ''}
+      <div class="listen-txt"><span class="listen-label">${ic('i-headphones')}只听声音</span><b>${esc(it.cn)}</b><span>${esc(m.episodes.length > 1 ? e.title : it.n)}</span>
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div></div>`;
+  const shield = box.querySelector('.shield');
+  box.insertBefore(el, shield ? shield.nextSibling : null);
+}
+function toggleListen() { player.listen = !player.listen; applyListen(); }
+
+/* 全屏：优先用浏览器全屏；iPhone 不支持对普通元素全屏，就把播放器铺满屏幕（伪全屏） */
+function isFs() { return !!(document.fullscreenElement || document.webkitFullscreenElement) || !!$('player')?.classList.contains('pseudo-fs'); }
+function toggleFs() {
+  const box = $('player'); if (!box) return;
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    return;
+  }
+  if (box.classList.contains('pseudo-fs')) { box.classList.remove('pseudo-fs'); document.body.classList.remove('fs-lock'); return; }
+  const req = box.requestFullscreen || box.webkitRequestFullscreen;
+  const pseudo = () => { box.classList.add('pseudo-fs'); document.body.classList.add('fs-lock'); };
+  if (req) { try { const p = req.call(box); if (p && p.catch) p.catch(pseudo); } catch (e) { pseudo(); } }
+  else pseudo();
+}
+
+/* 儿童模式：只显示宝宝这个阶段能直接播放的内容，大封面，点了就播；
+   不显示搜索、设置和任何跳出本站的链接，退出要输家长密码。 */
+function kidHomeView() {
+  const ks = stageFor(months);
+  const list = ITEMS.filter(i => i.s.includes(ks) && media(i));
+  const songs = list.filter(i => i.t !== 'video');
+  const videos = months >= 18 ? list.filter(i => i.t === 'video') : [];
+  const recent = Object.entries(progress)
+    .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
+    .filter(x => x.it && list.includes(x.it))
+    .sort((a, b) => b.p.at - a.p.at).slice(0, 6).map(x => x.it);
+  const grid = items => `<div class="kid-grid">${items.map(it => `<button class="tile" type="button" data-id="${it.id}">${art(it, play, 480)}<span class="t-name">${esc(it.cn)}</span></button>`).join('')}</div>`;
+  let html = `<header class="kid-h"><div><h1>宝宝的英语时间</h1><p>${months} 个月 · 点图片就能播放</p></div>
+    <button class="kid-exit" type="button" data-kid-exit="1">${ic('i-lock')}家长</button></header>`;
+  if (recent.length) html += `<section class="sec"><h2 class="sec-h">接着看</h2>${grid(recent)}</section>`;
+  if (songs.length) html += `<section class="sec"><h2 class="sec-h">儿歌</h2>${grid(songs)}</section>`;
+  if (videos.length) html += `<section class="sec"><h2 class="sec-h">动画</h2>${grid(videos)}</section>`;
+  if (months < 18) html += `<p class="kid-note">18 个月前先听儿歌，动画等大一点再看。</p>`;
+  return html;
+}
+async function exitKid() {
+  if (!(await askPin('输入家长密码', '退出儿童模式'))) return;
+  settings.kid = false; saveJSON('settings', settings);
+  toast('已退出儿童模式');
+  go({ mode: 'home' });
 }
 
 function onTick() {
@@ -871,7 +1018,7 @@ function lockPlayer() {
     <h3>今天的动画时间到啦</h3>
     <p>明天再接着看吧。现在可以去听听儿歌、一起读本绘本。</p>
     <button class="btn btn-glass" type="button" data-unlock="1">家长：再看 15 分钟</button>
-  </div>`;
+  </div><button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button>`;
   updateQuota();
 }
 async function unlockMore() {
@@ -881,6 +1028,9 @@ async function unlockMore() {
   if (player.item != null) playItem(player.item, player.idx, { resume: true });
 }
 
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+  document.querySelectorAll('[data-fs] span').forEach(sp => { sp.textContent = isFs() ? '退出全屏' : '全屏'; });
+}));
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') { saveJSON('usage', use); saveProgress(); }
 });
@@ -992,8 +1142,22 @@ function renderSettings() {
     <div class="group">
       <label class="cell2"><span>自动播放下一集</span><input type="checkbox" class="switch" data-set="autoNext" ${settings.autoNext ? 'checked' : ''}></label>
       <label class="cell2"><span>严格模式：禁止从播放器跳到 B站</span><input type="checkbox" class="switch" data-set="strict" ${settings.strict ? 'checked' : ''}></label>
+      <div class="cell2"><span>只听声音</span>
+        <div class="mini-seg" role="radiogroup" aria-label="只听声音">${[['auto', '自动'], ['on', '总是'], ['off', '关闭']].map(([v, l]) => `<button type="button" role="radio" data-listen-opt="${v}" aria-checked="${settings.listen === v}">${l}</button>`).join('')}</div></div>
     </div>
-    <p class="group-f">严格模式会阻止播放器里所有跳转链接。如果开启后视频无法播放，请关闭它。</p>
+    <p class="group-f">严格模式会阻止播放器里所有跳转链接，如果开启后视频无法播放，请关闭它。“只听声音”选自动时，18 个月以下的宝宝听儿歌只放声音、不看画面；播放时也可以随时切换。</p>
+    <p class="group-h">儿童模式</p>
+    <div class="group">
+      <label class="cell2"><span>儿童模式</span><input type="checkbox" class="switch" data-set="kid" ${settings.kid ? 'checked' : ''}></label>
+    </div>
+    <p class="group-f">打开后只显示宝宝这个阶段能直接播放的内容，大图标、点了就播，隐藏搜索、设置和所有外部链接。退出时需要家长密码${settings.pin ? '' : '（建议先设置密码，否则孩子也能退出）'}。</p>
+    <p class="group-h">高清画质</p>
+    <div class="group">
+      <a class="cell2 link" href="https://passport.bilibili.com/login" target="_blank" rel="noopener">在这个浏览器里登录 B站</a>
+    </div>
+    <p class="group-f">播放器来自 B站，没登录时一般只有标清。在同一个浏览器里登录 B站账号（有大会员可看会员画质）后刷新本页即可。iPhone 的 Safari 需要在“设置 → Safari”里关闭“阻止跨站跟踪”，否则网页拿不到登录状态。</p>
+    <p class="group-h">加到手机桌面</p>
+    <p class="group-f">iPhone：用 Safari 打开本站 → 点底部“分享” → “添加到主屏幕”。安卓：用 Chrome 打开 → 右上角菜单 → “添加到主屏幕”。之后从桌面图标打开，就像一个独立的 App，没有浏览器地址栏。</p>
     <p class="group-h">安全</p>
     <div class="group">
       <button class="cell2 link" type="button" data-set-pin="1">${settings.pin ? '修改家长密码' : '设置家长密码'}</button>
@@ -1005,7 +1169,10 @@ function renderSettings() {
   </div>`);
   sheet.addEventListener('click', async e => {
     const b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.limit != null) {
+    if (b.dataset.listenOpt) {
+      settings.listen = b.dataset.listenOpt; saveJSON('settings', settings);
+      sheet.querySelectorAll('[data-listen-opt]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+    } else if (b.dataset.limit != null) {
       settings.limit = Number(b.dataset.limit); saveJSON('settings', settings);
       sheet.querySelectorAll('[data-limit]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
       updateQuota();
@@ -1027,15 +1194,19 @@ function renderSettings() {
   sheet.addEventListener('change', e => {
     const k = e.target.dataset.set; if (!k) return;
     settings[k] = e.target.checked; saveJSON('settings', settings);
+    if (k === 'kid' && settings.kid) { closeSheet(true); toast('已进入儿童模式'); go({ mode: 'home' }); }
   });
 }
 
 function render() {
   stopPlayer();
+  document.body.classList.remove('fs-lock');
+  document.body.classList.toggle('kid', !!settings.kid);
+  if (settings.kid && view.mode !== 'detail' && view.mode !== 'home') view = { mode: 'home' };
   renderChrome();
   const s = stageById(stage);
   let html;
-  if (view.mode === 'home') html = homeView();
+  if (view.mode === 'home') html = settings.kid ? kidHomeView() : homeView();
   else if (view.mode === 'type') {
     const items = inStage().filter(i => i.t === view.value);
     html = gridView(TYPES[view.value][0], `${s.age} · ${items.length} 项`, items,
@@ -1047,6 +1218,8 @@ function render() {
   else html = detailView();
   if (view.mode !== 'detail') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
   $('main').innerHTML = html;
+  // 儿童模式：进详情直接开始播放
+  if (settings.kid && view.mode === 'detail' && media(ITEMS[view.value])) setTimeout(() => playItem(view.value, null, { instant: true }), 0);
 }
 /* ---------- transitions ----------
    用 View Transitions 做页面切换：内容区淡入并轻微位移，点开的封面平滑“飞”到详情页大封面；
@@ -1208,6 +1381,9 @@ document.addEventListener('click', e => {
   if (t.dataset.replay) return playItem(view.value, player.idx);
   if (t.dataset.unlock) return unlockMore();
   if (t.dataset.settings) return openSettings();
+  if (t.dataset.listen) return toggleListen();
+  if (t.dataset.fs) return toggleFs();
+  if (t.dataset.kidExit) return exitKid();
   if (t.dataset.back) return goBack();
   if (t.dataset.scroll) { const r = $('row-' + t.dataset.scroll); return r && r.scrollBy({ left: r.clientWidth * .8 * Number(t.dataset.dir) }); }
   if (t.dataset.id !== undefined) {
