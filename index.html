@@ -573,7 +573,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 第三批 v2';
+const APP_VERSION = '2026-11-08 第三批 v3';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -713,7 +713,7 @@ function homeView() {
   // 继续观看：最近看过、还没看完的（按最近时间）
   const recent = Object.entries(progress)
     .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
-    .filter(x => x.it && media(x.it) && x.it.s.includes(stage))
+    .filter(x => x.it && media(x.it))
     .sort((a, b) => b.p.at - a.p.at).slice(0, 12);
   if (recent.length) html += `<section class="sec">${head('继续观看')}${pagers('recent')}<div class="row sq" id="row-recent">${recent.map(({ it, p }) => {
     const m = media(it), e = m.episodes[p.ep] || m.episodes[0];
