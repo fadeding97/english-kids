@@ -573,7 +573,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-07 第三批 v1';
+const APP_VERSION = '2026-11-08 第三批 v2';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -588,7 +588,15 @@ const stageById = id => STAGES.find(s => s.id === id);
 
 let months = parseInt(store.get('kid-months') || '13', 10);
 if (isNaN(months) || months < 0 || months > 84) months = 13;
-let stage = stageFor(months);
+// 记住家长选的年龄段；宝宝月龄变化后自动回到对应阶段
+let stage = (() => {
+  try {
+    const saved = JSON.parse(store.get('stage-pick') || 'null');
+    if (saved && saved.months === months && STAGES.some(x => x.id === saved.id)) return saved.id;
+  } catch (e) {}
+  return stageFor(months);
+})();
+const rememberStage = () => store.set('stage-pick', JSON.stringify({ id: stage, months }));
 let view = { mode: 'home' };
 let navStack = [];
 let bounceTab = null;
@@ -680,7 +688,11 @@ function pageHead(title, subText, showMonths = true) {
 }
 
 /* ---------- views ---------- */
-const inStage = () => ITEMS.filter(i => i.s.includes(stage));
+const inStage = () => ITEMS
+  .filter(i => i.s.includes(stage))
+  .map((it, k) => ({ it, k, score: (media(it) ? 0 : 100) + it.s.length * 10 + Math.abs(it.s.indexOf(stage) - (it.s.length - 1) / 2) }))
+  .sort((a, b) => a.score - b.score || a.k - b.k)
+  .map(x => x.it);
 
 function noVideo() {
   return `<div class="empty"><h3>这个阶段先不看动画</h3>
@@ -701,7 +713,7 @@ function homeView() {
   // 继续观看：最近看过、还没看完的（按最近时间）
   const recent = Object.entries(progress)
     .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
-    .filter(x => x.it && media(x.it))
+    .filter(x => x.it && media(x.it) && x.it.s.includes(stage))
     .sort((a, b) => b.p.at - a.p.at).slice(0, 12);
   if (recent.length) html += `<section class="sec">${head('继续观看')}${pagers('recent')}<div class="row sq" id="row-recent">${recent.map(({ it, p }) => {
     const m = media(it), e = m.episodes[p.ep] || m.episodes[0];
@@ -1287,7 +1299,7 @@ function goBack() {
 function setStage(id) {
   if (id === stage && view.mode !== 'detail' && view.mode !== 'search') return;
   transition(() => {
-    stage = id;
+    stage = id; rememberStage();
     if (view.mode === 'detail' || view.mode === 'search') { navStack = []; view = { mode: 'home' }; }
     render(); toTop();
   });
@@ -1303,7 +1315,7 @@ function step(d) {
     renderChrome();
     return;
   }
-  transition(() => { stage = s; render(); });
+  transition(() => { stage = s; rememberStage(); render(); });
 }
 /* 手机上从屏幕左边缘右滑返回（跟手，松手后按速度和距离决定返回还是弹回） */
 (function swipeBack() {
