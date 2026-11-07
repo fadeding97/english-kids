@@ -78,7 +78,7 @@ h1, h2, h3, p { margin: 0; }
   border-right: .5px solid var(--sep); display: flex; flex-direction: column; gap: 18px; overflow-y: auto;
 }
 .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
-.app-ico { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #fff; background: linear-gradient(180deg, #6AA4FF, #3A5BE0); }
+.app-ico { width: 30px; height: 30px; border-radius: 7px; display: block; flex: none; box-shadow: 0 0 0 .5px var(--sep); }
 .app-ico .ico { width: 17px; height: 17px; stroke-width: 2.4; }
 .brand b { font-size: 17px; font-weight: 700; }
 .s-search { position: relative; display: block; }
@@ -538,7 +538,7 @@ a.cell2 { text-decoration: none; }
 </svg>
 
 <aside class="side" aria-label="导航">
-  <div class="brand"><span class="app-ico" aria-hidden="true"><svg class="ico"><use href="#i-music"/></svg></span><b>英语启蒙</b></div>
+  <div class="brand"><img class="app-ico" src="icons/icon-192.png" alt="" width="30" height="30"><b>英语启蒙</b></div>
   <label class="s-search" for="q">
     <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
     <input id="q" type="search" placeholder="搜索" aria-label="搜索儿歌、动画、绘本">
