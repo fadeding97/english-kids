@@ -1,5 +1,5 @@
 // 生成“加到桌面”用的 PNG 图标（无依赖的小型矢量光栅器，4×4 超采样抗锯齿）。
-// 画面（苹果 App 图标风格）：系统蓝渐变底，一个简洁的卡通小朋友头像，头顶压着白色大写字母 A B C。
+// 画面（苹果 App 图标风格）：靛紫渐变底，白色对话气泡里是红、橙、绿三色的大写字母 ABC。
 // 用法：node scripts/make-icons.mjs  → icons/icon-192.png、icon-512.png、icon-maskable-512.png、apple-touch-icon.png
 import fs from 'node:fs';
 import path from 'node:path';
@@ -40,6 +40,18 @@ function inside(s, x, y) {
     case 'circle': return Math.hypot(x - s.cx, y - s.cy) <= s.r;
     case 'ellipse': return ((x - s.cx) / s.rx) ** 2 + ((y - s.cy) / s.ry) ** 2 <= 1;
     case 'seg': return distSeg(x, y, s.ax, s.ay, s.bx, s.by) <= s.r;
+    case 'rrect': {
+      const qx = Math.abs(x - s.cx) - (s.w / 2 - s.r), qy = Math.abs(y - s.cy) - (s.h / 2 - s.r);
+      return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) <= s.r;
+    }
+    case 'poly': {
+      let inP = false;
+      for (let i = 0, j = s.p.length - 1; i < s.p.length; j = i++) {
+        const [xi, yi] = s.p[i], [xj, yj] = s.p[j];
+        if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inP = !inP;
+      }
+      return inP;
+    }
     case 'halfdisk': return y >= s.cy && Math.hypot(x - s.cx, y - s.cy) <= s.r;
     case 'arc': {
       const d = Math.hypot(x - s.cx, y - s.cy);
@@ -60,6 +72,9 @@ function grow(s, g, dx = 0, dy = 0) {
   if ('cx' in o) { o.cx += dx; o.cy += dy; }
   if ('ax' in o) { o.ax += dx; o.ay += dy; o.bx += dx; o.by += dy; }
   if (o.t === 'circle' || o.t === 'halfdisk') o.r += g;
+  if (o.t === 'rrect') { o.w += 2 * g; o.h += 2 * g; o.r += g; }
+  if (o.t === 'poly') { const mx = o.p.reduce((a, q) => a + q[0], 0) / o.p.length, my = o.p.reduce((a, q) => a + q[1], 0) / o.p.length;
+    o.p = o.p.map(([px, py]) => { const d = Math.hypot(px - mx, py - my) || 1; return [px + (px - mx) / d * g + dx, py + (py - my) / d * g + dy]; }); }
   if (o.t === 'ellipse') { o.rx += g; o.ry += g; }
   if (o.t === 'seg') o.r += g;
   if (o.t === 'arc') o.w += g;
@@ -67,9 +82,9 @@ function grow(s, g, dx = 0, dy = 0) {
 }
 
 /* ---------- 字母 A B C（粗圆头笔画） ---------- */
-function letter(ch, ox, oy, w) {
-  const S = (ax, ay, bx, by) => ({ t: 'seg', ax: ox + ax, ay: oy + ay, bx: ox + bx, by: oy + by, r: w });
-  const A = (cx, cy, R, a0, a1) => ({ t: 'arc', cx: ox + cx, cy: oy + cy, R, a0, a1, w });
+function letter(ch, ox, oy, w, k = 1) {
+  const S = (ax, ay, bx, by) => ({ t: 'seg', ax: ox + ax * k, ay: oy + ay * k, bx: ox + bx * k, by: oy + by * k, r: w });
+  const A = (cx, cy, R, a0, a1) => ({ t: 'arc', cx: ox + cx * k, cy: oy + cy * k, R: R * k, a0, a1, w });
   if (ch === 'A') return [S(0, 24, 9, 0), S(9, 0, 18, 24), S(4, 15.5, 14, 15.5)];
   if (ch === 'B') return [S(1.5, 0, 1.5, 24), S(1.5, 0, 8.5, 0), A(8.5, 5.75, 5.75, -90, 90), S(8.5, 11.5, 1.5, 11.5),
     S(1.5, 11.5, 9.5, 11.5), A(9.5, 17.75, 6.25, -90, 90), S(9.5, 24, 1.5, 24)];
@@ -77,48 +92,27 @@ function letter(ch, ox, oy, w) {
   return [];
 }
 
-/* ---------- 场景（苹果 App 图标风格：单一主体、柔和渐变、无描边、柔和投影） ----------
-   颜色可以是 '#RRGGBB'，也可以是 [上色, 下色, y0, y1] 表示在 y0→y1 之间的竖向渐变。 */
+/* ---------- 场景（苹果 App 图标风格） ----------
+   一个主体：白色对话气泡（开口说英语），里面是三种系统色的 “ABC”（启蒙）。
+   靛紫渐变底，气泡和字母都带柔和投影，没有描边。
+   颜色可以是 '#RRGGBB'，也可以是 [上色, 下色, y0, y1] 表示竖向渐变。 */
 function scene() {
   const L = [];
   const add = (s, c, a = 1) => L.push([s, c, a]);
-  // 柔和投影：用一圈圈逐渐变大、很淡的副本近似模糊
-  const shadow = (s, dy, spread, alpha, steps = 6) => {
-    for (let k = steps; k >= 1; k--) add(grow(s, spread * k / steps, 0, dy), '#0A2A6B', alpha / steps);
+  const shadow = (s, dy, spread, alpha, steps = 8, tint = '#1B1060') => {
+    for (let k = steps; k >= 1; k--) add(grow(s, spread * k / steps, 0, dy), tint, alpha / steps);
   };
-  // 顶部一层很淡的高光，增加一点玻璃质感
-
-  // 肩膀（上衣）
-  const body = { t: 'ellipse', cx: 50, cy: 112, rx: 30, ry: 25 };
-  shadow(body, 1.5, 3, 0.18);
-  add(body, ['#FFB35C', '#FF7F36', 87, 112]);
-  add({ t: 'halfdisk', cx: 50, cy: 87.2, r: 6.2 }, ['#FFE7CF', '#F6C9A0', 87, 93]); // 领口露出的脖子
-
-  // 头部投影
-  const head = { t: 'circle', cx: 50, cy: 66, r: 22.5 };
-  shadow(head, 2.2, 3.2, 0.22);
-  // 头发（后层，整颗头的轮廓）
-  add(head, ['#6B4630', '#3E2718', 43, 88]);
-  // 脸
-  add({ t: 'ellipse', cx: 50, cy: 70.5, rx: 20.2, ry: 17.8 }, ['#FFE3C4', '#F6C196', 53, 88]);
-  // 刘海：两片柔和的弧形
-  add({ t: 'ellipse', cx: 42, cy: 55.2, rx: 13.5, ry: 6.4 }, ['#6B4630', '#4A2F1E', 49, 62]);
-  add({ t: 'ellipse', cx: 59.5, cy: 56, rx: 10.5, ry: 5.2 }, ['#6B4630', '#4A2F1E', 50, 62]);
-  // 眼睛：简单的深色椭圆 + 小高光
-  for (const cx of [42.5, 57.5]) {
-    add({ t: 'ellipse', cx, cy: 69.5, rx: 2.7, ry: 3.5 }, '#2A1A12');
-    add({ t: 'circle', cx: cx + 0.9, cy: 68.2, r: 0.95 }, '#FFFFFF');
-  }
-  // 腮红
-  for (const cx of [36.5, 63.5]) add({ t: 'ellipse', cx, cy: 76, rx: 3.6, ry: 2.3 }, '#FF8A9B', 0.45);
-  // 微笑
-  add({ t: 'arc', cx: 50, cy: 73.8, R: 4.6, a0: 25, a1: 155, w: 0.85 }, '#7A3B26');
-
-  // 白色大写字母 ABC，压在头顶上
-  const letters = [['A', 13.5, 20.5], ['B', 41.2, 20.5], ['C', 63.2, 20.5]];
-  const W = 2.9;
-  for (const [ch, x, y] of letters) for (const st of letter(ch, x, y, W)) shadow(st, 1.4, 1.8, 0.28, 4);
-  for (const [ch, x, y] of letters) for (const st of letter(ch, x, y, W)) add(st, ['#FFFFFF', '#EAF4FF', y, y + 24]);
+  // 气泡：圆角矩形 + 左下角的小尾巴
+  const bubble = { t: 'rrect', cx: 50, cy: 46, w: 74, h: 54, r: 18 };
+  const tail = { t: 'poly', p: [[26, 62], [22.5, 84], [44, 69]] };
+  shadow(bubble, 3.2, 4.5, 0.32); shadow(tail, 3.2, 4.5, 0.32);
+  add(bubble, ['#FFFFFF', '#E9EDFF', 19, 85]);
+  add(tail, ['#FFFFFF', '#E9EDFF', 19, 85]);
+  // 彩色字母 ABC（苹果系统红、橙、绿）
+  const k = 0.8, W = 2.45, top = 46 - 12 * k;
+  const letters = [['A', 20.5, ['#FF6B6B', '#FF2D55']], ['B', 41.3, ['#FFCC4D', '#FF9500']], ['C', 61.5, ['#5EE07A', '#28B84F']]];
+  for (const [ch, x] of letters) for (const st of letter(ch, x, top, W, k)) shadow(st, 1.0, 1.1, 0.16, 3, '#3A2A8A');
+  for (const [ch, x, g] of letters) for (const st of letter(ch, x, top, W, k)) add(st, [g[0], g[1], top, top + 24 * k]);
   return L;
 }
 
@@ -133,7 +127,7 @@ function draw(size, { scale, rounded }) {
   const layers = scene();
   const buf = Buffer.alloc(size * size * 4);
   const SS = 4;
-  const top = hex('#62C6FF'), bot = hex('#1C6FF0'); // 接近 iOS 系统蓝的渐变
+  const top = hex('#8A7CFF'), bot = hex('#4A35D8'); // 靛紫渐变
   const rr = rounded ? size * 0.225 : 0;
   for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
     let R = 0, G = 0, B = 0, A = 0;
