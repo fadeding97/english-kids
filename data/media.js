@@ -1532,6 +1532,2534 @@ window.MEDIA = {
   ],
   "start": 0
  },
+ "Little Baby Bum": {
+  "platform": "bilibili",
+  "bvid": "BV1nx421y7Pr",
+  "official": false,
+  "title": "【YouTube排名第一 火爆油管】 3D慢速英文儿歌Little Baby Bum，5季371集凑齐啦（儿童动画+音频）",
+  "cover": "https://i0.hdslb.com/bfs/archive/585a35c822db1faec1a13a99fcdb6ed7b8be7e19.png",
+  "owner": "小知英",
+  "duration": 12666,
+  "note": "",
+  "episodes": [
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 1,
+    "title": "01. Wheels on The Bus _ Part 2 _",
+    "duration": 131
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 2,
+    "title": "02. Five Little Ducks _ Nursery Rhymes _",
+    "duration": 146
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 3,
+    "title": "03. 12345 Once I Caught A Fish Alive! _ Nursery Rhymes _ by LittleBabyBum! [",
+    "duration": 99
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 4,
+    "title": "04. Rain Rain Go Away _ Nursery Rhymes",
+    "duration": 140
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 5,
+    "title": "05. Ringa Ringa Roses _ Nursery Rhymes",
+    "duration": 109
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 6,
+    "title": "06. Ring Around The Rosy _ Nursery Rhymes _",
+    "duration": 109
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 7,
+    "title": "07. Little Baby Bum _ Three Little Kittens _ Nursery Rhymes for Babies _ Videos",
+    "duration": 158
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 8,
+    "title": "08. Little Baby Bum _ Numbers Song for Children -",
+    "duration": 149
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 9,
+    "title": "09. London Bridge Is Falling Down _ Nursery Rhymes _",
+    "duration": 127
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 10,
+    "title": "10. Numbers Song For Children 1-10",
+    "duration": 140
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 11,
+    "title": "11. karaoke - Wheels On The Bus Part 2 - Instrumental Version With Lyrics from L",
+    "duration": 131
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 12,
+    "title": "12. This Old Man He Played One _ Nursery Rhymes _",
+    "duration": 189
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 13,
+    "title": "13. Mary Had A Little Lamb _ Little Baby Bum _ Nursery Rhymes for Babies _ Video",
+    "duration": 122
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 14,
+    "title": "14. Little Baby Bum _ The Color Train Song _ Learn Colours _ Nursery Rhymes for",
+    "duration": 129
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 15,
+    "title": "15. One Two Buckle My Shoe _ Nursery Rhymes",
+    "duration": 86
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 16,
+    "title": "16. Little Baby Bum _ Pat-a-Cake _ Nursery Rhymes for Babies _ Videos for Kids 【",
+    "duration": 80
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 17,
+    "title": "17. Wheels On The Bus _ Part 3 _ Little Baby Bum _ Nursery Rhymes for Babies _ V",
+    "duration": 132
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 18,
+    "title": "18. ABC Songs - ABC Phonics _ Little Baby Bum _ Nursery Rhymes for Babies _ Vide",
+    "duration": 109
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 19,
+    "title": "19. Finger Family - Cat Family _ Little Baby Bum _ Nursery Rhymes for Babies _ V",
+    "duration": 85
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 20,
+    "title": "20. Shapes Song _ Little Baby Bum _ Nursery Rhymes for Babies _ Videos for Kids",
+    "duration": 139
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 21,
+    "title": "21. ABC Song _ Alphabet Song _ Little Baby Bum _ A to Z for Children _ Nursery R",
+    "duration": 134
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 22,
+    "title": "22. The Animal Sounds Song for Children _ Nursery Rhymes _ by LittleBabyBum! 【公众",
+    "duration": 161
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 23,
+    "title": "23. Wheels On The Bus _ Part 4 _ Little Baby Bum _ Nursery Rhymes for Babies _ V",
+    "duration": 132
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 24,
+    "title": "24. Five Little Speckled Frogs _ Nursery Rhymes",
+    "duration": 171
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 25,
+    "title": "25. This Is The Way We Brush Our Teeth _ Nursery Rhymes _ from LittleBabyBum! [【",
+    "duration": 123
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 26,
+    "title": "26. Hey Diddle Diddle _ Nursery Rhymes _",
+    "duration": 155
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 27,
+    "title": "27. Rainbow Colors Song _ Learn Colors of The Rainbow Song _ Nursery Rhymes _ by",
+    "duration": 114
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 28,
+    "title": "28. Monsters Song For Children _ 'No Monsters Who Live In Our Home!' _ Nursery R",
+    "duration": 170
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 29,
+    "title": "29. Wheels On The Bus _ Part 5 _ Little Baby Bum _ Nursery Rhymes for Babies _ V",
+    "duration": 135
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 30,
+    "title": "30. ABC Song _ ABC Train Song _",
+    "duration": 126
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 31,
+    "title": "31. Old MacDonald Had A Farm _",
+    "duration": 156
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 32,
+    "title": "32. Baa Baa Black Sheep _ Part 2 _ Nursery Rhymes",
+    "duration": 96
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 33,
+    "title": "33. We Wish You A Merry Christmas _",
+    "duration": 111
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 34,
+    "title": "34. Five Little Monkeys Jumping On The Bed _ Part 2 _ Nursery Rhymes _ by Little",
+    "duration": 154
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 35,
+    "title": "35. Potty Song _ Nappies Version _ Nursery Rhymes _ Original Song by LittleBabyB",
+    "duration": 102
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 36,
+    "title": "36. Little Baby Bum _ Potty Song _ Nursery Rhymes for Babies _ Songs for Kids [公",
+    "duration": 102
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 37,
+    "title": "37. Row Row Row Your Boat _ Part 2 _ Nursery Rhymes _ by LittleBabyBum! [【",
+    "duration": 182
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 38,
+    "title": "38. Head Shoulders Knees and Toes _ Part 2 _ Nursery Rhymes _ by LittleBabyBum!",
+    "duration": 177
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 39,
+    "title": "39. Wheels On The Bus _ Part 6 _ Little Baby Bum _ Nursery Rhymes for Babies _ V",
+    "duration": 137
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 40,
+    "title": "01. ABC Song 'ZED Version' _ Little Baby Bum _ Nursery Rhymes for Babies _ Songs",
+    "duration": 144
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 41,
+    "title": "02. ABC Song _ Bubbles Song _ Nursery Rhymes _ Original Song by LittleBabyBum! [",
+    "duration": 144
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 42,
+    "title": "03. Wash Your Hands Song for Children _ Nursery Rhymes _ Original Song by Little",
+    "duration": 123
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 43,
+    "title": "04. Colors and Actions Song for Children _ Nursery Rhymes _ Original Song by Lit",
+    "duration": 166
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 44,
+    "title": "05. Ten Little Animals _ Numbers Song _ Nursery Rhymes _ by LittleBabyBum! []",
+    "duration": 100
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 45,
+    "title": "06. One Potato Two Potato _ Numbers Song _ from LittleBabyBum! []",
+    "duration": 137
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 46,
+    "title": "07. Numbers Song for Children _ 10 to 100 _ Nursery Rhymes _ Original Song by Li",
+    "duration": 132
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 47,
+    "title": "08. Star Light Star Bright _ Nursery Rhyme With Twinkle Star & Baby Panda _ by L",
+    "duration": 136
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 48,
+    "title": "09. The Bear Went Over The Mountain _ Nursery Rhymes _ By LittleBabyBum! []",
+    "duration": 131
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 49,
+    "title": "10. Mr Sun, Sun, Mister Golden Sun! _ Nursery Rhymes _ by LittleBabyBum!HD Versi",
+    "duration": 124
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 50,
+    "title": "11. Wheels On The Bus _ Part 7 _ Little Baby Bum _ Nursery Rhymes for Babies _ V",
+    "duration": 135
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 51,
+    "title": "12. Happy Birthday Song _ Original Song by LittleBabyBum!",
+    "duration": 87
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 52,
+    "title": "13. ABC Song _ Zed Version _ Balloon Song _ Original Song by LittleBabyBum! .",
+    "duration": 134
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 53,
+    "title": "14. Days Of The Week Song Little Baby Bum _ Nursery Rhymes for Babies _ Songs fo",
+    "duration": 119
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 54,
+    "title": "15. Here We Go Round The Mulberry Bush _ Nursery Rhymes _ by LittleBabyBum! []",
+    "duration": 123
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 55,
+    "title": "16. Learn Colors & Objects Song _ Children's Nursery Rhymes _ by LittleBabyBum!",
+    "duration": 94
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 56,
+    "title": "17. The Grand Old Duke Of York _ Nursery Rhymes _ by LittleBabyBum! []",
+    "duration": 97
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 57,
+    "title": "18. Little Baby Bum _ Driving in My Car Song _ Nursery Rhymes for Babies _ Video",
+    "duration": 108
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 58,
+    "title": "19. Johny Johny Yes Papa _ Nursery Rhymes _ by LittleBabyBum! []",
+    "duration": 91
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 59,
+    "title": "20. Finger Family _ Panda Family! _ Nursery Rhymes _ by LittleBabyBum! ]",
+    "duration": 142
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 60,
+    "title": "21. Little Baby Bum _ Getting Dressed Song _ Nursery Rhymes for Babies _ Videos",
+    "duration": 112
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 61,
+    "title": "22. Getting Dressed Song _ Little Baby Bum _ Nursery Rhymes for Babies _ Videos",
+    "duration": 112
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 62,
+    "title": "23. A Sailor Went To Sea _ Nursery Rhymes _ by LittleBabyBum! []",
+    "duration": 118
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 63,
+    "title": "24. This Little Piggy _ Nursery Rhymes _ by LittleBabyBum! []",
+    "duration": 117
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 64,
+    "title": "25. Little Baby Bum _ Ten Little Buses - From Wheels On The Bus _ Nursery Rhymes",
+    "duration": 156
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 65,
+    "title": "26. Ice Cream Song for Children _ Little Baby Bum _ Nursery Rhymes for Babies _",
+    "duration": 103
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 66,
+    "title": "27. Six Little Ducks _ From Five Little Ducks _ Nursery Rhymes _ by LittleBabyBu",
+    "duration": 134
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 67,
+    "title": "28. Telling Time Song _ What Time Is It_ _ Nursery Rhymes _ Original Song by Lit",
+    "duration": 119
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 68,
+    "title": "29. If You're Happy and You Know It _ Part 2 _ Little Baby Bum _ Nursery Rhymes",
+    "duration": 125
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 69,
+    "title": "30. Big and Small Song _ Nursery Rhymes _ Original Song by LittleBabyBum! []",
+    "duration": 127
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 70,
+    "title": "31. Hot Cross Buns _ Nursery Rhymes _ by LittleBabyBum! []",
+    "duration": 96
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 71,
+    "title": "32. Twinkle Twinkle Little Star _ Part 3 in India _ Nursery Rhymes _ by LittleBa",
+    "duration": 136
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 72,
+    "title": "33. Little Bo Peep Has Lost Her Sheep _ Little Baby Bum _ Nursery Rhymes for Bab",
+    "duration": 102
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 73,
+    "title": "34. Swimming Song _ Little Baby Bum _ Nursery Rhymes for Babies _ Videos for Kid",
+    "duration": 127
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 74,
+    "title": "35. Five Little Monsters Jumping On The Bed _ Nursery Rhymes _ By LittleBabyBum!",
+    "duration": 119
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 75,
+    "title": "36. It's Raining It's Pouring _ Nursery Rhymes _ by LittleBabyBum! []",
+    "duration": 86
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 76,
+    "title": "37. Itsy Bitsy Spider _ Nursery Rhymes _ by LittleBabyBum!. [",
+    "duration": 84
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 77,
+    "title": "38. Wheels On The Bus _ Part 8 _ Little Baby Bum _ Nursery Rhymes for Babies _ V",
+    "duration": 136
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 78,
+    "title": "39. Hello Song _ Nursery Rhymes _",
+    "duration": 118
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 79,
+    "title": "40. Rock A Bye Baby _ Classic Lullaby _ Nursery Rhymes by LittleBabyBum! [",
+    "duration": 140
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 80,
+    "title": "41. Bath Song _ Part 1 _ Little Baby Bum _ Nursery Rhymes for Babies _ Videos fo",
+    "duration": 126
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 81,
+    "title": "42. Farmer in the Dell _ Nursery Rhymes",
+    "duration": 94
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 82,
+    "title": "43. Wind the Bobbin Up _ Nursery Rhymes",
+    "duration": 135
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 83,
+    "title": "44. Teddy Bear Teddy Bear _ Nursery Rhymes",
+    "duration": 128
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 84,
+    "title": "45. Shapes Train Song _ Nursery Rhymes",
+    "duration": 145
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 85,
+    "title": "46. Three Little Kittens _ Part 2 _",
+    "duration": 154
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 86,
+    "title": "47. Little Baby Bum _ Little Miss Muffet _ Nursery Rhymes for Babies _ Songs for",
+    "duration": 114
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 87,
+    "title": "48. Little Baby Bum _ BINGO Part 2 _ Nursery Rhymes for Babies _ Songs for Kids",
+    "duration": 159
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 88,
+    "title": "49. Numbers Song 1-10 _ Part 2 _ Nursery Rhymes _ Original Song by LittleBabyBum",
+    "duration": 143
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 89,
+    "title": "50. Little Baby Bum _ Itsy Bitsy Spider Part 2 _ Nursery Rhymes for Babies _ Son",
+    "duration": 107
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 90,
+    "title": "51. Incy Wincy Spider _ Little Baby Bum _ Nursery Rhymes for Babies _ Songs for",
+    "duration": 107
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 91,
+    "title": "52. Eat Your Vegetables Song _ Nursery Rhymes _ Original Song by LittleBabyBum!",
+    "duration": 111
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 92,
+    "title": "53. Twinkle Twinkle Little Star _ Part 4 in Hong Kong _ Nursery Rhymes _ By Litt",
+    "duration": 137
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 93,
+    "title": "54. ABC Song _ Jumping Zed Version _ Little Baby Bum _ Nursery Rhymes for Babies",
+    "duration": 138
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 94,
+    "title": "55. Little Baby Bum _ Jumping Zee Version _ Nursery Rhymes for Babies _ Songs fo",
+    "duration": 138
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 95,
+    "title": "56. Ants Go Marching _ Nursery Rhymes",
+    "duration": 123
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 96,
+    "title": "57. Open Shut Them _ Nursery Rhymes _",
+    "duration": 119
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 97,
+    "title": "58. Ten Green Bottles _ Nursery Rhymes",
+    "duration": 143
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 98,
+    "title": "59. Jack And Jill _ Nursery Rhymes",
+    "duration": 108
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 99,
+    "title": "60. Driving In My Car Song",
+    "duration": 110
+   },
+   {
+    "bvid": "BV1nx421y7Pr",
+    "page": 100,
+    "title": "61. Miss Polly Had a Dolly _",
+    "duration": 145
+   }
+  ],
+  "start": 0
+ },
+ "The Wiggles": {
+  "platform": "bilibili",
+  "bvid": "BV1t4411T7qx",
+  "official": false,
+  "title": "The Wiggles - 英文早教歌曲合集，英语儿歌合集",
+  "cover": "https://i1.hdslb.com/bfs/archive/27a47d858847c0f6be46b97a49829fecdfc87211.jpg",
+  "owner": "xiaoxiaoqqq",
+  "duration": 16279,
+  "note": "",
+  "episodes": [
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 1,
+    "title": "The Wiggles Nursery Rhymes",
+    "duration": 2631
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 2,
+    "title": "The Wiggles_ Ba Ba Da Bicycle Ride",
+    "duration": 83
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 3,
+    "title": "The Wiggles_ Big Red Boat",
+    "duration": 128
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 4,
+    "title": "The Wiggles Nursery Rhymes - Head, Shoulders, Knees and Toes",
+    "duration": 127
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 5,
+    "title": "Baby Shark _ Kids Songs and Nursery Rhymes _ Animal Songs from Bounce Patrol",
+    "duration": 253
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 6,
+    "title": "Baby Shark Dance _ Sing and Dance! _ Animal Songs _ PINKFONG Songs for Children",
+    "duration": 137
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 7,
+    "title": "The Wiggles Dance Week (7_7) - National Dance Day! _ The Wiggles _ Universal Kid",
+    "duration": 654
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 8,
+    "title": "The Wiggles_ Aiken Drum _ The Wiggles Nursery Rhymes 2",
+    "duration": 150
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 9,
+    "title": "The Wiggles_ Captain Feathersword (He Loves To Dance)",
+    "duration": 78
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 10,
+    "title": "The Wiggles_ Broccoli Bunch",
+    "duration": 120
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 11,
+    "title": "The Wiggles_ Brush Your Pet's Hair",
+    "duration": 89
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 12,
+    "title": "Alphabet Animals More Alphabet Songs - Learn ABCs with the Alphabet Series - Kid",
+    "duration": 1516
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 13,
+    "title": "The Wiggles_ Castle of Dramore",
+    "duration": 160
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 14,
+    "title": "The Wiggles_ Curoo Curoo",
+    "duration": 156
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 15,
+    "title": "The Wiggles_ Dance with Emma Ballerina",
+    "duration": 95
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 16,
+    "title": "The Wiggles_ Di Dicki Do Dum",
+    "duration": 102
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 17,
+    "title": "The Wiggles_ Do The Owl",
+    "duration": 145
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 18,
+    "title": "The Wiggles_ Do the Propeller",
+    "duration": 129
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 19,
+    "title": "The Wiggles_ Dressing Up in Style",
+    "duration": 146
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 20,
+    "title": "The Wiggles_ Emma's Bowtiful Ballet Studio",
+    "duration": 2735
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 21,
+    "title": "The Wiggles_ Five Little Joeys",
+    "duration": 117
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 22,
+    "title": "The Wiggles_ Galloping Ballet",
+    "duration": 131
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 23,
+    "title": "The Wiggles_ Go Santa Go (Featuring Greg Page!)",
+    "duration": 294
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 24,
+    "title": "The Wiggles_ Have You Seen the Muffin Man _ The Wiggles Nursery Rhymes 2",
+    "duration": 60
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 25,
+    "title": "The Wiggles_ Henry's Christmas Merengue",
+    "duration": 184
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 26,
+    "title": "The Wiggles_ Hush Little Baby _ The Wiggles Nursery Rhymes 2",
+    "duration": 135
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 27,
+    "title": "The Wiggles_ I Went To The Library",
+    "duration": 106
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 28,
+    "title": "The Wiggles_ I'll Tell Me Ma (feat. Morgan Crowley) _ The Wiggles Nursery Rhymes",
+    "duration": 122
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 29,
+    "title": "The Wiggles_ Irish Dancing Visit",
+    "duration": 76
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 30,
+    "title": "The Wiggles_ Irish Stew",
+    "duration": 130
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 31,
+    "title": "The Wiggles_ Let's Dance With the Fairies",
+    "duration": 91
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 32,
+    "title": "The Wiggles_ Little Dingo",
+    "duration": 149
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 33,
+    "title": "The Wiggles_ Miss Polly Had a Dolly (feat. Dennisha Pratt)",
+    "duration": 89
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 34,
+    "title": "The Wiggles_ Nursery Rhymes 2 (Part 1 of 3)",
+    "duration": 843
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 35,
+    "title": "The Wiggles_ Nursery Rhymes 2 (Part 2 of 3)",
+    "duration": 644
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 36,
+    "title": "The Wiggles_ Nursery Rhymes 2 (Part 3 of 3)",
+    "duration": 783
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 37,
+    "title": "The Wiggles_ Perry Merry _ The Wiggles Nursery Rhymes 2",
+    "duration": 176
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 38,
+    "title": "The Wiggles_ Phil the Fluter's Ball",
+    "duration": 180
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 39,
+    "title": "The Wiggles_ Riding My Bike",
+    "duration": 73
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 40,
+    "title": "The Wiggles_ Rock-a-bye Your Bear (Live)",
+    "duration": 134
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 41,
+    "title": "The Wiggles_ Rub-A-Dub-Dub _ The Wiggles Nursery Rhymes 2",
+    "duration": 71
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 42,
+    "title": "The Wiggles_ Say the Dance, Do the Dance",
+    "duration": 118
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 43,
+    "title": "The Wiggles_ Sleep Safe, My Baby",
+    "duration": 72
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 44,
+    "title": "The Wiggles_ Taba Naba Style! (feat. Christine Anu)",
+    "duration": 170
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 45,
+    "title": "The Wiggles_ The Alphabet Ballet",
+    "duration": 193
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 46,
+    "title": "The Wiggles_ The Gypsy Rover",
+    "duration": 229
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 47,
+    "title": "The Wiggles_ The Road to the Isles (Do the Highland Fling)",
+    "duration": 133
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 48,
+    "title": "The Wiggles_ This Old Man Came Rolling Home",
+    "duration": 137
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 49,
+    "title": "The Wiggles_ Toot Toot, Chugga Chugga, Big Red Car",
+    "duration": 153
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 50,
+    "title": "The Wiggles_ Wags Is Bouncing Around the Christmas Tree",
+    "duration": 110
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 51,
+    "title": "The Wiggles_ Waltz With Dolls and Fairies _ The Wiggles Nursery Rhymes 2",
+    "duration": 102
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 52,
+    "title": "The Wiggles_ Wheels On The Bus",
+    "duration": 78
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 53,
+    "title": "The Wiggles_ Witchy Woo, Ooh, Ooh, Ooh",
+    "duration": 109
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 54,
+    "title": "The Wiggles- I've Got My Glasses On",
+    "duration": 160
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 55,
+    "title": "The Wiggles- Michael Finnegan",
+    "duration": 73
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 56,
+    "title": "The Wiggles- Ooey, Ooey, Ooey Allergies",
+    "duration": 124
+   },
+   {
+    "bvid": "BV1t4411T7qx",
+    "page": 57,
+    "title": "The Wiggles, Wiggle Town",
+    "duration": 96
+   }
+  ],
+  "start": 0
+ },
+ "LooLoo Kids": {
+  "platform": "bilibili",
+  "bvid": "BV1jF411E7sB",
+  "official": false,
+  "title": "英语启蒙儿歌【 LooLoo Kids系列】115集全",
+  "cover": "https://i2.hdslb.com/bfs/archive/f352596a9ed5a8679b17b560f7a87242837b0a33.png",
+  "owner": "Nancy鸡娃资源分享",
+  "duration": 11962,
+  "note": "",
+  "episodes": [
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 1,
+    "title": "001 Five Little Ducks - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 155
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 2,
+    "title": "002 The ABC Song - THE BEST Song for Children _ LooLoo Kids",
+    "duration": 89
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 3,
+    "title": "003 Ten in a Bed Fun Songs for Children _ LooLoo Kids(1)",
+    "duration": 155
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 4,
+    "title": "004 Old MacDonald Had A Farm THE BEST Song for Children _ LooLoo Kids",
+    "duration": 91
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 5,
+    "title": "006 Phonics Song - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 148
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 6,
+    "title": "007 Finger Family THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 155
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 7,
+    "title": "008 One, Two, Buckle My Shoe - Amazing Songs for Children _ LooLoo Kids",
+    "duration": 70
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 8,
+    "title": "009  Five Little Monkeys LooLoo Kids Nursery Rhymes for Kids",
+    "duration": 143
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 9,
+    "title": "010 Three Little Kittens THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 156
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 10,
+    "title": "011 The Wheels On The Bus  Fun Songs for Children _ LooLoo Kids",
+    "duration": 136
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 11,
+    "title": "012 The Finger Family - THE BEST Song for Children _ LooLoo Kids",
+    "duration": 77
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 12,
+    "title": "013 Rain, Rain Go Away THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 151
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 13,
+    "title": "014 Bingo  Songs for Children _ LooLoo Kids",
+    "duration": 155
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 14,
+    "title": "015 Five Little Ducks  THE BEST Song for Children _ LooLoo Kids",
+    "duration": 107
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 15,
+    "title": "016 One Little Finger - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 157
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 16,
+    "title": "017 Ten Little Indians - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 107
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 17,
+    "title": "018 Head, Shoulders, Knees and Toes - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 100
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 18,
+    "title": "019 Baa, Baa, Black Sheep  Wonderful Songs for Children _ LooLoo Kids",
+    "duration": 102
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 19,
+    "title": "020 If You're Happy and You Know It  THE BEST Song for Children _ LooLoo Kids",
+    "duration": 118
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 20,
+    "title": "021 The Wheels On The Bus - GREAT Songs for Children _ LooLoo Kids",
+    "duration": 140
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 21,
+    "title": "022 Johny Johny Yes Papa THE BEST Song for Children _ LooLoo Kids",
+    "duration": 102
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 22,
+    "title": "023 Pat-a-Cake THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 72
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 23,
+    "title": "024 Miss Polly Had a Dolly - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 99
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 24,
+    "title": "025 Itsy Bitsy Spider - Cute Songs for Children _ LooLoo Kids",
+    "duration": 120
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 25,
+    "title": "026 Humpty Dumpty - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 92
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 26,
+    "title": "027 Hickory Dickory Dock  Wonderful Songs for Children _ LooLoo Kids",
+    "duration": 156
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 27,
+    "title": "028 Old MacDonald Had a Farm - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 87
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 28,
+    "title": "029 Jack and Jill THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 163
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 29,
+    "title": "030 Baa, Baa, Black Sheep - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 86
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 30,
+    "title": "031 Mommy Has a Little Girl - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 173
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 31,
+    "title": "032 Are You Sleeping (Brother John) THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 141
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 32,
+    "title": "033 If You're Happy and You Know It - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 132
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 33,
+    "title": "034 Mary Had a Little Lamb - THE BEST Song for Children _ LooLoo Kids",
+    "duration": 140
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 34,
+    "title": "035 Incy Wincy Spider - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 111
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 35,
+    "title": "036 Head, Shoulders, Knees and Toes - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 129
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 36,
+    "title": "037 I'm a Little Teapot - Great Songs for Children _ LooLoo Kids",
+    "duration": 86
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 37,
+    "title": "038 Incy Wincy Spider - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 111
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 38,
+    "title": "039 Bunny Hop - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 79
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 39,
+    "title": "040 Five Little Monkeys - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 115
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 40,
+    "title": "041 BINGO - THE BEST Song for Children _ LooLoo Kids",
+    "duration": 126
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 41,
+    "title": "042 Baa, Baa, Black Sheep - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 81
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 42,
+    "title": "043 My Little Bee - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 112
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 43,
+    "title": "044 Rain, Rain, Go Away (Dinosaurs) - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 135
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 44,
+    "title": "045 Old MacDonald Had a Farm - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 90
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 45,
+    "title": "046 Ten in a Bed - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 167
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 46,
+    "title": "047 The Frog Song - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 96
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 47,
+    "title": "048 Mister Cat - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 172
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 48,
+    "title": "049 Five Little Friends - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 133
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 49,
+    "title": "050 Sleeping Bunnies - The Cutest Songs for Children _ LooLoo Kids",
+    "duration": 123
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 50,
+    "title": "051 Head, Shoulders, Knees and Toes - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 136
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 51,
+    "title": "052 Rocky the Dog - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 88
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 52,
+    "title": "053 Pussy Cat, Pussy Cat - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 104
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 53,
+    "title": "054 London Bridge Is Falling Down - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 114
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 54,
+    "title": "055 Down by the Bay - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 112
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 55,
+    "title": "056 This Little Piggy - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 118
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 56,
+    "title": "057 Teddy Bear - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 128
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 57,
+    "title": "058 A Ram Sam Sam - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 169
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 58,
+    "title": "059 Johny Johny Yes Papa - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 93
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 59,
+    "title": "060 Number Song - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 127
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 60,
+    "title": "061 Wake Up, Pinky Pig! - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 88
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 61,
+    "title": "062 The Farmer in the Field - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 125
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 62,
+    "title": "063 Hey, Diddle, Diddle - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 107
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 63,
+    "title": "064 Hot Cross Buns - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 88
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 64,
+    "title": "065 ABC Song - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 88
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 65,
+    "title": "066 Down by the Bay 2 - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 109
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 66,
+    "title": "067 Little Bo-Peep - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 109
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 67,
+    "title": "068 Round the Mulberry Bush - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 107
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 68,
+    "title": "069 Mary Had a Little Lamb - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 141
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 69,
+    "title": "070 The Farmer in the Dell - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 130
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 70,
+    "title": "071 One Potato, Two Potatoes - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 114
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 71,
+    "title": "072 Cock-a-Doodle-Doo - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 98
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 72,
+    "title": "073 Rig-a-Jig-Jig - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 106
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 73,
+    "title": "074  THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 143
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 74,
+    "title": "075 Are You Sleeping (Brother John) - THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 141
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 75,
+    "title": "076 LooLoo Kids wants to meet their little fans!",
+    "duration": 25
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 76,
+    "title": "077 Polly, Put the Kettle On - THE BEST Educational Songs for Children _ LooLoo",
+    "duration": 120
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 77,
+    "title": "078 Two Little Dickie Birds - THE BEST Educational Songs for Children _ LooLoo K",
+    "duration": 120
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 78,
+    "title": "079 Itsy Bitsy Spider - Nursery Rhymes from LooLoo Kids",
+    "duration": 121
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 79,
+    "title": "080 Five Little Speckled Frogs - THE BEST Educational Songs for Children _ LooLo",
+    "duration": 147
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 80,
+    "title": "081 Finger Family - Nursery Rhymes from LooLoo Kids",
+    "duration": 98
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 81,
+    "title": "082 Skip to My Lou - THE BEST Educational Songs for Children _ LooLoo Kids",
+    "duration": 104
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 82,
+    "title": "083 Head, Shoulders, Knees and Toes - Educational Songs for Children _ LooLoo Ki",
+    "duration": 110
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 83,
+    "title": "084 Twinkle, Twinkle, Little Star - Nursery Rhymes from LooLoo Kids",
+    "duration": 128
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 84,
+    "title": "085 La Cucaracha - Educational Songs for Children _ LooLoo Kids",
+    "duration": 123
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 85,
+    "title": "086 Happy Birthday - Birthday Song for Children _ LooLoo Kids",
+    "duration": 140
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 86,
+    "title": "087 A-Tisket, A-Tasket - THE BEST Educational Songs for Children _ LooLoo Kids",
+    "duration": 114
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 87,
+    "title": "088 Baby Shark - THE BEST Educational Songs for Children _ LooLoo Kids",
+    "duration": 114
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 88,
+    "title": "090 Let's Play Together - THE BEST Educational Songs for Children _ LooLoo Kids",
+    "duration": 71
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 89,
+    "title": "091 Doll Dressed in Blue - Educational Songs for Children _ LooLoo Kids",
+    "duration": 105
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 90,
+    "title": "092 ABC Song - Educational Songs for Children _ LooLoo Kids",
+    "duration": 165
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 91,
+    "title": "093  Silent Night Christmas Song for Children _ LooLoo Kids",
+    "duration": 128
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 92,
+    "title": "094 Mary, Mary, Quite Contrary - THE BEST Educational Songs for Children _ LooLo",
+    "duration": 106
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 93,
+    "title": "095 Jingle Bells Merry Christmas Song for Children _ LooLoo Kids",
+    "duration": 165
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 94,
+    "title": "096 Hickory Dickory Dock - Nursery Rhymes from LooLoo Kids",
+    "duration": 117
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 95,
+    "title": "097  Three Little KittensTHE BEST Educational Songs for Children _ LooLoo Kids",
+    "duration": 153
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 96,
+    "title": "098 Jingle Bells Christmas Song for Children _ LooLoo Kids",
+    "duration": 168
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 97,
+    "title": "099 The Ants Go Marching  THE BEST Educational Songs for Children _ LooLoo Kids",
+    "duration": 140
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 98,
+    "title": "100 We Wish You a Merry Christmas  Christmas Song for Children _ LooLoo Kids",
+    "duration": 110
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 99,
+    "title": "101 My Donkey - Educational Songs for Children _ LooLoo Kids",
+    "duration": 121
+   },
+   {
+    "bvid": "BV1jF411E7sB",
+    "page": 100,
+    "title": "102 Yankee Doodle THE BEST Songs for Children _ LooLoo Kids",
+    "duration": 125
+   }
+  ],
+  "start": 0
+ },
+ "Dave and Ava": {
+  "platform": "bilibili",
+  "bvid": "BV1wU4y1L72L",
+  "official": false,
+  "title": "【英语儿歌】戴夫和爱娃 Dave and Ava合集",
+  "cover": "https://i1.hdslb.com/bfs/archive/9cfcd6d73e496709ad96e91304beb4ccb64757a9.png",
+  "owner": "暖暖英语启蒙",
+  "duration": 220600,
+  "note": "",
+  "episodes": [
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 1,
+    "title": "12345 Once I Caught a Fish Alive  Number Song  Nursery Rhymes Collection from Da",
+    "duration": 1632
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 2,
+    "title": "ABC Song + Nursery Rhymes Collection",
+    "duration": 1233
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 3,
+    "title": "ABC Song Collection  Nursery Rhymes Collection and Baby Songs from Dave and Ava",
+    "duration": 5076
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 4,
+    "title": "ABC Song Nursery Rhymes Collection  British Zed Version  YouTube Nursery Rhymes",
+    "duration": 4785
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 5,
+    "title": "Animal Songs Collection + Nursery Rhymes and Baby Songs from Dave and Ava",
+    "duration": 4449
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 6,
+    "title": "Apples and Bananas Song  Nursery Rhymes Collection and Baby Songs from Dave and",
+    "duration": 6086
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 7,
+    "title": "Are You Sleeping Brother John + Nursery Rhymes and Baby songs from Dave and Ava",
+    "duration": 4362
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 8,
+    "title": "Ava Ava Yes Mama + Johny Johny Yes Papa + Nursery Rhymes Collection",
+    "duration": 1962
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 9,
+    "title": "Baa Baa Black Sheep  Christmas Nursery Rhymes Collection  Baa Baa Black Sheep fr",
+    "duration": 1525
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 10,
+    "title": "Christmas Songs Collection",
+    "duration": 4438
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 11,
+    "title": "Christmas Songs for Kids  Jingle Bells Song  Nursery Rhymes Collection from Dave",
+    "duration": 1632
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 12,
+    "title": "English Rhymes  Rock a Bye Baby  YouTube Nursery Rhymes and Baby Songs from Dave",
+    "duration": 3994
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 13,
+    "title": "Farm Animals Train  Learn Farm Animals & Animal Sounds  Educational Videos from",
+    "duration": 5258
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 14,
+    "title": "Farmer in The Dell  Nursery Rhymes  Kids Songs and Baby Rhymes from Dave and Ava",
+    "duration": 1919
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 15,
+    "title": "Finger Family Song + More Nursery Rhymes and Kids Songs",
+    "duration": 5329
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 16,
+    "title": "Five Little Ducks  New Nursery Rhymes Collection from Dave and Ava",
+    "duration": 1912
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 17,
+    "title": "Five Little Monkeys Jumping on the Bed  Nursery Rhymes Collection  Nursery Rhyme",
+    "duration": 1232
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 18,
+    "title": "Halloween Songs for Kids and Children  Halloween Song Collection  Nursery Rhymes",
+    "duration": 5221
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 19,
+    "title": "Head Shoulders Knees and Toes Collection  Nursery Rhymes for Children by Dave an",
+    "duration": 3995
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 20,
+    "title": "Hickory Dickory Dock  Nursery Rhymes Compilation  YouTube Nursery Rhymes from Da",
+    "duration": 6117
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 21,
+    "title": "Hot Cross Buns  Nursery Rhymes and Kids Songs  Children Rhymes from Dave and Ava",
+    "duration": 4181
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 22,
+    "title": "Humpty Dumpty  Nursery Rhymes Collection and Baby Songs from Dave and Ava",
+    "duration": 4448
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 23,
+    "title": "If You’re Happy and You Know It  THE BEST Nursery Rhymes and Songs for Children",
+    "duration": 1347
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 24,
+    "title": "If You're Happy and You Know It + Nursery Rhymes Collection and Baby Songs",
+    "duration": 4690
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 25,
+    "title": "Itsy Bitsy Spider  Nursery Rhymes Compilation  YouTube Nursery Rhymes from Dave",
+    "duration": 979
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 26,
+    "title": "Itsy Bitsy Spider  Popular Nursery Rhymes Collection for Children by Dave and Av",
+    "duration": 6103
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 27,
+    "title": "Jack and Jill  Nursery Rhymes Collection and Baby Songs from Dave and Ava",
+    "duration": 4321
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 28,
+    "title": "Johny Johny Yes Papa  Nursery Rhymes Compilation  YouTube Nursery Rhymes from Da",
+    "duration": 1118
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 29,
+    "title": "Johny Johny Yes Papa + All Johny Johny Yes Papa Kids Songs",
+    "duration": 6164
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 30,
+    "title": "Learn ABC’s and Numbers  Nursery Rhymes and ABC Songs for Kids from Dave and Ava",
+    "duration": 4001
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 31,
+    "title": "Learn Numbers and Counting 1 to 10  Nursery Rhymes Collection from Dave and Ava",
+    "duration": 1889
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 32,
+    "title": "Learning Video Collection for Kids  Educational Videos and Nursery Rhymes from D",
+    "duration": 4759
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 33,
+    "title": "London Bridge Is Falling Down  Nursery Rhymes Collection and Kids Songs from Dav",
+    "duration": 4224
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 34,
+    "title": "Lullabies for Babies  Nursery Rhymes & Lullabies  Baby Songs & Lullabies from Da",
+    "duration": 4321
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 35,
+    "title": "Lullabies for Babies  Rhymes for Toddlers and Lullabies Songs",
+    "duration": 1917
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 36,
+    "title": "Lullabies for Babies to Go to Sleep  Bedtime Songs  Baby Songs & Lullabies from",
+    "duration": 4582
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 37,
+    "title": "Mary Had a Little Lamb + Nursery Rhymes Collection from Dave and Ava",
+    "duration": 5790
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 38,
+    "title": "Miss Polly Had a Dolly  Nursery Rhymes and Kids Songs Collection from Dave and A",
+    "duration": 4643
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 39,
+    "title": "Numbers and Counting Songs Collection  Nursery Rhymes and Baby Songs from Dave a",
+    "duration": 4321
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 40,
+    "title": "Nursery Rhymes Collection  Baby Songs from Dave and Ava",
+    "duration": 2060
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 41,
+    "title": "Nursery Rhymes Songs Collection  60 min 3D English Nursery Rhymes & Baby Songs f",
+    "duration": 4109
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 42,
+    "title": "Old MacDonald Had a Farm + Nursery Rhymes & Baby Songs Collection",
+    "duration": 4338
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 43,
+    "title": "One Little Finger - Karaoke!  Nursery Rhymes Collection from Dave and Ava Baby S",
+    "duration": 3133
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 44,
+    "title": "One Little Finger + Cartoon Animation Nursery Rhymes & Songs for Children",
+    "duration": 6115
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 45,
+    "title": "One Potato, Two Potatoes  Counting Songs  Nursery Rhymes Collection from Dave an",
+    "duration": 6020
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 46,
+    "title": "OSCAR and More Children's Songs  Nursery Rhymes and Kids Songs from Dave and Ava",
+    "duration": 1888
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 47,
+    "title": "Rain Rain Go Away + Nursery Rhymes Collection and Baby Songs",
+    "duration": 4919
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 48,
+    "title": "Rig a Jig Jig  Nursery Rhymes Collection and Baby Songs from Dave and Ava",
+    "duration": 6024
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 49,
+    "title": "Row Row Row Your Boat and More Nursery Rhymes from Dave and Ava",
+    "duration": 3757
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 50,
+    "title": "Teddy Bear, Teddy Bear, Turn Around + Nursery Rhymes for Kids and Children",
+    "duration": 6103
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 51,
+    "title": "Ten in the Bed  Nursery Rhymes Collection  Educational Songs for Toddlers from D",
+    "duration": 3882
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 52,
+    "title": "Ten in the Bed + More Nursery Rhymes and Baby Songs Collection from Dave and Ava",
+    "duration": 3994
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 53,
+    "title": "The Phonics Song  ABC Song Collection  YouTube Nursery Rhymes from Dave and Ava",
+    "duration": 1525
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 54,
+    "title": "The Wheels on The Bus - Part 3  Dave and Ava  Nursery Rhymes and Baby Songs",
+    "duration": 2506
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 55,
+    "title": "The Wheels on the Bus (Animal Sounds Song) + Nursery Rhymes Compilation from Dav",
+    "duration": 5729
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 56,
+    "title": "Three Blind Mice - Trailer  Nursery Rhymes from Dave and Ava",
+    "duration": 1825
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 57,
+    "title": "We Wish You a Merry Christmas  Christmas Songs and Christmas Carols Collection f",
+    "duration": 1749
+   },
+   {
+    "bvid": "BV1wU4y1L72L",
+    "page": 58,
+    "title": "Wheels on the Bus + Nursery Rhymes Collection from Dave and Ava",
+    "duration": 4969
+   }
+  ],
+  "start": 0
+ },
+ "BabyBus English": {
+  "platform": "bilibili",
+  "bvid": "BV17L411A75T",
+  "official": false,
+  "title": "【100集全】宝宝巴士儿歌 英文版",
+  "cover": "https://i2.hdslb.com/bfs/archive/6a484576c1b125215ad6a13dc929cb94d964aa76.png",
+  "owner": "贝基亲子充电宝",
+  "duration": 2253,
+  "note": "",
+  "episodes": [
+   {
+    "bvid": "BV17L411A75T",
+    "page": 1,
+    "title": "第1集 London Bridge Is Falling Down",
+    "duration": 78
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 2,
+    "title": "第2集 Twinkle Twinkle Little Star",
+    "duration": 97
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 3,
+    "title": "第3集 Old MacDonald Had A Farm",
+    "duration": 128
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 4,
+    "title": "第4集 Ten Little Indian Boys",
+    "duration": 116
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 5,
+    "title": "第5集 Jingle Bells",
+    "duration": 109
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 6,
+    "title": "第6集 Five Little Ducks",
+    "duration": 129
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 7,
+    "title": "第7集 All the Pretty Little Horses",
+    "duration": 132
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 8,
+    "title": "第8集 ABC Song",
+    "duration": 119
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 9,
+    "title": "第9集 Rabbit Dance",
+    "duration": 76
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 10,
+    "title": "第10集 I Love The Mountains",
+    "duration": 87
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 11,
+    "title": "第11集 The Fox",
+    "duration": 133
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 12,
+    "title": "第12集 BINGO",
+    "duration": 113
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 13,
+    "title": "第13集 Mary Had A Little Lamb",
+    "duration": 96
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 14,
+    "title": "第14集 Apple Tree",
+    "duration": 86
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 15,
+    "title": "第15集 Open Shut Them",
+    "duration": 99
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 16,
+    "title": "第16集 Eensy Weensy Spider",
+    "duration": 92
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 17,
+    "title": "第17集 Pop! Goes The Wease",
+    "duration": 73
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 18,
+    "title": "第18集 Fly Birdie Fly",
+    "duration": 117
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 19,
+    "title": "第19集 Little Jack Horner",
+    "duration": 77
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 20,
+    "title": "第20集 The Animals Went In Two By Two",
+    "duration": 195
+   },
+   {
+    "bvid": "BV17L411A75T",
+    "page": 21,
+    "title": "第21集 Supermarket",
+    "duration": 101
+   }
+  ],
+  "start": 0
+ },
+ "Pinkfong Baby Shark": {
+  "platform": "bilibili",
+  "bvid": "BV1dxcyzTE9V",
+  "official": false,
+  "title": "Baby Shark Doo Doo Doo 30 Min Baby Shark Song for Kids Babyshark 鯊魚寶寶 Pinkfong",
+  "cover": "https://i1.hdslb.com/bfs/archive/281c34521f0dd70f31fe3a2ebc92a1ef1390e5fa.jpg",
+  "owner": "碧碧芬",
+  "duration": 1758,
+  "note": "",
+  "episodes": [
+   {
+    "bvid": "BV15w356tEHH",
+    "page": 1,
+    "title": "Who's Visiting Doctor Baby Shark Today? | Baby Shark  Hospital Play",
+    "duration": 2829
+   },
+   {
+    "bvid": "BV1dxcyzTE9V",
+    "page": 1,
+    "title": "Baby Shark Doo Doo Doo 30 Min Baby Shark Song for Kids Babyshark 鯊魚寶寶 Pinkfong",
+    "duration": 1758
+   },
+   {
+    "bvid": "BV1XxQUBnEWK",
+    "page": 1,
+    "title": "I'm Scared! Baby Shark's Spooky Mix Song for kids | Babyshark 鯊魚寶寶",
+    "duration": 2708
+   },
+   {
+    "bvid": "BV1npAKzkERP",
+    "page": 1,
+    "title": "Baby Shark Spring Remix | Spring Sharks and More | Pinkfong 碰碰狐 鯊魚寶寶",
+    "duration": 4875
+   },
+   {
+    "bvid": "BV1TtANznE1p",
+    "page": 1,
+    "title": "2026 Best New Episodes of Baby Shark Hospital Play and more Babyshark 鯊魚寶寶 碰碰狐",
+    "duration": 3909
+   },
+   {
+    "bvid": "BV1Z8A7ziEqa",
+    "page": 1,
+    "title": "Wee-woo! The Superheroes Are Hurt! Hospital Play with Doctor Baby Shark 鯊魚寶寶",
+    "duration": 604
+   },
+   {
+    "bvid": "BV15ywBz9E2k",
+    "page": 1,
+    "title": "[BEST] Escape from the SHARK!! Baby Shark X Hoi | Song for Kids Babyshark 鯊魚寶寶",
+    "duration": 925
+   },
+   {
+    "bvid": "BV1PFwczFEAm",
+    "page": 1,
+    "title": "Let fight against Virus with Doctor Baby SharkHospital Play Song Babyshark 鯊魚寶寶",
+    "duration": 428
+   },
+   {
+    "bvid": "BV1kUNczTE4N",
+    "page": 1,
+    "title": "Sunny Spring with your Baby Shark Favorites Baby Shark Song 鯊魚寶寶",
+    "duration": 1787
+   },
+   {
+    "bvid": "BV1f2PezXEQu",
+    "page": 1,
+    "title": "The Chicken got burned! | Baby Shark Hospital Play Favorites | Baby Shark 鯊魚寶寶",
+    "duration": 1709
+   },
+   {
+    "bvid": "BV1jJAaz6EJx",
+    "page": 1,
+    "title": "Where's Baby Shark? Let's Play Hide and Seek |Dinosaur for Kids | 鯊魚寶寶 碰碰狐",
+    "duration": 5489
+   },
+   {
+    "bvid": "BV1WBADzgEJu",
+    "page": 1,
+    "title": "Cough Virus vs Dr. Baby Shark | Baby SharkHospital Play Song | Baby Shark 鯊魚寶寶",
+    "duration": 229
+   },
+   {
+    "bvid": "BV1W1ftBaE3u",
+    "page": 1,
+    "title": "Hospital Play with Doctor Baby Shark andmore I Song for Kids | Baby Shark 鯊魚寶寶",
+    "duration": 3590
+   },
+   {
+    "bvid": "BV143fmB4E6L",
+    "page": 1,
+    "title": "[TOP10] New Baby Shark Dance + Monkey Bananas + More | Kids Dance | 碰碰狐Pinkfong",
+    "duration": 1432
+   },
+   {
+    "bvid": "BV19HZkBnEis",
+    "page": 1,
+    "title": "Learn Colors in the Sea with Baby Shark Compilation I Sing Along with Baby Shark",
+    "duration": 3714
+   },
+   {
+    "bvid": "BV1MvX1BrEDJ",
+    "page": 1,
+    "title": "It hurts so much! Baby shark's Hospital Song  I Boo boo song | Babyshark 鯊魚寶寶",
+    "duration": 1177
+   },
+   {
+    "bvid": "BV1WAX1BYE2d",
+    "page": 1,
+    "title": "BEST SONGS of the MONTH | Boo Boo Song + Baby Shark Dance and More | Pinkfong",
+    "duration": 1561
+   },
+   {
+    "bvid": "BV1TP9HBBEjT",
+    "page": 1,
+    "title": "I wanna become a Doctor and a Police Officer I Job Adventure | Babyshark 鯊魚寶寶",
+    "duration": 811
+   },
+   {
+    "bvid": "BV1QoNPztEgZ",
+    "page": 1,
+    "title": "Police Officer Visits Doctors | Boo Boo Song More Hospital Play Pinkfong碰碰狐",
+    "duration": 3975
+   },
+   {
+    "bvid": "BV1NzDMB4EY1",
+    "page": 1,
+    "title": "Eee-Ooh, Eee-Ooh! Police Baby Shark to theRescue!I Babyshark 鯊魚寶寶 鯊魚一家 嘟嘟嘟",
+    "duration": 2653
+   },
+   {
+    "bvid": "BV1cjD2BdEAZ",
+    "page": 1,
+    "title": "[TOP 3] Best Episodes of Baby Shark Hideand Seek | Play with Babyshark 鯊魚寶寶",
+    "duration": 1561
+   },
+   {
+    "bvid": "BV1R1Q7BKEEW",
+    "page": 1,
+    "title": "T-Rex Visits Hospital | Dinosaur for Kids |  Babyshark 鯊魚寶寶 鲨鱼一家嘟嘟嘟 碰碰狐 Pinkfong",
+    "duration": 2504
+   },
+   {
+    "bvid": "BV1sfoWBJEHn",
+    "page": 1,
+    "title": "Doctor Baby Shark to the Rescue! | Hospital Play Special | Babyshark 鯊魚寶寶",
+    "duration": 3365
+   },
+   {
+    "bvid": "BV1pBoCBvEp1",
+    "page": 1,
+    "title": "Toy Car Baby Shark vs Monster Truck | Car  Songs | Babyshark 鯊魚寶寶 碰碰狐 Pinkfong",
+    "duration": 1875
+   },
+   {
+    "bvid": "BV1H69sB6E3C",
+    "page": 1,
+    "title": "Move Your Body with Us | Fun Brain Break Dance Songs for Kids | 碰碰狐 Pinkfong",
+    "duration": 3230
+   },
+   {
+    "bvid": "BV1mq9QB4E22",
+    "page": 1,
+    "title": "Doctor Baby Shark to the RESCUE | Baby Shark Hospital Play | Babyshark 鯊魚寶寶",
+    "duration": 10460
+   },
+   {
+    "bvid": "BV1NKRtBsE1i",
+    "page": 1,
+    "title": "Evil Octopus vs Baby Shark I Hide and Seek with the Shark Family | 鯊魚寶寶",
+    "duration": 2134
+   },
+   {
+    "bvid": "BV13wdSBhEou",
+    "page": 1,
+    "title": "Baby Shark Dance More and More | Doo Doo Doo 60 Min | Baby Shark Non-Stop",
+    "duration": 3621
+   },
+   {
+    "bvid": "BV1XFLU6hEos",
+    "page": 1,
+    "title": "Meet Evil Octopus, Will Baby Shark survive? Hide and Seek | Babyshark 鯊魚寶寶",
+    "duration": 1138
+   },
+   {
+    "bvid": "BV1G6Gz6aE7n",
+    "page": 1,
+    "title": "Catch the THIEF! | Police Baby Shark I Babyshark 鯊魚寶寶 碰碰狐 Pinkfong",
+    "duration": 3126
+   },
+   {
+    "bvid": "BV12DEH6pEgf",
+    "page": 1,
+    "title": "Time for Car Wash I Car Songs | Babyshark 鯊魚寶寶",
+    "duration": 2420
+   },
+   {
+    "bvid": "BV19MJw65EBA",
+    "page": 1,
+    "title": "Let's go to the beach!️ | Sunny Summer with  Baby Shark | Babyshark 鯊魚寶寶",
+    "duration": 7125
+   },
+   {
+    "bvid": "BV19N7Y6fEmc",
+    "page": 1,
+    "title": "Baby Shark Toy Car Compilation | Boo Boo  Song + More | Pinkfong 碰碰狐 鯊魚寶寶",
+    "duration": 3278
+   },
+   {
+    "bvid": "BV1fp7s6LEy3",
+    "page": 1,
+    "title": "Visit the Eye Doctor | Baby Shark's Hospital  Play | Babyshark 鯊魚寶寶",
+    "duration": 1715
+   },
+   {
+    "bvid": "BV1FnT46FEmt",
+    "page": 1,
+    "title": "How to enjoy your Summer Vacation⛱️ | Sing  and Play with Babyshark 鯊魚寶寶",
+    "duration": 2748
+   },
+   {
+    "bvid": "BV1RKT26gEj1",
+    "page": 1,
+    "title": "Bath Time Routine | Baby Shark Bath Time  Songs | 鯊魚寶寶 碰碰狐",
+    "duration": 2073
+   },
+   {
+    "bvid": "BV1ajNV6qEcX",
+    "page": 1,
+    "title": "Playtime with Baby Shark Hospital Play ⭐ A Bug  Inside Ears⁉️ + more",
+    "duration": 7298
+   },
+   {
+    "bvid": "BV1YiNU66EUo",
+    "page": 1,
+    "title": "Time for a drive with Toy Car Baby Shark | Car Songs |  Babyshark 鯊魚寶寶",
+    "duration": 2052
+   },
+   {
+    "bvid": "BV1kYNo6yER1",
+    "page": 1,
+    "title": "Catch the Thief Baby Shark | Baby Shark Playtime ⭐ Babyshark 鯊魚寶寶",
+    "duration": 2333
+   },
+   {
+    "bvid": "BV1bZKb6mE4m",
+    "page": 1,
+    "title": "【鯊魚寶寶尋寶記】從彩色泥沙挖出 Baby Shark 全家族！Pinkfong、鯊魚爸爸媽媽大開箱！✨",
+    "duration": 317
+   },
+   {
+    "bvid": "BV1Vugy63EvR",
+    "page": 1,
+    "title": "Time to Sing with Baby Shark | Song for Kids | Babyshark 鯊魚寶寶",
+    "duration": 1938
+   },
+   {
+    "bvid": "BV1Yq3H62Er3",
+    "page": 1,
+    "title": "Evil Octopus took the shark family! |  Babyshark 鯊魚寶寶",
+    "duration": 3856
+   },
+   {
+    "bvid": "BV1JggE6yEuZ",
+    "page": 1,
+    "title": "Beep Beep! Baby Shark's Car Song Special  | Babyshark 鯊魚寶寶",
+    "duration": 1669
+   },
+   {
+    "bvid": "BV1nSgT6EECn",
+    "page": 1,
+    "title": "Play Hide & Seek with Baby Shark | Babyshark 鯊魚寶寶 碰碰狐 Pinkfong",
+    "duration": 7339
+   },
+   {
+    "bvid": "BV1Xh8d6WEtF",
+    "page": 1,
+    "title": "Hospital Play with Baby Shark! Bye Bye Boo  Boo | Babyshark 鯊魚寶寶",
+    "duration": 5398
+   },
+   {
+    "bvid": "BV1X8426pEvh",
+    "page": 1,
+    "title": "Baby Shark Playtime | Hospital Play, Hide and  Seek + more | Babyshark 鯊魚寶寶",
+    "duration": 6078
+   },
+   {
+    "bvid": "BV1AwHC67En6",
+    "page": 1,
+    "title": "Potty Training Songs for Toddlers | Baby Shark Healthy Habits | Baby Shark",
+    "duration": 1642
+   }
+  ],
+  "seasonTitle": "Babyshark鲨鱼宝宝嘟嘟嘟 英文兒歌卡通動畫",
+  "start": 1
+ },
+ "ChuChu TV": {
+  "platform": "bilibili",
+  "bvid": "BV1Vx411Q7jb",
+  "official": false,
+  "title": "CHUCHUTV英文儿歌合集",
+  "cover": "https://i0.hdslb.com/bfs/archive/90ff05f584cd2773cbf2f7360af0ebf81e42e2d9.png",
+  "owner": "宝庆狼",
+  "duration": 3569,
+  "note": "",
+  "episodes": [
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 1,
+    "title": "ChuChu TV Brush Your Teeth Song-ChuChu TV",
+    "duration": 190
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 2,
+    "title": "Baa Baa Black Sheep - The Joy of Sharing!",
+    "duration": 159
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 3,
+    "title": "BINGO Dog Song - Nursery Rhyme With Lyrics - Cartoon Animation Rhymes & Songs for Children",
+    "duration": 175
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 4,
+    "title": "Chubby Cheeks Rhyme with Lyrics and Actions - English Nursery Rhymes Cartoon Animation Song Video",
+    "duration": 107
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 5,
+    "title": "ChuChu TV Numbers Song - NEW Short Version - Number Rhymes For Children",
+    "duration": 251
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 6,
+    "title": "Five Little Ducks Nursery Rhyme With Lyrics - Cartoon Animation Rhymes & Songs for Children",
+    "duration": 135
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 7,
+    "title": "Five Little Monkeys Jumping on the Bed Nursery Rhyme - Cartoon Animation Rhymes Songs for Children",
+    "duration": 155
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 8,
+    "title": "Head, Shoulders, Knees & Toes - Exercise Song For Kids",
+    "duration": 130
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 9,
+    "title": "Head, Shoulders, Knees and Toes Kids Dance Song - Nursery Rhymes & Songs for Children",
+    "duration": 120
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 10,
+    "title": "Hot Cross Buns Nursery Rhyme With Lyrics - Cartoon Animation Rhymes & Songs for Children",
+    "duration": 149
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 11,
+    "title": "Humpty Dumpty Nursery Rhyme -  Learn From Your Mistakes!",
+    "duration": 145
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 12,
+    "title": "If You're Happy And You Know It Nursery Rhyme - Helping Others May Make You Happier",
+    "duration": 185
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 13,
+    "title": "Incy Wincy Spider Nursery Rhyme With Lyrics - Cartoon Animation Rhymes & Songs for Children",
+    "duration": 130
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 14,
+    "title": "Itsy Bitsy Spider Nursery Rhyme With Lyrics - Cartoon Animation Rhymes & Songs for Children",
+    "duration": 121
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 15,
+    "title": "Mary Had A Little Lamb Nursery Rhyme With Lyrics - Cartoon Animation Rhymes & Songs for Children",
+    "duration": 173
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 16,
+    "title": "Johny Johny Yes Papa Nursery Rhyme - Cartoon Animation Rhymes & Songs for Children",
+    "duration": 106
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 17,
+    "title": "Let's Learn The Colors! - Cartoon Animation Color Songs for Children by ChuChuTV",
+    "duration": 180
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 18,
+    "title": "Old MacDonald Had a Farm Nursery Rhyme with Lyrics - Cartoon Animation Rhymes Songs for Children",
+    "duration": 124
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 19,
+    "title": "One Two Buckle My Shoe - The Magic Numbers Song",
+    "duration": 146
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 20,
+    "title": "Phonics Song with TWO Words - ABC Alphabet Songs with Sounds for Children",
+    "duration": 245
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 21,
+    "title": "Rain, Rain, Go Away Nursery Rhyme With Lyrics - Cartoon Animation Rhymes & Songs for Children",
+    "duration": 164
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 22,
+    "title": "Twinkle Twinkle Little Star Rhyme with Lyrics - English Nursery Rhymes Songs for Children",
+    "duration": 149
+   },
+   {
+    "bvid": "BV1Vx411Q7jb",
+    "page": 23,
+    "title": "Wheels on the Bus Go Round and Round Rhyme with Lyrics - English Nursery Rhymes for Children",
+    "duration": 130
+   }
+  ],
+  "start": 0
+ },
  "Jack Hartmann": {
   "platform": "bilibili",
   "bvid": "BV1NP4y137dg",
@@ -5118,7 +7646,7 @@ window.MEDIA = {
   "official": false,
   "title": "【欢乐海鹦岛Puffin Rock】S01E01 Puffin Practice & The Mystery Egg & To See  the Moon",
   "cover": "https://i1.hdslb.com/bfs/archive/b389e791cb07468ad07a90672dfe0bc023679890.jpg",
-  "owner": "",
+  "owner": "大J小I英语无字幕动画",
   "duration": 1150,
   "note": "",
   "episodes": [

@@ -1,6 +1,6 @@
 /* 英语启蒙地图：阶段、分类与资源清单（手工维护） */
 const STAGES = [
-  { id: 's0', from: 0, to: 12, age: '0–12 个月', feature: 'Wee Sing for Baby', title: '泡在英语的声音里',
+  { id: 's0', from: 0, to: 12, age: '0–12 个月', feature: 'Little Baby Bum', title: '泡在英语的声音里',
     goal: '不追求“学会”，让宝宝熟悉英语的节奏和语调。',
     screen: '1 岁以内不建议看屏幕（WHO），儿歌放音频。',
     how: ['每天固定时段放英文儿歌，比如起床后。', '换尿布、洗澡时哼一两首童谣。', '读硬纸板书，指着图说单词。'],
@@ -142,6 +142,21 @@ const ITEMS = [
     why:'国内家长用得很多的英文分级动画故事库，按 1–9 级由易到难，配有字幕和原文，可以从“看动画”自然过渡到“读故事”。', tip:'从 1 级开始，同一个故事多听几遍再往上走。官网内容需要订阅。' },
   { t:'song', n:'Laurie Berkner', cn:'Laurie Berkner 儿歌', o:'美国', age:'1–5 岁', s:['s1','s2','s3','s4'], tg:['action'], pace:1, len:'每首 2–3 分钟', q:'Laurie Berkner Band',
     why:'美国很受欢迎的儿童音乐人，We Are the Dinosaurs、Pig on Her Head 等歌曲旋律简单、动作多，适合全家一起唱跳。', tip:'2 岁前放音频就好。' },
+  // ---- 低龄英文儿歌（2026-11 补充，重点给 12–18 个月） ----
+  { t:'song', n:'Little Baby Bum', cn:'Little Baby Bum 童谣', o:'英国', age:'0–3 岁', s:['s0','s1','s2'], tg:['classic'], pace:1, len:'每首 2–3 分钟', q:'Little Baby Bum',
+    why:'3D 动画的经典英文童谣，Wheels on the Bus、Five Little Ducks、Rain Rain Go Away 都有，唱得慢、画面柔和，很多家长从这里开始磨耳朵。', tip:'18 个月前放音频就好。' },
+  { t:'song', n:'The Wiggles', cn:'The Wiggles 儿歌乐队', o:'澳大利亚', age:'1–5 岁', s:['s1','s2','s3','s4'], tg:['action'], pace:2, len:'每首 2–4 分钟', q:'The Wiggles',
+    why:'澳大利亚最有名的儿童乐队，真人演唱经典童谣，配简单的手势和舞蹈，孩子很容易跟着动起来。', tip:'18 个月前放音频就好。' },
+  { t:'song', n:'LooLoo Kids', cn:'LooLoo Kids 童谣', o:'', age:'1–4 岁', s:['s1','s2','s3'], tg:[], pace:1, len:'每首 2–3 分钟', q:'LooLoo Kids',
+    why:'Johny 和小伙伴们唱经典童谣，Five Little Ducks、Ten in a Bed、Old MacDonald 等，旋律简单、重复多。' },
+  { t:'song', n:'Dave and Ava', cn:'Dave and Ava 童谣', o:'', age:'1–4 岁', s:['s1','s2','s3'], tg:[], pace:1, len:'每首 2–4 分钟', q:'Dave and Ava nursery rhymes',
+    why:'3D 动画童谣，覆盖字母歌、数数歌和大量传统童谣，语速慢、发音清楚。', tip:'有些视频是多首连播的长合集，听一会儿就停。' },
+  { t:'song', n:'BabyBus English', cn:'宝宝巴士 英文儿歌', o:'中国（英文版）', age:'1–4 岁', s:['s1','s2','s3'], tg:[], pace:2, len:'每首约 2 分钟', q:'宝宝巴士 英文儿歌',
+    why:'国内家长很熟悉的宝宝巴士出的英文版儿歌，London Bridge、Twinkle Twinkle、Old MacDonald 等经典曲目，画面可爱。' },
+  { t:'song', n:'Pinkfong Baby Shark', cn:'碰碰狐 鲨鱼宝宝', o:'韩国', age:'1–4 岁', s:['s1','s2','s3'], tg:['action'], pace:2, len:'每首 2–3 分钟', q:'Baby Shark Pinkfong',
+    why:'全世界播放量最高的儿歌 Baby Shark 和它的系列歌曲，节奏欢快，几乎每个孩子都会跟着做动作。', tip:'很“洗脑”，节奏偏快，适量就好。' },
+  { t:'song', n:'ChuChu TV', cn:'ChuChu TV 童谣', o:'印度', age:'1–4 岁', s:['s1','s2','s3'], tg:[], pace:2, len:'每首 2–3 分钟', q:'ChuChu TV nursery rhymes',
+    why:'刷牙歌、洗澡歌、Chubby Cheeks 等生活习惯类童谣比较多，可以配合日常作息来放。' },
   { t:'song', n:'Jack Hartmann', cn:'Jack Hartmann 律动儿歌', o:'美国', age:'3–6 岁', s:['s4','s5'], tg:['phonics','action'], pace:2, len:'每首 2–4 分钟', q:'Jack Hartmann',
     why:'美国小学老师做的律动歌曲，边跳边学字母发音、数数和常见词，美国幼儿园课堂里常用。' },
 
