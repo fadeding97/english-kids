@@ -540,6 +540,25 @@ body.bar-on .tb-title { transform: none; opacity: 1; }
 .hh-ava { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: linear-gradient(160deg, #8E8CF5, #5B4BD8); }
 .hh-ava .ico { width: 20px; height: 20px; stroke-width: 2.2; }
 .hh-search:active, .hh-ava:active { transform: scale(.9); transition: transform .18s var(--press); }
+/* 标题旁的难度按钮 */
+.hh-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.lv-btn { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 10px 0 12px; border-radius: 15px; margin-top: 4px; white-space: nowrap;
+  font-size: 14px; font-weight: 600; color: var(--c, var(--label)); background: color-mix(in srgb, var(--c, var(--label-2)) 14%, transparent);
+  transition: transform var(--t-bouncy) var(--spring-bouncy); }
+.lv-btn b { font-weight: 800; margin-right: 2px; }
+.lv-btn .ico { width: 13px; height: 13px; stroke-width: 2.8; transform: rotate(90deg); }
+.lv-btn:active { transform: scale(.93); transition: transform .18s var(--press); }
+/* 难度选择面板 */
+.lvm .group { background: var(--card); }
+.lvm-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) 24px; gap: 12px; align-items: center; width: 100%; padding: 11px 14px; text-align: left; position: relative; }
+.lvm-row + .lvm-row::before { content: ""; position: absolute; left: 66px; right: 0; top: 0; height: .5px; background: var(--sep); }
+.lvm-row:active { background: var(--fill-2); }
+.lvm-badge { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-size: 14px; font-weight: 800; color: #fff; background: var(--c, var(--label-2)); }
+.lvm-txt { display: grid; gap: 2px; min-width: 0; }
+.lvm-txt b { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.lvm-txt em { font-style: normal; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 5px; color: var(--c, var(--accent)); background: color-mix(in srgb, var(--c, var(--accent)) 14%, transparent); }
+.lvm-txt small { font-size: 13px; color: var(--label-2); line-height: 1.35; }
+.lvm-check { color: var(--accent); } .lvm-check .ico { width: 20px; height: 20px; stroke-width: 2.6; }
 /* 毛玻璃悬浮条：往下滑时吸在顶栏下方，内容从后面透过来 */
 .seg { position: sticky; top: calc(56px + env(safe-area-inset-top, 0px)); z-index: 16; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; padding: 4px; border-radius: 18px; margin: -14px -4px 0; max-width: 560px;
   background: color-mix(in srgb, var(--bg) 55%, transparent); backdrop-filter: saturate(180%) blur(22px); -webkit-backdrop-filter: saturate(180%) blur(22px);
@@ -728,6 +747,7 @@ a.cell2 { text-decoration: none; }
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24"><path d="M5 5l10 7-10 7z" fill="currentColor"/><path d="M19 5v14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
 </svg>
 
@@ -775,7 +795,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 毛玻璃难度条 v1';
+const APP_VERSION = '2026-11-08 标题旁难度按钮 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -921,10 +941,25 @@ function lvChipsDesk() {
 }
 /* 首页顶部：手机用新版（方案 A），电脑保持原样 */
 function homeTop(sub) {
-  return `<div class="home-m">${homeHead()}${lvChips()}</div><div class="home-d">${pageHead('首页', sub, true)}${lvChipsDesk()}</div>`;
+  return `<div class="home-m">${homeHead()}</div><div class="home-d">${pageHead('首页', sub, true)}${lvChipsDesk()}</div>`;
+}
+/* 难度选择面板（从底部弹出） */
+function openLvMenu() {
+  const sl = STAGE_LV[stage] || [];
+  const row = (id, badge, name, desc, c) => `<button class="lvm-row${lvPick === id ? ' on' : ''}" type="button" data-lvpick="${id}"${c ? ` style="--c:${c}"` : ''}>
+    <span class="lvm-badge">${badge}</span><span class="lvm-txt"><b>${name}${sl.includes(id) ? '<em>建议</em>' : ''}</b><small>${esc(desc)}</small></span>
+    <span class="lvm-check">${lvPick === id ? ic('i-check') : ''}</span></button>`;
+  openSheet(`<div class="settings lvm">
+    <div class="set-head"><h3>选择难度</h3><button class="btn btn-gray sm" type="button" data-close-lvm="1">完成</button></div>
+    <div class="group">${row('', '全', '全部难度', '显示这个年龄段的所有内容')}${LEVELS.map(l => row(l.id, l.id, l.name, l.desc, l.color[1])).join('')}</div>
+    <p class="group-f">儿歌、动画、绘本页也会按这里的难度显示。</p>
+  </div>`);
+  document.querySelector('[data-close-lvm]').addEventListener('click', () => closeSheet(true));
 }
 function homeHead() {
-  return `<header class="page-h home-h"><div><h1>首页</h1></div>
+  const l = lvPick && lvOf(lvPick);
+  return `<header class="page-h home-h"><div class="hh-title"><h1>首页</h1>
+      <button class="lv-btn" type="button" data-lv-menu="1" aria-label="选择难度"${l ? ` style="--c:${l.color[1]}"` : ''}>${l ? `<b>${l.id}</b>${l.name}` : '全部难度'}${ic('i-right')}</button></div>
     <div class="home-acts"><button class="hh-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></div></header>`;
 }
 function noVideo() {
@@ -1823,7 +1858,9 @@ document.addEventListener('click', e => {
     query = ''; $('q').value = '';
     return go(t.dataset.ch === 'home' ? { mode: 'home' } : { mode: 'type', value: t.dataset.ch });
   }
+  if (t.dataset.lvMenu) return openLvMenu();
   if (t.dataset.lvpick !== undefined) {
+    if (t.closest('.sheet')) closeSheet(true);
     lvPick = t.dataset.lvpick; store.set('lv-pick', lvPick);
     if (view.mode !== 'home') { navStack = []; return go({ mode: 'home' }); }
     const y = scrollY; render(); scrollTo(0, y); return;
