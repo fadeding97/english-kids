@@ -462,7 +462,11 @@ body.swiping { background: var(--card); overflow: hidden; }
 @media (max-width: 760px) { .icon-btn span { display: none; } .icon-btn { width: 34px; padding: 0; justify-content: center; } .player-bar .elapsed { display: none; } }
 
 /* 只听声音 */
-.listen { position: absolute; left: 0; right: 0; top: 0; bottom: 52px; z-index: 2; overflow: hidden; display: grid; place-items: center; color: #fff; background: #1c1c1e; }
+.listen { position: absolute; left: 0; right: 0; top: 0; bottom: 52px; z-index: 2; overflow: hidden; display: grid; place-items: center; color: #fff; background: #1c1c1e; pointer-events: none; }
+/* 只挡住卡片下方三分之一：B站“进入哔哩哔哩看高清”这类跳转按钮在这一带；其余区域点击会传给播放器 */
+.listen-block { position: absolute; left: 0; right: 0; bottom: 0; height: 34%; pointer-events: auto; }
+.listen-hint { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, .16); width: fit-content; }
+.listen-hint .ico { width: 11px; height: 11px; fill: currentColor; stroke: none; }
 .listen-bg { position: absolute; inset: -40px; }
 .listen-bg img { width: 100%; height: 100%; object-fit: cover; filter: blur(40px) saturate(160%) brightness(.65); transform: scale(1.1); }
 .listen-card { position: relative; display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); padding: 16px; max-width: 92%; }
@@ -573,7 +577,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 第三批 v5';
+const APP_VERSION = '2026-11-08 第三批 v6';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -907,7 +911,9 @@ function applyListen() {
   el.innerHTML = `<div class="listen-bg">${img}</div>
     <div class="listen-card">${img ? `<div class="listen-art">${img}</div>` : ''}
       <div class="listen-txt"><span class="listen-label">${ic('i-headphones')}只听声音</span><b>${esc(it.cn)}</b><span>${esc(m.episodes.length > 1 ? e.title : it.n)}</span>
-        <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div></div>`;
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="listen-hint">${ic('i-play')}轻点封面 播放 / 暂停</span></div></div>
+    <div class="listen-block" aria-hidden="true"></div>`;
   const shield = box.querySelector('.shield');
   box.insertBefore(el, shield ? shield.nextSibling : null);
 }
