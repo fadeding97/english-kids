@@ -573,7 +573,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 第三批 v4';
+const APP_VERSION = '2026-11-08 第三批 v5';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -764,7 +764,7 @@ function detailView() {
   const kid = !!settings.kid;
   const actions = m
     ? `<button class="btn btn-accent" type="button" data-play="${it.id}">${ic('i-play')}${progress[it.n] ? (m.episodes.length > 1 ? `继续播放 · 第 ${progress[it.n].ep + 1} 集` : '继续播放') : '播放'}</button>
-       <a class="btn btn-gray" href="https://www.bilibili.com/video/${m.bvid}" target="_blank" rel="noopener">在 B站打开</a>`
+       <a class="btn btn-gray" href="https://www.bilibili.com/video/${m.bvid}" target="_blank" rel="noopener">在 B站打开</a>${it.t === 'book' ? `<a class="btn btn-gray" href="${LINKS.book[0][1](it.q)}" target="_blank" rel="noopener">买这本书</a>` : ''}`
     : LINKS[it.t].map(([l, fn], i) =>
         `<a class="btn ${i ? 'btn-gray' : 'btn-accent'}" href="${fn(it.q)}" target="_blank" rel="noopener">${i ? '' : ic('i-play')}${l}</a>`).join('');
   return `<button class="back" type="button" data-back="1">${ic('i-left')}${esc(kid ? '返回' : backLabel)}</button>

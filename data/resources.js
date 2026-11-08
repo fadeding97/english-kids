@@ -209,6 +209,8 @@ const ITEMS = [
   { t:'book', n:'Oxford Reading Tree', cn:'牛津阅读树', age:'4–7 岁', s:['s5'], tg:['reader'], pace:1, len:'分级', q:'牛津阅读树 1级',
     why:'英国学校最常用的分级读物，从无字书的 1 级开始，难度循序渐进。', tip:'不用急着往上升级，读熟了再换下一级。' },
 
+  { t:'play', n:'English Fingerplays', cn:'英文手指谣与动作歌谣', age:'0–3 岁', s:['s0','s1','s2'], tg:['fingerplay'], pace:1, len:'每首 1–3 分钟', q:'英文手指谣 finger play',
+    why:'收集英语国家幼儿常玩的手指游戏和动作歌谣，用动画示范每个动作，一边念一边做，宝宝最容易跟着玩。', tip:'家长先看几遍学会动作，再陪宝宝一起做，比单纯放给宝宝看有用得多。' },
   { t:'play', n:'Peekaboo & Pat-a-cake', cn:'躲猫猫与拍手歌', age:'6–18 个月', s:['s0','s1'], tg:['fingerplay'], pace:1, len:'随时', q:'Pat a cake nursery rhyme',
     why:'Peekaboo 躲猫猫、Pat-a-cake 拍手、Round and round the garden 挠手心，都是英美家长每天在玩的游戏。' },
   { t:'play', n:'Daily Routine English', cn:'日常生活英语', age:'0–3 岁', s:['s0','s1','s2','s3'], tg:['life'], pace:1, len:'每天', q:'toddler daily routine English phrases',
