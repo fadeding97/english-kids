@@ -552,8 +552,8 @@ body.bar-on .tb-title { transform: none; opacity: 1; }
 
 /* 右上角放大镜（手机） */
 .page-h { position: relative; }
-.h-search { position: absolute; top: 4px; right: 0; width: 36px; height: 36px; }
-.h-search .ico { width: 19px; height: 19px; stroke-width: 2.2; }
+.h-search { position: absolute; top: 4px; right: 0; width: 30px; height: 34px; background: none; color: var(--accent); }
+.h-search .ico { width: 23px; height: 23px; stroke-width: 2.2; }
 .h-search:active { transform: scale(.9); transition: transform .18s var(--press); }
 @media (min-width: 761px) { .h-search { display: none; } }
 
@@ -772,7 +772,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 首页顶部 A v2';
+const APP_VERSION = '2026-11-08 首页顶部 A v3';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -921,9 +921,8 @@ function homeTop(sub) {
   return `<div class="home-m">${homeHead()}${lvChips()}</div><div class="home-d">${pageHead('首页', sub, true)}${lvChipsDesk()}</div>`;
 }
 function homeHead() {
-  return `<header class="page-h home-h"><div><p class="eyebrow">${fmtAge(months)} · ${stageById(stage).age}</p><h1>首页</h1></div>
-    <div class="home-acts"><button class="hh-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button>
-    <button class="hh-ava" type="button" data-ch="me" aria-label="我的">${ic('i-user')}</button></div></header>`;
+  return `<header class="page-h home-h"><div><h1>首页</h1></div>
+    <div class="home-acts"><button class="hh-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></div></header>`;
 }
 function noVideo() {
   return `<div class="empty"><h3>这个阶段先不看动画</h3>
