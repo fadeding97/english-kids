@@ -462,21 +462,25 @@ body.swiping { background: var(--card); overflow: hidden; }
 @media (max-width: 760px) { .icon-btn span { display: none; } .icon-btn { width: 34px; padding: 0; justify-content: center; } .player-bar .elapsed { display: none; } }
 
 /* 只听声音 */
-.listen { position: absolute; left: 0; right: 0; top: 0; bottom: 52px; z-index: 2; overflow: hidden; display: grid; place-items: center; color: #fff; background: #1c1c1e; pointer-events: none; }
-/* 只挡住卡片下方三分之一：B站“进入哔哩哔哩看高清”这类跳转按钮在这一带；其余区域点击会传给播放器 */
-.listen-block { position: absolute; left: 0; right: 0; bottom: 0; height: 34%; pointer-events: auto; }
-.listen-hint { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, .16); width: fit-content; }
-.listen-hint .ico { width: 11px; height: 11px; fill: currentColor; stroke: none; }
+.listen { position: absolute; left: 0; right: 0; top: 0; bottom: 52px; z-index: 2; overflow: hidden; color: #fff; background: #1c1c1e; pointer-events: none; }
+/* 只挡住下方中间一块（B站“进入哔哩哔哩看高清”按钮在这里）；左下角“已静音，点击恢复音量”留给用户点 */
+.listen-block { position: absolute; left: 22%; right: 22%; bottom: 0; height: 26%; pointer-events: auto; }
 .listen-bg { position: absolute; inset: -40px; }
-.listen-bg img { width: 100%; height: 100%; object-fit: cover; filter: blur(40px) saturate(160%) brightness(.65); transform: scale(1.1); }
-.listen-card { position: relative; display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); padding: 16px; max-width: 92%; }
-.listen-art { flex: none; width: clamp(96px, 22vw, 210px); aspect-ratio: 1; border-radius: 10px; overflow: hidden; box-shadow: 0 18px 50px rgba(0, 0, 0, .45); }
+.listen-bg img { width: 100%; height: 100%; object-fit: cover; filter: blur(40px) saturate(160%) brightness(.6); transform: scale(1.1); }
+/* 视频画面中心比遮罩中心低 26px（遮罩底部空出 52px 给控制条） */
+.listen-center { position: absolute; left: 50%; top: calc(50% + 26px); transform: translate(-50%, -50%); height: 52%; aspect-ratio: 1; display: grid; place-items: center; }
+.listen-art { position: absolute; inset: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 18px 50px rgba(0, 0, 0, .45); }
 .listen-art img { width: 100%; height: 100%; object-fit: cover; }
-.listen-txt { display: grid; gap: 4px; min-width: 0; }
+.listen-play { position: relative; width: clamp(40px, 26%, 64px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(0, 0, 0, .38); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 0 0 2px rgba(255, 255, 255, .55); }
+.listen-play .ico { width: 42%; height: 42%; fill: #fff; stroke: none; margin-left: 6%; }
+.listen-txt { position: absolute; left: clamp(12px, 3%, 24px); top: clamp(10px, 4%, 22px); display: grid; gap: 3px; max-width: 30%; }
 .listen-label { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; opacity: .75; letter-spacing: .03em; }
 .listen-label .ico { width: 14px; height: 14px; }
-.listen-txt b { font-size: clamp(18px, 2.6vw, 28px); font-weight: 700; line-height: 1.15; }
-.listen-txt > span:not(.listen-label):not(.eq) { font-size: 14px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40ch; }
+.listen-txt b { font-size: clamp(15px, 2.2vw, 24px); font-weight: 700; line-height: 1.15; }
+.listen-txt > span:not(.listen-label):not(.eq) { font-size: 13px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.listen-hint { position: absolute; right: clamp(12px, 3%, 24px); top: clamp(10px, 4%, 22px); font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, .16); }
+@media (max-width: 760px) { .listen-txt { max-width: 34%; } .listen-txt > span:not(.listen-label):not(.eq), .listen-txt .eq { display: none; } .listen-hint { font-size: 11px; padding: 3px 8px; } }
 .eq { display: flex; align-items: flex-end; gap: 3px; height: 18px; margin-top: 8px; }
 .eq i { width: 3px; height: 100%; border-radius: 2px; background: #fff; opacity: .85; transform-origin: bottom; animation: eq 1.1s ease-in-out infinite; }
 .eq i:nth-child(2) { animation-delay: -.3s; } .eq i:nth-child(3) { animation-delay: -.6s; } .eq i:nth-child(4) { animation-delay: -.15s; } .eq i:nth-child(5) { animation-delay: -.45s; }
@@ -577,7 +581,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 第三批 v6';
+const APP_VERSION = '2026-11-08 第三批 v7';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -866,7 +870,7 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
     const sameItem = player.item === id;
     clearInterval(player.tick); clearInterval(player.countdown);
     wrap.hidden = false;
-    player.item = id; player.idx = idx; player.t = startAt; player.dur = e.duration || 0; player.locked = false; player.pulsed = false; player.upShown = false; player.endShown = false;
+    player.item = id; player.idx = idx; player.t = startAt; player.dur = e.duration || 0; player.locked = false; player.pulsed = false; player.upShown = false; player.endShown = false; player.touched = false;
     updateElapsed();
     $('nowTitle').textContent = m.episodes.length > 1 ? `第 ${idx + 1} 集 · ${e.title}` : e.title;
     $('nextBtn').hidden = idx >= m.episodes.length - 1;
@@ -908,11 +912,12 @@ function applyListen() {
   const img = m.cover ? `<img src="${esc(coverUrl(m.cover, 360))}" alt="" referrerpolicy="no-referrer">` : '';
   const el = document.createElement('div');
   el.className = 'listen';
+  // 封面中心 = 视频画面中心：B站暂停时的 ▶ 按钮就在这里，点封面中间的圆钮 = 点 B站的播放键
   el.innerHTML = `<div class="listen-bg">${img}</div>
-    <div class="listen-card">${img ? `<div class="listen-art">${img}</div>` : ''}
-      <div class="listen-txt"><span class="listen-label">${ic('i-headphones')}只听声音</span><b>${esc(it.cn)}</b><span>${esc(m.episodes.length > 1 ? e.title : it.n)}</span>
-        <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-        <span class="listen-hint">${ic('i-play')}轻点封面 播放 / 暂停</span></div></div>
+    <div class="listen-txt"><span class="listen-label">${ic('i-headphones')}只听声音</span><b>${esc(it.cn)}</b><span>${esc(m.episodes.length > 1 ? e.title : it.n)}</span>
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
+    <div class="listen-center">${img ? `<div class="listen-art">${img}</div>` : ''}<span class="listen-play">${ic('i-play')}</span></div>
+    <span class="listen-hint">没声音？点封面中间的 ▶</span>
     <div class="listen-block" aria-hidden="true"></div>`;
   const shield = box.querySelector('.shield');
   box.insertBefore(el, shield ? shield.nextSibling : null);
@@ -1046,6 +1051,15 @@ async function unlockMore() {
   if (player.item != null) playItem(player.item, player.idx, { resume: true });
 }
 
+/* 浏览器拦截自动播放时，视频停在 0:00，要等用户点一下播放键才开始，而页面计时已经在走。
+   第一次点进播放器时（焦点进入 iframe，页面会收到 blur），如果这一集刚开始不久，就把计时从 0 重新算，
+   避免“自动下一集”提前出现。 */
+window.addEventListener('blur', () => setTimeout(() => {
+  const f = document.activeElement;
+  if (!f || f.tagName !== 'IFRAME' || !f.closest('#player') || player.item == null || player.touched) return;
+  player.touched = true;
+  if (player.t <= 90) { player.t = 0; updateElapsed(); }
+}, 0));
 ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
   document.querySelectorAll('[data-fs] span').forEach(sp => { sp.textContent = isFs() ? '退出全屏' : '全屏'; });
 }));
