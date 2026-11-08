@@ -230,23 +230,23 @@ button.sec-h .ico { width: 18px; height: 18px; color: var(--label-2); stroke-wid
    返回：反向缩回；手机上还可以从屏幕左边缘右滑返回（跟手）。 */
 .side { view-transition-name: side; }
 .tabbar { view-transition-name: tabbar; }
-.main { view-transition-name: main; background: var(--bg); }
-::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+.main { background: var(--bg); }
+.mini { view-transition-name: mini; }
 ::view-transition-group(*) { animation-duration: var(--t-smooth); animation-timing-function: var(--spring-smooth); }
-::view-transition-old(main) { animation: vt-fade-out .14s linear both; }
-::view-transition-new(main) { animation: vt-fade-in .22s ease-out both; }
-:root[data-dir="fwd"]::view-transition-old(main) { animation: vt-recede .42s var(--spring-smooth) both; }
-:root[data-dir="fwd"]::view-transition-new(main) { animation: vt-fade-in .32s ease-out .08s both; }
-:root[data-dir="back"]::view-transition-old(main) { animation: vt-fade-out .2s ease-out both; }
-:root[data-dir="back"]::view-transition-new(main) { animation: vt-come-back var(--t-smooth) var(--spring-smooth) both; }
+::view-transition-old(root) { animation: vt-fade-out .14s linear both; }
+::view-transition-new(root) { animation: vt-fade-in .22s ease-out both; }
+:root[data-dir="fwd"]::view-transition-old(root) { animation: vt-recede .42s var(--spring-smooth) both; }
+:root[data-dir="fwd"]::view-transition-new(root) { animation: vt-fade-in .32s ease-out .08s both; }
+:root[data-dir="back"]::view-transition-old(root) { animation: vt-fade-out .2s ease-out both; }
+:root[data-dir="back"]::view-transition-new(root) { animation: vt-come-back var(--t-smooth) var(--spring-smooth) both; }
 /* 原地展开播放器：页面不淡入淡出，只有封面变形成播放器 */
-:root[data-dir="none"]::view-transition-old(main) { display: none; }
-:root[data-dir="none"]::view-transition-new(main) { animation: none; }
+:root[data-dir="none"]::view-transition-old(root) { display: none; }
+:root[data-dir="none"]::view-transition-new(root) { animation: none; }
 ::view-transition-group(hero-art) { animation-duration: var(--t-smooth); animation-timing-function: var(--spring-smooth); z-index: 5; }
 ::view-transition-old(hero-art), ::view-transition-new(hero-art) { animation-duration: .25s; height: 100%; object-fit: cover; }
 @keyframes vt-fade-out { to { opacity: 0; } }
 @keyframes vt-fade-in { from { opacity: 0; } }
-@keyframes vt-recede { to { opacity: 0; transform: scale(.94); filter: brightness(.9); } }
+@keyframes vt-recede { to { opacity: 0; transform: scale(.96); } }
 @keyframes vt-come-back { from { opacity: 0; transform: scale(.94); } }
 /* 不支持 View Transitions 时的退路 */
 .main.enter { animation: vt-fade-in .22s ease-out both; }
@@ -476,6 +476,8 @@ body.swiping { background: var(--card); overflow: hidden; }
 .age-hint { font-size: 14px; color: var(--label-2); text-align: center; min-height: 20px; }
 .age-hint b { color: var(--label); }
 body.kid .age-pill, body.kid .age-side { display: none !important; }
+
+.eps-more { justify-self: start; }
 
 /* ---------- 手机搜索浮层 ---------- */
 .sov { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--bg); }
@@ -831,7 +833,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 去弹幕 v1';
+const APP_VERSION = '2026-11-08 转场优化 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1076,6 +1078,9 @@ function searchView() {
        : `<div class="grid">${ITEMS.filter(i => i.tg.includes('classic')).map(tile).join('')}</div>`);
 }
 
+const epLi = (e, i) => `<li><button class="ep" type="button" data-ep="${i}">
+        <span class="ep-n">${i + 1}</span><span class="ep-t">${esc(e.title)}</span><span class="ep-d">${fmtDur(e.duration)}</span></button></li>`;
+const epShown = (it, m) => { const cur = Math.max(progress[it.n]?.ep || 0, player.item === it.id ? player.idx : 0); return Math.max(48, cur + 12); };
 function detailView() {
   const it = ITEMS[view.value];
   const back = navStack.length ? navStack[navStack.length - 1].view : { mode: 'home' };
@@ -1103,7 +1108,7 @@ function detailView() {
       </div>
     </section>` : ''}
     <section class="album${player.item === it.id ? ' playing' : ''}">
-      ${art(it, '', 540).replace('<div class="art', '<div id="albumArt" class="art')}
+      ${art(it, '', 360).replace('<div class="art', '<div id="albumArt" class="art')}
       <div class="album-info">
         <h1>${esc(it.cn)}</h1>
         <p class="en">${esc(it.n)}</p>
@@ -1116,8 +1121,8 @@ function detailView() {
     </section>
     ${m && m.episodes.length > 1 ? `<section class="sec">
       <h2 class="sec-h">选集 <span class="ep-count">${m.episodes.length} 集</span></h2>
-      <ol class="eps" id="eps">${m.episodes.map((e, i) => `<li><button class="ep" type="button" data-ep="${i}">
-        <span class="ep-n">${i + 1}</span><span class="ep-t">${esc(e.title)}</span><span class="ep-d">${fmtDur(e.duration)}</span></button></li>`).join('')}</ol>
+      <ol class="eps" id="eps">${m.episodes.slice(0, epShown(it, m)).map(epLi).join('')}</ol>
+      ${m.episodes.length > epShown(it, m) ? `<button class="btn btn-gray eps-more" type="button" data-all-eps="1">显示全部 ${m.episodes.length} 集</button>` : ''}
     </section>` : ''}
     ${kid ? '' : `<div class="fit">适合阶段 ${it.s.map(sid => `<span>${stageById(sid).age}</span>`).join('')}</div>`}
     ${!kid && more.length ? shelf('more', '同类推荐', more) : ''}
@@ -1672,6 +1677,10 @@ function render() {
   if (view.mode !== 'detail') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
   $('main').innerHTML = html;
   syncDock(); placePlayer(); renderTopbar();
+  if (view.mode === 'detail') {
+    const img = document.querySelector('#albumArt img'), m = media(ITEMS[view.value]);
+    if (img && m && m.cover) setTimeout(() => { const hi = new Image(); hi.referrerPolicy = 'no-referrer'; hi.onload = () => { if (img.isConnected) img.src = hi.src; }; hi.src = coverUrl(m.cover, 540); }, 450);
+  }
   // 儿童模式：进详情直接开始播放
   if (settings.kid && view.mode === 'detail' && media(ITEMS[view.value]) && player.item !== view.value) setTimeout(() => playItem(view.value, null, { instant: true }), 0);
 }
@@ -1924,6 +1933,7 @@ document.addEventListener('click', e => {
   if (t.dataset.back) return goBack();
   if (t.dataset.scroll) { const r = $('row-' + t.dataset.scroll); return r && r.scrollBy({ left: r.clientWidth * .8 * Number(t.dataset.dir) }); }
   if (t.dataset.sovClose) return closeSearch();
+  if (t.dataset.allEps) { const m = media(ITEMS[view.value]), ol = $('eps'); ol.insertAdjacentHTML('beforeend', m.episodes.slice(ol.children.length).map((e, k) => epLi(e, ol.children.length + k)).join('')); t.remove(); return syncDock(); }
   if (t.dataset.id !== undefined && t.closest('#sov')) { closeSearch(true); return go({ mode: 'detail', value: Number(t.dataset.id) }, { push: true, dir: 'fwd' }); }
   if (t.dataset.id !== undefined) {
     if (view.mode === 'detail' && Number(t.dataset.id) === view.value) return;
