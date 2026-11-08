@@ -677,7 +677,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 我的 v1';
+const APP_VERSION = '2026-11-08 我的 v2';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -813,7 +813,7 @@ function lvChips() {
   const cur = lvPick && lvOf(lvPick);
   return `<div class="lv-chips" role="group" aria-label="难度">${chip('', '全部')}${LEVELS.map(l => chip(l.id, `<b>${l.id}</b> ${l.name}`, l.color)).join('')}</div>
     <p class="lv-note">${cur ? `<span>${esc(cur.desc)}</span> <button type="button" data-level="${cur.id}">了解 ${cur.id}${ic('i-right')}</button>`
-      : `${fmtAge(months)}一般从 <b>${sl.join('–')}</b> 开始（带圆点的），儿歌、动画、绘本页会跟着这里的选择显示。`}</p>`;
+      : `宝宝 ${fmtAge(months)}，一般从 <b>${sl.join('–')}</b> 开始（带圆点的），儿歌、动画、绘本页会跟着这里的选择显示。<button type="button" data-ch="me">改月龄${ic('i-right')}</button>`}</p>`;
 }
 function noVideo() {
   return `<div class="empty"><h3>这个阶段先不看动画</h3>
@@ -822,7 +822,7 @@ function noVideo() {
 
 function homeView() {
   const s = stageById(stage), list = inStage();
-  if (!list.length) return pageHead('首页', esc(filterText()), true, true) + lvChips() + lvEmpty('内容');
+  if (!list.length) return pageHead('首页', esc(filterText()), true) + lvChips() + lvEmpty('内容');
   const feat = list.find(i => i.n === s.feature) || list[0];
   const picks = [[feat, '本阶段首推']];
   const labels = { song: '每天磨耳朵', book: '今晚读这本', video: '这周看这部', play: '今天玩这个' };
@@ -830,7 +830,7 @@ function homeView() {
     const it = list.find(i => i.t === t && i.id !== feat.id);
     if (it) picks.push([it, labels[t]]);
   });
-  let html = pageHead('首页', `${esc(filterText())} · ${esc(s.title)}`, true, true) + lvChips();
+  let html = pageHead('首页', `${esc(filterText())} · ${esc(s.title)}`, true) + lvChips();
   // 继续观看：最近看过、还没看完的（按最近时间）
   const recent = Object.entries(progress)
     .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
