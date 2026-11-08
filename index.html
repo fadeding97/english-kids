@@ -740,6 +740,11 @@ body.bar-on .tb-title { transform: none; opacity: 1; }
 .fs-close .ico { width: 15px; height: 15px; }
 .player:fullscreen .fs-close, .player:-webkit-full-screen .fs-close, .player.pseudo-fs .fs-close { display: inline-flex; }
 body.fs-lock { overflow: hidden; }
+html.fs-dark, html.fs-dark body { background: #000; }
+.fs-rotate { display: none; position: absolute; z-index: 7; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); white-space: nowrap;
+  font-size: 13px; font-weight: 600; color: #fff; padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, .16); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); pointer-events: none; }
+@media (max-width: 760px) and (orientation: portrait) { .player.pseudo-fs .fs-rotate { display: block; animation: rotHint 4.5s ease forwards; } }
+@keyframes rotHint { 0% { opacity: 0; transform: translate(-50%, 8px); } 10%, 80% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 /* 伪全屏时侧栏、标签栏让开；内容区不再单独参与页面转场层级，避免被侧栏盖住 */
 body.fs-lock .side, body.fs-lock .tabbar { display: none; }
 body.fs-lock .main { view-transition-name: none; }
@@ -843,7 +848,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 只听声音图标 v1';
+const APP_VERSION = '2026-11-08 全屏状态栏 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1200,7 +1205,11 @@ function placePlayer() {
   document.body.classList.toggle('has-mini', showMini);
   if (showMini) { syncMini(); if (!was) { mini.classList.remove('in'); void mini.offsetWidth; mini.classList.add('in'); } }
   if (slotObs) { slotObs.disconnect(); if (slot) slotObs.observe(slot); }
+  fsBar(box.classList.contains('pseudo-fs'));
 }
+/* 全屏时把浏览器顶部状态栏那一条染成黑色，和视频的黑底连成一片（iPhone 不允许网页隐藏状态栏；横屏时系统会自动隐藏） */
+const themeMeta = document.querySelector('meta[name="theme-color"]'), themeDefault = themeMeta?.content;
+function fsBar(on) { if (themeMeta) themeMeta.content = on ? '#000000' : themeDefault; document.documentElement.classList.toggle('fs-dark', on); }
 const slotObs = window.ResizeObserver ? new ResizeObserver(() => placePlayer()) : null;
 addEventListener('resize', () => placePlayer());
 function syncMini() {
@@ -1254,7 +1263,7 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
     const sandbox = settings.strict ? ' sandbox="allow-scripts allow-same-origin allow-presentation allow-storage-access-by-user-activation"' : '';
     box.innerHTML = `<iframe src="${esc(biliEmbed(e, startAt))}" title="${esc(e.title)}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
       allowfullscreen referrerpolicy="strict-origin-when-cross-origin" scrolling="no"${sandbox}></iframe><div class="shield" aria-hidden="true"></div><div class="dm-block" aria-hidden="true"></div>
-      <button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button>`;
+      <button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button><span class="fs-rotate">横过手机看，画面更大，状态栏也会隐藏</span>`;
     applyListen();
     if (lastPos) toast(`上次看到 ${fmtDur(lastPos)}，可以拖动进度条接着看`, 4200);
     updateQuota();
