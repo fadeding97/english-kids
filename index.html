@@ -531,7 +531,7 @@ body.bar-on .tb-title { transform: none; opacity: 1; }
 /* ---------- 首页顶部（方案 A） ---------- */
 .home-m, .home-d { display: grid; gap: 34px; min-width: 0; }
 .home-m { display: none; }
-@media (max-width: 760px) { .home-m { display: grid; gap: 28px; } .home-d { display: none; } }
+@media (max-width: 760px) { .home-m { display: contents; } .home-d { display: none; } }
 .home-h { border-bottom: 0; padding-bottom: 0; align-items: flex-end; flex-wrap: nowrap; }
 .home-h .eyebrow { font-size: 13px; font-weight: 600; color: var(--label-2); letter-spacing: .02em; margin: 0 0 2px; }
 .home-acts { display: flex; align-items: center; gap: 14px; padding-bottom: 4px; }
@@ -540,15 +540,18 @@ body.bar-on .tb-title { transform: none; opacity: 1; }
 .hh-ava { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: linear-gradient(160deg, #8E8CF5, #5B4BD8); }
 .hh-ava .ico { width: 20px; height: 20px; stroke-width: 2.2; }
 .hh-search:active, .hh-ava:active { transform: scale(.9); transition: transform .18s var(--press); }
-.seg { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; padding: 2px; border-radius: 11px; background: var(--fill-2); margin-top: -12px; max-width: 560px; }
-.sg { position: relative; display: grid; justify-items: center; gap: 1px; padding: 6px 2px 7px; border-radius: 9px; color: var(--label); min-width: 0;
+/* 毛玻璃悬浮条：往下滑时吸在顶栏下方，内容从后面透过来 */
+.seg { position: sticky; top: calc(56px + env(safe-area-inset-top, 0px)); z-index: 16; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; padding: 4px; border-radius: 18px; margin: -14px -4px 0; max-width: 560px;
+  background: color-mix(in srgb, var(--bg) 55%, transparent); backdrop-filter: saturate(180%) blur(22px); -webkit-backdrop-filter: saturate(180%) blur(22px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .12), inset 0 0 0 .5px color-mix(in srgb, var(--bg) 70%, transparent), 0 0 0 .5px rgba(0, 0, 0, .06); }
+.sg { position: relative; display: grid; justify-items: center; gap: 1px; padding: 7px 2px 8px; border-radius: 14px; color: var(--label); min-width: 0;
   transition: background .2s ease, box-shadow .2s ease, transform var(--t-bouncy) var(--spring-bouncy); }
-.sg b { font-size: 15px; font-weight: 700; color: var(--c, var(--label)); }
+.sg b { font-size: 16px; font-weight: 800; color: var(--c, var(--label)); }
 .sg small { font-size: 11px; color: var(--label-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.sg.on { background: var(--bg); box-shadow: 0 2px 8px rgba(0, 0, 0, .12), 0 0 0 .5px rgba(0, 0, 0, .04); }
+.sg.on { background: color-mix(in srgb, var(--bg) 92%, transparent); box-shadow: 0 3px 10px rgba(0, 0, 0, .12); }
 .sg.on small { color: var(--label); font-weight: 600; }
 .sg:active { transform: scale(.95); transition: transform .18s var(--press); }
-.sg-dot { position: absolute; top: 6px; right: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--accent)); }
+.sg-dot { position: absolute; top: 6px; right: 9px; width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--accent)); }
 
 /* 右上角放大镜（手机） */
 .page-h { position: relative; }
@@ -772,7 +775,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 首页顶部 A v3';
+const APP_VERSION = '2026-11-08 毛玻璃难度条 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
