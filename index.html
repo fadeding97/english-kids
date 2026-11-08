@@ -626,11 +626,6 @@ a.cell2 { text-decoration: none; }
   <nav class="nav-group" id="navBrowse" aria-label="浏览"></nav>
   <nav class="nav-group" id="navLevels" aria-label="难度"></nav>
   <button class="nav-item settings-item" type="button" data-settings="1"><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>家长设置</button>
-  <button class="months age-side" type="button" data-age-pick="1" aria-label="选择宝宝月龄">
-    <small>宝宝月龄</small>
-    <span class="months-row"><b data-months-label>13 个月</b><svg class="ico chev" aria-hidden="true"><use href="#i-right"/></svg></span>
-    <span class="age-stage" id="ageStage"></span>
-  </button>
 </aside>
 
 <main class="main" id="main"></main>
@@ -648,7 +643,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 首页难度标签 v1';
+const APP_VERSION = '2026-11-08 年龄只在首页选 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -757,10 +752,10 @@ function syncAgeLabels() {
   document.querySelectorAll('[data-months-label]').forEach(el => { el.textContent = fmtAge(months); });
   const st = $('ageStage'); if (st) st.textContent = stageById(stage).age + ' 阶段';
 }
-function pageHead(title, subText, showMonths = true) {
+function pageHead(title, subText, showMonths = true, age = false) {
   return `<header class="page-h"><div><h1>${esc(title)}</h1><p>${subText}</p></div>
-    ${showMonths ? `<div class="months-row m-only" style="gap:10px"><button class="age-pill" type="button" data-age-pick="1" aria-label="选择宝宝月龄"><b data-months-label>${fmtAge(months)}</b>${ic('i-right')}</button>
-      <button class="gear" type="button" data-settings="1" aria-label="家长设置">${ic('i-gear')}</button></div>` : ''}
+    ${showMonths ? `<div class="months-row" style="gap:10px">${age ? `<button class="age-pill" type="button" data-age-pick="1" aria-label="选择宝宝月龄"><b data-months-label>${fmtAge(months)}</b>${ic('i-right')}</button>` : ''}
+      <button class="gear m-only" type="button" data-settings="1" aria-label="家长设置">${ic('i-gear')}</button></div>` : ''}
   </header>`;
 }
 
@@ -787,13 +782,12 @@ function lvChips() {
 }
 function noVideo() {
   return `<div class="empty"><h3>这个阶段先不看动画</h3>
-    <p>${stageById(stage).screen}先把儿歌、绘本和日常英语做好。</p>
-    <button class="btn btn-gray" type="button" data-stage="s2">查看 18–24 个月的动画</button></div>`;
+    <p>${stageById(stage).screen}先把儿歌、绘本和日常英语做好。</p></div>`;
 }
 
 function homeView() {
   const s = stageById(stage), list = inStage();
-  if (!list.length) return pageHead('推荐', esc(filterText())) + lvChips() + lvEmpty('内容');
+  if (!list.length) return pageHead('推荐', esc(filterText()), true, true) + lvChips() + lvEmpty('内容');
   const feat = list.find(i => i.n === s.feature) || list[0];
   const picks = [[feat, '本阶段首推']];
   const labels = { song: '每天磨耳朵', book: '今晚读这本', video: '这周看这部', play: '今天玩这个' };
@@ -801,7 +795,7 @@ function homeView() {
     const it = list.find(i => i.t === t && i.id !== feat.id);
     if (it) picks.push([it, labels[t]]);
   });
-  let html = pageHead('推荐', `${esc(filterText())} · ${esc(s.title)}`) + lvChips();
+  let html = pageHead('推荐', `${esc(filterText())} · ${esc(s.title)}`, true, true) + lvChips();
   // 继续观看：最近看过、还没看完的（按最近时间）
   const recent = Object.entries(progress)
     .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
@@ -907,7 +901,7 @@ function detailView() {
       <ol class="eps" id="eps">${m.episodes.map((e, i) => `<li><button class="ep" type="button" data-ep="${i}">
         <span class="ep-n">${i + 1}</span><span class="ep-t">${esc(e.title)}</span><span class="ep-d">${fmtDur(e.duration)}</span></button></li>`).join('')}</ol>
     </section>` : ''}
-    ${kid ? '' : `<div class="fit">适合阶段 ${it.s.map(sid => `<button type="button" data-stage="${sid}">${stageById(sid).age}</button>`).join('')}</div>`}
+    ${kid ? '' : `<div class="fit">适合阶段 ${it.s.map(sid => `<span>${stageById(sid).age}</span>`).join('')}</div>`}
     ${!kid && more.length ? shelf('more', '同类推荐', more) : ''}
     <p class="foot" style="border:0;padding:0">${m ? '视频由 B站播放器播放，本站不存储视频。登录 B站后可看高清。' : '链接为平台搜索页，请优先选择官方账号或正版资源。'}</p>`;
 }
