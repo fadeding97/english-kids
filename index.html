@@ -475,6 +475,31 @@ body.swiping { background: var(--card); overflow: hidden; }
 .age-hint b { color: var(--label); }
 body.kid .age-pill, body.kid .age-side { display: none !important; }
 
+/* ---------- 手机搜索浮层 ---------- */
+.sov { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--bg); }
+.sov[hidden] { display: none; }
+.sov-bar { display: flex; align-items: center; gap: 12px; padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); }
+.sov-field { flex: 1; min-width: 0; position: relative; display: block; }
+.sov-field .ico { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--label-2); }
+.sov-field input { width: 100%; height: 38px; border: 0; border-radius: 10px; background: var(--fill-2); color: var(--label); font: 17px var(--font); padding: 0 12px 0 34px; }
+.sov-field input:focus { outline: none; }
+.sov-cancel { color: var(--accent); font-size: 17px; white-space: nowrap; }
+.sov-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 6px 16px calc(30px + env(safe-area-inset-bottom, 0px)); }
+.sov-h { font-size: 13px; color: var(--label-2); margin: 4px 0 12px; }
+/* 进场：背景淡入，搜索栏从上方滑下，取消按钮从右侧滑入，内容稍后上浮 */
+.sov.in { animation: sovFade .22s ease both; }
+.sov.in .sov-field { animation: sovDrop var(--t-smooth) var(--spring-smooth) both; }
+.sov.in .sov-cancel { animation: sovSlide var(--t-smooth) var(--spring-smooth) both; }
+.sov.in .sov-body { animation: sovRise .38s var(--ease) .06s both; }
+.sov.out { animation: sovFade .22s ease reverse both; pointer-events: none; }
+.sov.out .sov-field { animation: sovDrop .22s ease reverse both; }
+@keyframes sovFade { from { opacity: 0; } }
+@keyframes sovDrop { from { transform: translateY(-14px) scale(.97); opacity: 0; } }
+@keyframes sovSlide { from { transform: translateX(24px); opacity: 0; } }
+@keyframes sovRise { from { transform: translateY(14px); opacity: 0; } }
+body.sov-open { overflow: hidden; }
+@media (min-width: 761px) { .sov { display: none !important; } }
+
 /* ---------- 常驻播放器 + 迷你播放条 ---------- */
 .player-slot { aspect-ratio: 16 / 9; border-radius: 12px; background: #000; }
 .player.docked { position: absolute; z-index: 5; aspect-ratio: auto; max-width: none; }
@@ -774,6 +799,13 @@ a.cell2 { text-decoration: none; }
 
 <!-- 播放器常驻在页面上：在详情页时盖在占位框上，离开详情页后移到屏幕外继续播放（iframe 一旦移动 DOM 位置就会重新加载，所以不移动它） -->
 <div class="player" id="player" hidden></div>
+<div class="sov" id="sov" hidden role="dialog" aria-label="搜索">
+  <div class="sov-bar">
+    <label class="sov-field" for="sovq"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><input id="sovq" type="search" placeholder="儿歌、动画、绘本" autocomplete="off" enterkeyhint="search"></label>
+    <button class="sov-cancel" type="button" data-sov-close="1">取消</button>
+  </div>
+  <div class="sov-body" id="sovBody"></div>
+</div>
 <div class="mini" id="mini" hidden>
   <button class="mini-open" type="button" data-mini-open="1" aria-label="打开正在播放">
     <span class="mini-art" id="miniArt"></span>
@@ -797,7 +829,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 分类页去副标题 v1';
+const APP_VERSION = '2026-11-08 搜索浮层 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1855,7 +1887,10 @@ document.addEventListener('click', e => {
     }
   }
   if (t.dataset.ch) {
-    if (t.dataset.ch === 'search') { go({ mode: 'search' }); const m = $('mq'); if (m) m.focus(); return; }
+    if (t.dataset.ch === 'search') {
+      if (innerWidth <= 760) return openSearch();
+      go({ mode: 'search' }); const m = $('mq'); if (m) m.focus(); return;
+    }
     if (t.dataset.ch === 'me') { query = ''; return go({ mode: 'me' }); }
     query = ''; $('q').value = '';
     return go(t.dataset.ch === 'home' ? { mode: 'home' } : { mode: 'type', value: t.dataset.ch });
@@ -1886,12 +1921,43 @@ document.addEventListener('click', e => {
   if (t.dataset.kidExit) return exitKid();
   if (t.dataset.back) return goBack();
   if (t.dataset.scroll) { const r = $('row-' + t.dataset.scroll); return r && r.scrollBy({ left: r.clientWidth * .8 * Number(t.dataset.dir) }); }
+  if (t.dataset.sovClose) return closeSearch();
+  if (t.dataset.id !== undefined && t.closest('#sov')) { closeSearch(true); return go({ mode: 'detail', value: Number(t.dataset.id) }, { push: true, dir: 'fwd' }); }
   if (t.dataset.id !== undefined) {
     if (view.mode === 'detail' && Number(t.dataset.id) === view.value) return;
     return go({ mode: 'detail', value: Number(t.dataset.id) }, { push: true, dir: 'fwd', from: t.querySelector('.art') });
   }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') goBack(); });
+/* 手机搜索：iOS 式浮层。点放大镜 → 搜索栏从顶部滑入、键盘立即弹出、内容淡入；结果只在浮层里刷新，不重绘整页 */
+function sovResults() {
+  const q = $('sovq').value.trim().toLowerCase();
+  const items = q ? ITEMS.filter(i => (i.n + i.cn + i.why + i.o).toLowerCase().includes(q)) : [];
+  $('sovBody').innerHTML = q
+    ? (items.length ? `<p class="sov-h">${items.length} 个结果</p><div class="grid">${items.map(tile).join('')}</div>`
+      : `<div class="empty"><h3>没有找到</h3><p>试试 Peppa、佩奇、翻翻书。</p></div>`)
+    : `<p class="sov-h">经典推荐</p><div class="grid">${ITEMS.filter(i => i.tg.includes('classic')).map(tile).join('')}</div>`;
+}
+function openSearch() {
+  const o = $('sov'), q = $('sovq');
+  if (!o.hidden && !o.classList.contains('out')) return q.focus();
+  o.classList.remove('out', 'in'); o.hidden = false;
+  q.value = ''; sovResults(); $('sovBody').scrollTop = 0;
+  q.focus({ preventScroll: true });   // 必须在点击的同一时刻聚焦，iPhone 才会弹出键盘
+  void o.offsetWidth; o.classList.add('in');
+  document.body.classList.add('sov-open');
+}
+function closeSearch(instant) {
+  const o = $('sov'); if (o.hidden) return;
+  $('sovq').blur();
+  document.body.classList.remove('sov-open');
+  if (instant || reduceMotion()) { o.hidden = true; o.classList.remove('in', 'out'); return; }
+  o.classList.remove('in'); o.classList.add('out');
+  setTimeout(() => { if (o.classList.contains('out')) { o.hidden = true; o.classList.remove('out'); } }, 260);
+}
+let sqt;
+$('sovq').addEventListener('input', () => { clearTimeout(sqt); sqt = setTimeout(sovResults, 120); });
+$('sovq').addEventListener('keydown', e => { if (e.key === 'Enter') $('sovq').blur(); if (e.key === 'Escape') closeSearch(); });
 let qt;
 function onSearch(v, fromMobile) {
   query = v.trim();
