@@ -1,0 +1,395 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>喜马拉雅</title>
+<link rel="stylesheet" href="//s1.xmcdn.com/thirdparty/player/album/css/player.css?v=1387795764" />
+</head>
+<body>
+	<div class="albumPlayer" style="display:none;">
+		<div class="albumPlayerPanel">
+			<div class="pic">
+				<a><img id="albumFace"
+					src="//mstatic.test.ximalaya.com/css/img/default/album_290.jpg?v=1386566776" /></a>
+			</div>
+			<div class="info">
+				<a class="title soundTitle"> </a>
+				<div class="operate">
+					<a href="javascript:;" class="player-btn playBtn is-ready"></a> <a
+						class="nextBtn" title="下一首"></a> <a
+						class="orderplayBtn j-player_model" title="顺序播放"></a>
+					<!--
+					<a class="randomplayBtn" title="随机播放"></a>
+					<a class="loopplayBtn" title="循环播放"></a>
+				-->
+					<div class="volumePanel">
+						<div class="volumePanel_volumebar">
+							<div class="volumePanel_volume"></div>
+							<div class="volumePanel_seekBtn" title="音量调节(Ctrl+↑/Ctrl+↓)">
+							</div>
+						</div>
+					</div>
+					<span class="time player_countdown">00:00</span>
+				</div>
+			</div>
+		</div>
+		<div class="listBox">
+			<div class="albumPlayerListWrap">
+				<div class="albumPlayerList"></div>
+			</div>
+			<a class="pullBtn"></a>
+		</div>
+	</div>
+	<script src="../js/jquery.2.0.3.js?v=1387795763" type="text/javascript"></script>
+	<script>
+		var device = "ting_html5_album";
+		function parseQueryString(str) {
+			var querys = str.split("&");
+			var query = {};
+			for ( var i = 0, len = querys.length; i < len; i++) {
+				var q = querys[i].split("=");
+				query[q[0]] = decodeURI(q[1]);
+			}
+			return query;
+		}
+		function render(album) {
+			var $albumPlayer = $(".albumPlayer");
+			var $title = $(".title");
+			var $time = $(".player_countdown");
+			var $albumPlayerList = $(".albumPlayerList");
+			var sounds = album.tracks;
+			var sound_ids = [];
+			$("#albumFace").attr("src", album.cover_url);
+			if (!sounds.length) {
+				$title.html("专辑不存在");
+				$title.on("click", function() {
+					window.top.location = helper.WEBPATH;
+					return false;
+				});
+				return;
+			}
+			var sound = sounds[0];
+			var detail_path = helper.WEBPATH + "/" + sound.uid + "/sound/" + sound.track_id;
+			$title.html(sound.title).attr("href", detail_path);
+			$time.html(helper.getTime(sound.duration * 1000));
+
+			for ( var i = 0, len = sounds.length; i < len; i++) {
+				sound = sounds[i];
+				sound_ids.push(sound.track_id);
+				detail_path = "//www.ximalaya.com" + "/" + sound.uid + "/sound/" + sound.track_id;
+				var html = '<div class="albumPlayerListItem" sound_id="'+sound.track_id+'" sound_title="'+sound.title+'" sound_duration="'+sound.duration*1000+'" sound_url="'+sound.play_url+'"><div class="player-btn is-ready"><span>' + sound.title + '</span><a class="arrowBtn" href="'+detail_path+'"></a></div></div>';
+				$albumPlayerList.append(html);
+			}
+			$albumPlayerList.attr("sound_ids", sound_ids);
+
+			$("#albumFace").on("click", function() {
+				window.top.location = helper.WEBPATH + "/" + album.uid + "/album/" + album.id;
+				return false;
+			});
+			$title.on("click", function() {
+				window.top.location = helper.WEBPATH + "/" + album.uid + "/album/" + album.id;
+				return false;
+			});
+			$(".arrowBtn").on("click", function() {
+				window.top.location = $(this).attr("href");
+				return false;
+			});
+		}
+		function getSoundDtail(id, callback) {
+			//http://www.ximalaya.com/tracks/1328831.ext.text
+			$.ajax({
+				url : helper.WEBPATH + "/sets/" + id + ".ext.json",
+				dataType : "json",
+				success : function(data) {
+					callback(data);
+				},
+				error : function() {
+		
+				}
+			});
+		    /*
+			setTimeout(function() {
+				var album = {
+					"id" : 62,
+					"title" : "今晚80后脱口秀2012",
+					"uid" : 1000179,
+					"nickname" : "今晚80后脱口秀",
+					"cover_url" : "http://fdfs.xmcdn.com/group1/M00/00/31/wKgDrlCI2M-DUebKAADua2j0UQo268_mobile_small.jpg",
+					"tracks" : [ {
+						"track_id" : 165858,
+						"title" : "120701 80后的婚姻和爱情那些事",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/09/AA/wKgDrVEDn2PQXhMeASR7FDNELgk573.mp3",
+						"duration" : "2396.08"
+					}, {
+						"track_id" : 98405,
+						"title" : "121230 年终奖发什么 ",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/06/12/wKgDrlDghSLjeJQsAR1SbPlkKNo174.mp3",
+						"duration" : "2337.41"
+					}, {
+						"track_id" : 85272,
+						"title" : "121223 完全不同的2012大盘点",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/05/44/wKgDrlDXZs3xDI0kAR0UYjpjxp4876.mp3",
+						"duration" : "2335.42"
+					}, {
+						"track_id" : 77375,
+						"title" : "121216如果真有世界末日，你要怎么过？",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/04/C7/wKgDrlDOLFeBe2IvAR3EtmN1ds4672.mp3",
+						"duration" : "2341.06"
+					}, {
+						"track_id" : 66668,
+						"title" : "121209关于冬天的那些事",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/04/1E/wKgDrlDE48iC2re8ARwz5R7cRlM768.mp3",
+						"duration" : "2328.24"
+					}, {
+						"track_id" : 55568,
+						"title" : "121202关于职业道德的那些事",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/03/91/wKgDrlC7t17Sv7KNAR-bu5q0NbA813.mp3",
+						"duration" : "2356.14"
+					}, {
+						"track_id" : 46187,
+						"title" : "121125粉丝撒泼追星那些事",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/03/09/wKgDrVCzQgeQe1azAR5DPYFjeTg282.mp3",
+						"duration" : "2345.14"
+					}, {
+						"track_id" : 36538,
+						"title" : "121118关于广告的那些事",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/02/69/wKgDrVCpovaBgN2rASPBxY8jjLA082.mp3",
+						"duration" : "2390.15"
+					}, {
+						"track_id" : 27715,
+						"title" : "121111关于光棍的那些事",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/01/DC/wKgDrVCgeJyA52RyASL9CRepQWQ633.mp3",
+						"duration" : "2383.83"
+					}, {
+						"track_id" : 16855,
+						"title" : "121104说说山寨与抄袭",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/01/25/wKgDrVCW26fCQ1ZvAUGpSJUGQ1Q651.mp3",
+						"duration" : "2635.12"
+					}, {
+						"track_id" : 8412,
+						"title" : "121028关于选择",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/B6/wKgDrlCRDDjzQQTAARG_KfpBXWw583.mp3",
+						"duration" : "2242.58"
+					}, {
+						"track_id" : 842,
+						"title" : "121014汪东城展舞技",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/44/wKgDrlCKKyGzg5RzARUvKcdTmPI058.mp3",
+						"duration" : "2270.74"
+					}, {
+						"track_id" : 828,
+						"title" : "121007王自健带领全场大跳《江南style》",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3E/wKgDrlCJ8CTTrAXxARXWgA4sSzo228.mp3",
+						"duration" : "2276.1"
+					}, {
+						"track_id" : 803,
+						"title" : "120930王自健吐槽中秋国庆双假日",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3E/wKgDrVCJ4bGCO7EbAQCxcb0WqM0324.mp3",
+						"duration" : "2102.88"
+					}, {
+						"track_id" : 785,
+						"title" : "120923王自健抱狗卖萌，教你如何变Fashion",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3E/wKgDrVCJ04zhYWunAQIPpZdQjfc890.mp3",
+						"duration" : "2114.08"
+					}, {
+						"track_id" : 767,
+						"title" : "120916王自健情景喜剧揭示夫妻逛街潜规则",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/3E/wKgDrVCJxaixTcVXASRyGEBeIlc535.mp3",
+						"duration" : "2395.79"
+					}, {
+						"track_id" : 749,
+						"title" : "120909我们身边那些不想见到的人",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3D/wKgDrlCJt4nzkxIfARQRcjv6TjQ363.mp3",
+						"duration" : "2261.6"
+					}, {
+						"track_id" : 731,
+						"title" : "120902我们生活中的那些吃货们",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/3D/wKgDrlCJqWziuoOhASF-_mY5UkQ359.mp3",
+						"duration" : "2371.6"
+					}, {
+						"track_id" : 713,
+						"title" : "120826财神爷来了",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/3C/wKgDrlCJm1rRrU11ASOMtedU5C0818.mp3",
+						"duration" : "2388.45"
+					}, {
+						"track_id" : 693,
+						"title" : "120819省钱大师省钱妙招",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3C/wKgDrlCJjL2hVxugASRtMvNK7Zc504.mp3",
+						"duration" : "2395.61"
+					}, {
+						"track_id" : 674,
+						"title" : "120812房价与“房奴” ",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3C/wKgDrlCJfsezoZrrAWXXUdHV7F0588.mp3",
+						"duration" : "2931.53"
+					}, {
+						"track_id" : 653,
+						"title" : "120805王自健吐槽奥运开幕式 声动亚洲班底来搅局",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3C/wKgDrlCJcN7RiKJ9AVBnKLbbmPY464.mp3",
+						"duration" : "2755.91"
+					}, {
+						"track_id" : 634,
+						"title" : "120729公交车让座悲剧史",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3B/wKgDrlCJY1vgBJHtAWWiQhDL_Oc016.mp3",
+						"duration" : "2929.84"
+					}, {
+						"track_id" : 610,
+						"title" : "120722王自健吐槽《还珠格格》《西游记》暑期神剧",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3B/wKgDrlCJVQbxmE6_AScMN8Wpc00194.mp3",
+						"duration" : "2417.08"
+					}, {
+						"track_id" : 588,
+						"title" : "120715代沟与不理解",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3B/wKgDrlCJRuuhCgAhASRYyiVEHOY360.mp3",
+						"duration" : "2394.98"
+					}, {
+						"track_id" : 567,
+						"title" : "120708 80后读过的那些书",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3B/wKgDrlCJOPiBqkNpASRg83MEE88478.mp3",
+						"duration" : "2395.24"
+					}, {
+						"track_id" : 543,
+						"title" : "120624泡菜致癌思密达",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3B/wKgDrVCJKquD4rtxASRkNymldTw061.mp3",
+						"duration" : "2395.35"
+					}, {
+						"track_id" : 532,
+						"title" : "120603王自健大打出手",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/35/wKgDrVCJAPDCpdOeASQfpYIxSFM336.mp3",
+						"duration" : "2393.15"
+					}, {
+						"track_id" : 485,
+						"title" : "120610张杰搞笑对阵王自健",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/35/wKgDrlCJDjPwGb_7ASSTkOXlyKE857.mp3",
+						"duration" : "2396.86"
+					}, {
+						"track_id" : 460,
+						"title" : "120617李晨倾情演绎男爷们",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M01/00/3A/wKgDrVCJHErwZLUiASRcDQHvs24769.mp3",
+						"duration" : "2395.08"
+					}, {
+						"track_id" : 425,
+						"title" : "120527聊聊安全感",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/34/wKgDrVCI9aGj8cDWASSfz2L3maE743.mp3",
+						"duration" : "2397.23"
+					}, {
+						"track_id" : 398,
+						"title" : "120520果郡王李东学说相声",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/32/wKgDrlCI6k3waS5lASSHUTSjH7g935.mp3",
+						"duration" : "2396.44"
+					}, {
+						"track_id" : 362,
+						"title" : "120513王自健爆笑来袭",
+						"uid" : 1000179,
+						"nickname" : "今晚80后脱口秀",
+						"play_url" : "http://fdfs.xmcdn.com/group1/M00/00/31/wKgDrlCI3NqTYsYVASBrE1NoaSo922.mp3",
+						"duration" : "2362.77"
+					} ]
+				};
+				callback(album);
+			}, 1000);
+			*/
+		}
+	</script>
+	<script src="../js/underscore.js?v=1387795763" type="text/javascript"></script>
+	<script src="../js/backbone.js?v=1387795763" type="text/javascript"></script>
+	<script src="../js/helper.js?v=1387795763" type="text/javascript"></script>
+	<script src="../js/jquery.easydrag.js?v=1387795763"
+		type="text/javascript"></script>
+	<script
+		src="//s1.xmcdn.com/wap/js/lib/soundmanager2/soundmanager2.js?v=1387795763"
+		type="text/javascript"></script>
+	<script src="//s1.xmcdn.com/wap/js/common/wave.js?v=1387795763"
+		type="text/javascript"></script>
+	<script src="../js/player.js?v=1387795763" type="text/javascript"></script>
+	<script type="text/javascript">
+		var query = parseQueryString(location.search.replace("\?", ""));
+		$(".albumPlayer").addClass(query.type).show();
+		getSoundDtail(query.id, function(sound) {
+			render(sound);
+			$("[sound_id]").playable();
+			if (query.auto) {
+				//$(".player-btn").click();
+			}
+			//helper.doScrollTitle($(".title"));
+		});
+		var listBoxFlog = true;
+		$(".pullBtn").click(function() {
+			if (listBoxFlog) {
+				listBoxFlog = false;
+				$(".listBox").css("position", "absolute").animate({
+					top : "-116px"
+				});
+			} else {
+				listBoxFlog = true;
+				$(".listBox").css("position", "absolute").animate({
+					top : "0px"
+				});
+			}
+		});
+	</script>
+</body>
+</html>
+
