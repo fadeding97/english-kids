@@ -483,6 +483,15 @@ body.swiping { background: var(--card); overflow: hidden; }
 .icon-btn .ico { width: 15px; height: 15px; }
 .icon-btn:active { transform: scale(.94); transition: transform .12s var(--press); }
 .icon-btn[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+/* 播放中：手机上标题单独占一行（最多两行），封面和“播放”按钮收起，避免重复 */
+.album.playing [data-play] { display: none; }
+@media (max-width: 760px) {
+  .player-bar { flex-wrap: wrap; row-gap: 8px; }
+  .player-bar .now { order: -1; flex: 1 0 100%; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.3; }
+  .player-bar .src { margin-right: auto; }
+  .album.playing #albumArt { display: none; }
+  .album.playing { padding-top: 4px; }
+}
 @media (max-width: 760px) { .icon-btn span { display: none; } .icon-btn { width: 34px; padding: 0; justify-content: center; } .player-bar .elapsed { display: none; } }
 
 /* 只听声音 */
@@ -606,7 +615,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 难度分级 v1';
+const APP_VERSION = '2026-11-08 难度分级 v2';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -922,6 +931,7 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
     const sameItem = player.item === id;
     clearInterval(player.tick); clearInterval(player.countdown);
     wrap.hidden = false;
+    document.querySelector('.album')?.classList.add('playing');
     player.item = id; player.idx = idx; player.t = startAt; player.dur = e.duration || 0; player.locked = false; player.pulsed = false; player.upShown = false; player.endShown = false; player.touched = false;
     updateElapsed();
     $('nowTitle').textContent = m.episodes.length > 1 ? `第 ${idx + 1} 集 · ${e.title}` : e.title;
