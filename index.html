@@ -715,6 +715,16 @@ body.bar-on .tb-title { transform: none; opacity: 1; }
 .listen-hint { position: absolute; right: clamp(12px, 3%, 24px); top: clamp(10px, 4%, 22px); font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, .16); }
 @media (max-width: 760px) { .listen-txt { max-width: 34%; } .listen-txt > span:not(.listen-label):not(.eq), .listen-txt .eq { display: none; } .listen-hint { font-size: 11px; padding: 3px 8px; } }
 .eq { display: flex; align-items: flex-end; gap: 3px; height: 18px; margin-top: 8px; }
+/* 只听声音：开始前封面中间是 ▶ 和“点这里开始”；点过开始后换成跳动的声波（B站不告诉网页播放状态，所以只在开始时切换一次） */
+.listen-wave { position: relative; width: clamp(40px, 26%, 64px); aspect-ratio: 1; border-radius: 50%; display: none; align-items: center; justify-content: center; gap: 3px;
+  background: rgba(0, 0, 0, .38); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.listen-wave i { width: 3px; height: 38%; border-radius: 2px; background: #fff; transform-origin: center; animation: eq 1.1s ease-in-out infinite; }
+.listen-wave i:nth-child(2) { animation-delay: -.3s; } .listen-wave i:nth-child(3) { animation-delay: -.6s; } .listen-wave i:nth-child(4) { animation-delay: -.15s; } .listen-wave i:nth-child(5) { animation-delay: -.45s; }
+.listen.started .listen-play, .listen.started .listen-start { display: none; }
+.listen.started .listen-wave { display: flex; animation: waveIn var(--t-bouncy) var(--spring-bouncy); }
+.listen.touched .listen-hint { display: none; }
+.listen-start { position: absolute; bottom: 7%; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(0, 0, 0, .5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+@keyframes waveIn { from { transform: scale(.6); opacity: 0; } }
 .eq i { width: 3px; height: 100%; border-radius: 2px; background: #fff; opacity: .85; transform-origin: bottom; animation: eq 1.1s ease-in-out infinite; }
 .eq i:nth-child(2) { animation-delay: -.3s; } .eq i:nth-child(3) { animation-delay: -.6s; } .eq i:nth-child(4) { animation-delay: -.15s; } .eq i:nth-child(5) { animation-delay: -.45s; }
 @keyframes eq { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
@@ -833,7 +843,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 全屏修复 v1';
+const APP_VERSION = '2026-11-08 只听声音图标 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1272,12 +1282,13 @@ function applyListen() {
   const it = ITEMS[player.item], m = media(it), e = m.episodes[player.idx];
   const img = m.cover ? `<img src="${esc(coverUrl(m.cover, 360))}" alt="" referrerpolicy="no-referrer">` : '';
   const el = document.createElement('div');
-  el.className = 'listen';
+  el.className = 'listen' + (player.touched || player.everStarted ? ' started' : '') + (player.touched ? ' touched' : '');
   // 封面中心 = 视频画面中心：B站暂停时的 ▶ 按钮就在这里，点封面中间的圆钮 = 点 B站的播放键
   el.innerHTML = `<div class="listen-bg">${img}</div>
     <div class="listen-txt"><span class="listen-label">${ic('i-headphones')}只听声音</span><b>${esc(it.cn)}</b><span>${esc(m.episodes.length > 1 ? e.title : it.n)}</span>
       <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
-    <div class="listen-center">${img ? `<div class="listen-art">${img}</div>` : ''}<span class="listen-play">${ic('i-play')}</span></div>
+    <div class="listen-center">${img ? `<div class="listen-art">${img}</div>` : ''}<span class="listen-play">${ic('i-play')}</span>
+      <span class="listen-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="listen-start">点这里开始</span></div>
     <span class="listen-hint">没声音？点封面中间的 ▶</span>
     <div class="listen-block" aria-hidden="true"></div>`;
   const shield = box.querySelector('.shield');
@@ -1419,7 +1430,8 @@ async function unlockMore() {
 window.addEventListener('blur', () => setTimeout(() => {
   const f = document.activeElement;
   if (!f || f.tagName !== 'IFRAME' || !f.closest('#player') || player.item == null || player.touched) return;
-  player.touched = true;
+  player.touched = true; player.everStarted = true;
+  $('player').querySelector('.listen')?.classList.add('started', 'touched');   // 封面中间：▶ 换成声波动画，隐藏“没声音？”提示
   if (player.t <= 90) { player.t = 0; updateElapsed(); }
 }, 0));
 ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
