@@ -475,6 +475,59 @@ body.swiping { background: var(--card); overflow: hidden; }
 .age-hint b { color: var(--label); }
 body.kid .age-pill, body.kid .age-side { display: none !important; }
 
+/* ---------- 常驻播放器 + 迷你播放条 ---------- */
+.player-slot { aspect-ratio: 16 / 9; border-radius: 12px; background: #000; }
+.player.docked { position: absolute; z-index: 5; aspect-ratio: auto; max-width: none; }
+.player.away { position: fixed; left: -10000px; top: 0; width: 480px; height: 270px; opacity: 0; pointer-events: none; }
+.player[hidden] { display: none; }
+.stage-player { scroll-margin-top: calc(60px + env(safe-area-inset-top, 0px)); }
+.mini { position: fixed; z-index: 25; left: calc(var(--side-w) + env(safe-area-inset-left, 0px) + 40px); right: 40px; bottom: 16px; max-width: 620px; margin: 0 auto;
+  height: 62px; display: flex; align-items: center; gap: 2px; padding: 0 6px 0 9px; border-radius: 14px; overflow: hidden;
+  background: var(--tabbar); backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .18), 0 0 0 .5px var(--sep); }
+.mini[hidden] { display: none; }
+.mini.in { animation: miniIn var(--t-smooth) var(--spring-smooth); }
+@keyframes miniIn { from { transform: translateY(24px) scale(.96); opacity: 0; } }
+.mini-open { flex: 1; min-width: 0; display: flex; align-items: center; gap: 11px; text-align: left; height: 100%; }
+.mini-open:active .mini-art { transform: scale(.92); transition: transform .18s var(--press); }
+.mini-art { width: 44px; height: 44px; border-radius: 8px; overflow: hidden; flex: none; background: var(--fill-2); box-shadow: 0 2px 8px rgba(0, 0, 0, .15); transition: transform var(--t-bouncy) var(--spring-bouncy); }
+.mini-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mini-txt { min-width: 0; display: grid; gap: 1px; }
+.mini-txt b { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-txt span { font-size: 12px; color: var(--label-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-btn { width: 42px; height: 42px; flex: none; display: grid; place-items: center; border-radius: 50%; color: var(--label); }
+.mini-btn[hidden] { display: none; }
+.mini-btn .ico { width: 22px; height: 22px; stroke-width: 2.2; }
+.mini-btn:active { background: var(--fill-2); transform: scale(.9); transition: transform .18s var(--press); }
+.mini-prog { position: absolute; left: 12px; right: 12px; bottom: 0; height: 2px; border-radius: 1px; background: var(--fill-2); overflow: hidden; }
+.mini-prog i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 1s linear; }
+body.has-mini .main { padding-bottom: 150px; }
+body.fs-lock .mini, body.fs-lock .topbar { display: none; }
+@media (max-width: 760px) {
+  .mini { left: 8px; right: 8px; bottom: calc(62px + env(safe-area-inset-bottom, 0px)); }
+  body.kid .mini { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  body.has-mini .main { padding-bottom: calc(170px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* ---------- 顶栏：大标题滚走后出现 ---------- */
+.topbar { position: fixed; top: 0; right: 0; left: calc(var(--side-w) + env(safe-area-inset-left, 0px)); z-index: 18;
+  height: calc(50px + env(safe-area-inset-top, 0px)); padding: env(safe-area-inset-top, 0px) max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px));
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px;
+  background: var(--tabbar); backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px);
+  box-shadow: 0 .5px 0 var(--sep); opacity: 0; pointer-events: none; transition: opacity .22s ease; }
+body.bar-on .topbar { opacity: 1; pointer-events: auto; }
+.tb-title { font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 56vw; text-align: center;
+  transform: translateY(6px); opacity: 0; transition: transform var(--t-snappy) var(--spring-snappy), opacity .2s ease; }
+body.bar-on .tb-title { transform: none; opacity: 1; }
+.tb-l { justify-self: start; min-width: 0; } .tb-r { justify-self: end; }
+.tb-back { display: inline-flex; align-items: center; gap: 2px; color: var(--accent); font-size: 17px; max-width: 30vw; white-space: nowrap; overflow: hidden; }
+.tb-back[hidden], .tb-search[hidden] { display: none; }
+.tb-back .ico { width: 20px; height: 20px; stroke-width: 2.4; flex: none; }
+.tb-search { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; color: var(--accent); }
+.tb-search .ico { width: 20px; height: 20px; stroke-width: 2.2; }
+@media (min-width: 761px) { .tb-search { display: none; } }
+@media (max-width: 760px) { .topbar { left: 0; } }
+
 /* 右上角放大镜（手机） */
 .page-h { position: relative; }
 .h-search { position: absolute; top: 4px; right: 0; width: 36px; height: 36px; }
@@ -648,6 +701,7 @@ a.cell2 { text-decoration: none; }
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M5 5l10 7-10 7z" fill="currentColor"/><path d="M19 5v14"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
 </svg>
 
@@ -662,7 +716,25 @@ a.cell2 { text-decoration: none; }
   <nav class="nav-group settings-item" id="navMe" aria-label="我的"></nav>
 </aside>
 
+<header class="topbar" id="topbar" aria-hidden="true">
+  <span class="tb-l"><button class="tb-back" type="button" data-back="1" hidden></button></span>
+  <b class="tb-title" id="tbTitle"></b>
+  <span class="tb-r"><button class="tb-search" type="button" data-ch="search" aria-label="搜索" hidden><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg></button></span>
+</header>
+
 <main class="main" id="main"></main>
+
+<!-- 播放器常驻在页面上：在详情页时盖在占位框上，离开详情页后移到屏幕外继续播放（iframe 一旦移动 DOM 位置就会重新加载，所以不移动它） -->
+<div class="player" id="player" hidden></div>
+<div class="mini" id="mini" hidden>
+  <button class="mini-open" type="button" data-mini-open="1" aria-label="打开正在播放">
+    <span class="mini-art" id="miniArt"></span>
+    <span class="mini-txt"><b id="miniTitle"></b><span id="miniSub"></span></span>
+  </button>
+  <button class="mini-btn" type="button" id="miniNext" data-next="1" aria-label="下一集"><svg class="ico" aria-hidden="true"><use href="#i-next"/></svg></button>
+  <button class="mini-btn" type="button" data-mini-close="1" aria-label="停止播放"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+  <span class="mini-prog"><i id="miniProg"></i></span>
+</div>
 
 <nav class="tabbar" id="tabbar" aria-label="标签栏"></nav>
 
@@ -677,7 +749,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 我的 v2';
+const APP_VERSION = '2026-11-08 迷你播放条 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -907,8 +979,8 @@ function detailView() {
     : LINKS[it.t].map(([l, fn], i) =>
         `<a class="btn ${i ? 'btn-gray' : 'btn-accent'}" href="${fn(it.q)}" target="_blank" rel="noopener">${i ? '' : ic('i-play')}${l}</a>`).join('');
   return `<button class="back" type="button" data-back="1">${ic('i-left')}${esc(kid ? '返回' : backLabel)}</button>
-    ${m ? `<section class="stage-player" id="stagePlayer" hidden>
-      <div class="player" id="player"></div>
+    ${m ? `<section class="stage-player" id="stagePlayer"${player.item === it.id ? '' : ' hidden'}>
+      <div class="player-slot" id="playerSlot"></div>
       <div class="player-bar">
         <span class="src ${m.official ? 'official' : ''}">${m.official ? '官方账号' : '非官方上传'}</span>
         <span class="now" id="nowTitle"></span>
@@ -919,7 +991,7 @@ function detailView() {
         <button class="btn btn-gray sm" type="button" id="nextBtn" data-next="1">下一集${ic('i-right')}</button>
       </div>
     </section>` : ''}
-    <section class="album">
+    <section class="album${player.item === it.id ? ' playing' : ''}">
       ${art(it, '', 540).replace('<div class="art', '<div id="albumArt" class="art')}
       <div class="album-info">
         <h1>${esc(it.cn)}</h1>
@@ -980,6 +1052,50 @@ function stopPlayer() {
   if (player.item != null) saveProgress();
   clearInterval(player.tick); clearInterval(player.countdown);
   player.item = null; player.locked = false;
+  const box = $('player'); box.innerHTML = ''; box.classList.remove('pseudo-fs'); document.body.classList.remove('fs-lock');
+  placePlayer();
+}
+const isHere = () => player.item != null && view.mode === 'detail' && view.value === player.item;
+/* 播放器放哪里：详情页（正在播的这一条）→ 盖在占位框上，随页面滚动；其他页面 → 移到屏幕外继续播放，底部显示迷你播放条 */
+function placePlayer() {
+  const box = $('player'), on = player.item != null;
+  const wrap = isHere() ? $('stagePlayer') : null, slot = wrap && !wrap.hidden ? $('playerSlot') : null;
+  box.hidden = !on;
+  box.classList.toggle('docked', !!slot);
+  box.classList.toggle('away', on && !slot);
+  if (slot && !box.classList.contains('pseudo-fs')) {
+    const r = slot.getBoundingClientRect();
+    box.style.top = r.top + scrollY + 'px'; box.style.left = r.left + scrollX + 'px';
+    box.style.width = r.width + 'px'; box.style.height = r.height + 'px';
+  } else { box.style.top = box.style.left = box.style.width = box.style.height = ''; }
+  const showMini = on && !slot && !box.classList.contains('pseudo-fs');
+  const mini = $('mini'), was = !mini.hidden;
+  mini.hidden = !showMini;
+  document.body.classList.toggle('has-mini', showMini);
+  if (showMini) { syncMini(); if (!was) { mini.classList.remove('in'); void mini.offsetWidth; mini.classList.add('in'); } }
+  if (slotObs) { slotObs.disconnect(); if (slot) slotObs.observe(slot); }
+}
+const slotObs = window.ResizeObserver ? new ResizeObserver(() => placePlayer()) : null;
+addEventListener('resize', () => placePlayer());
+function syncMini() {
+  if (player.item == null) return;
+  const it = ITEMS[player.item], m = media(it), e = m.episodes[player.idx];
+  $('miniArt').innerHTML = m.cover ? `<img src="${esc(coverUrl(m.cover, 96))}" alt="" referrerpolicy="no-referrer">` : '';
+  $('miniTitle').textContent = it.cn;
+  $('miniSub').textContent = player.locked ? '今天的观看时间到啦' : (player.listen ? '只听声音 · ' : '') + (m.episodes.length > 1 ? `第 ${player.idx + 1} 集 · ${e.title}` : e.title);
+  $('miniNext').hidden = player.idx >= m.episodes.length - 1 || player.locked;
+  $('miniProg').style.width = player.dur ? Math.min(100, player.t / player.dur * 100) + '%' : '0%';
+}
+/* 详情页上和播放相关的文字（标题、下一集、选集高亮）只在“正在播的这一条”的详情页更新 */
+function syncDock() {
+  if (!isHere()) return;
+  const m = media(ITEMS[player.item]), e = m.episodes[player.idx];
+  $('nowTitle').textContent = m.episodes.length > 1 ? `第 ${player.idx + 1} 集 · ${e.title}` : e.title;
+  $('nextBtn').hidden = player.idx >= m.episodes.length - 1;
+  document.querySelectorAll('.ep').forEach(b => b.setAttribute('aria-current', String(Number(b.dataset.ep) === player.idx)));
+  const b = $('listenBtn');
+  if (b) { b.setAttribute('aria-pressed', String(!!player.listen)); b.querySelector('span').textContent = player.listen ? '显示画面' : '只听声音'; }
+  updateElapsed(); updateQuota();
 }
 
 function playItem(id, idx, { resume = false, instant = false } = {}) {
@@ -988,9 +1104,10 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
   const saved = progress[it.n];
   if (idx == null) { idx = saved ? saved.ep : (m.start || 0); resume = true; }
   idx = Math.max(0, Math.min(m.episodes.length - 1, idx));
-  const box = $('player'), wrap = $('stagePlayer');
-  if (!box || !wrap) return;
-  const first = wrap.hidden && !instant;
+  const box = $('player');
+  const here = view.mode === 'detail' && view.value === id;
+  const wrap = here ? $('stagePlayer') : null;
+  const first = wrap && wrap.hidden && !instant;
   const e = m.episodes[idx];
   // 续播：B站外嵌播放器无法可靠地从指定秒数开始（未登录时只给试看片段，带起始时间会直接跳到片尾），
   // 所以按“集”续播，并提示上次看到的位置，家长可以拖动进度条。
@@ -1000,21 +1117,18 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
     if (player.item != null && (player.item !== id || player.idx !== idx)) saveProgress();
     const sameItem = player.item === id;
     clearInterval(player.tick); clearInterval(player.countdown);
-    wrap.hidden = false;
-    document.querySelector('.album')?.classList.add('playing');
+    if (wrap) { wrap.hidden = false; document.querySelector('.album')?.classList.add('playing'); }
     player.item = id; player.idx = idx; player.t = startAt; player.dur = e.duration || 0; player.locked = false; player.pulsed = false; player.upShown = false; player.endShown = false; player.touched = false;
-    updateElapsed();
-    $('nowTitle').textContent = m.episodes.length > 1 ? `第 ${idx + 1} 集 · ${e.title}` : e.title;
-    $('nextBtn').hidden = idx >= m.episodes.length - 1;
-    $('nextBtn').classList.remove('pulse');
-    document.querySelectorAll('.ep').forEach(b => b.setAttribute('aria-current', String(Number(b.dataset.ep) === idx)));
+    if (!sameItem) player.listen = wantListen(it);
+    $('nextBtn')?.classList.remove('pulse');
+    syncDock();
+    placePlayer();
     saveProgress();
     if (remaining() <= 0) { lockPlayer(); return; }
     const sandbox = settings.strict ? ' sandbox="allow-scripts allow-same-origin allow-presentation allow-storage-access-by-user-activation"' : '';
     box.innerHTML = `<iframe src="${esc(biliEmbed(e, startAt))}" title="${esc(e.title)}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
       allowfullscreen referrerpolicy="strict-origin-when-cross-origin" scrolling="no"${sandbox}></iframe><div class="shield" aria-hidden="true"></div>
       <button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button>`;
-    if (!sameItem) player.listen = wantListen(it);
     applyListen();
     if (lastPos) toast(`上次看到 ${fmtDur(lastPos)}，可以拖动进度条接着看`, 4200);
     updateQuota();
@@ -1023,7 +1137,7 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
   if (first) {
     // 第一次播放：专辑封面平滑“变成”播放器
     transition(mount, { dir: 'none', from: $('albumArt'), to: () => box });
-    setTimeout(() => wrap.scrollIntoView({ behavior: reduceMotion() ? 'instant' : 'smooth', block: 'start' }), 60);
+    setTimeout(() => wrap.isConnected && wrap.scrollIntoView({ behavior: reduceMotion() ? 'instant' : 'smooth', block: 'start' }), 60);
   } else mount();
 }
 
@@ -1037,8 +1151,7 @@ function wantListen(it) {
 function applyListen() {
   const box = $('player'); if (!box || player.item == null) return;
   box.querySelector('.listen')?.remove();
-  const b = $('listenBtn');
-  if (b) { b.setAttribute('aria-pressed', String(!!player.listen)); b.querySelector('span').textContent = player.listen ? '显示画面' : '只听声音'; }
+  syncDock(); if (!$('mini').hidden) syncMini();
   if (!player.listen || player.locked) return;
   const it = ITEMS[player.item], m = media(it), e = m.episodes[player.idx];
   const img = m.cover ? `<img src="${esc(coverUrl(m.cover, 360))}" alt="" referrerpolicy="no-referrer">` : '';
@@ -1064,9 +1177,9 @@ function toggleFs() {
     (document.exitFullscreen || document.webkitExitFullscreen).call(document);
     return;
   }
-  if (box.classList.contains('pseudo-fs')) { box.classList.remove('pseudo-fs'); document.body.classList.remove('fs-lock'); return; }
+  if (box.classList.contains('pseudo-fs')) { box.classList.remove('pseudo-fs'); document.body.classList.remove('fs-lock'); placePlayer(); return; }
   const req = box.requestFullscreen || box.webkitRequestFullscreen;
-  const pseudo = () => { box.classList.add('pseudo-fs'); document.body.classList.add('fs-lock'); };
+  const pseudo = () => { box.classList.add('pseudo-fs'); document.body.classList.add('fs-lock'); placePlayer(); };
   if (req) { try { const p = req.call(box); if (p && p.catch) p.catch(pseudo); } catch (e) { pseudo(); } }
   else pseudo();
 }
@@ -1108,17 +1221,18 @@ function onTick() {
   const m = media(ITEMS[player.item]);
   const hasNext = player.idx < m.episodes.length - 1;
   updateElapsed();
-  if (player.dur && hasNext && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; $('nextBtn')?.classList.add('pulse'); }
+  if (!$('mini').hidden) $('miniProg').style.width = player.dur ? Math.min(100, player.t / player.dur * 100) + '%' : '0%';
+  if (player.dur && hasNext && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; if (isHere()) $('nextBtn')?.classList.add('pulse'); }
   if (player.dur && hasNext && settings.autoNext && !player.upShown && !player.endShown && player.t >= player.dur + 1) { player.upShown = true; startCountdown(); }
   else if (player.dur && (!hasNext || !settings.autoNext) && !player.endShown && player.t >= player.dur + 1) { player.endShown = true; showEnd(hasNext); }
 }
 
 function updateElapsed() {
-  const el = $('elapsed'); if (!el) return;
+  const el = isHere() && $('elapsed'); if (!el) return;
   el.textContent = player.dur ? `${fmtDur(player.t)} / ${fmtDur(player.dur)}` : fmtDur(player.t);
 }
 function updateQuota() {
-  const q = $('quota'); if (!q) return;
+  const q = isHere() && $('quota'); if (!q) return;
   if (!settings.limit) { q.hidden = true; return; }
   const r = remaining();
   q.hidden = false;
@@ -1174,7 +1288,7 @@ function lockPlayer() {
     <p>明天再接着看吧。现在可以去听听儿歌、一起读本绘本。</p>
     <button class="btn btn-glass" type="button" data-unlock="1">家长：再看 15 分钟</button>
   </div><button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button>`;
-  updateQuota();
+  updateQuota(); if (!$('mini').hidden) syncMini();
 }
 async function unlockMore() {
   if (!(await askPin('输入家长密码', '再看 15 分钟'))) return;
@@ -1425,8 +1539,8 @@ document.addEventListener('click', async e => {
 document.addEventListener('change', e => { if (e.target.closest('.me')) settingsChange(e); });
 
 function render() {
-  stopPlayer();
-  document.body.classList.remove('fs-lock');
+  if ($('player').classList.contains('pseudo-fs') && !isHere()) { $('player').classList.remove('pseudo-fs'); }
+  document.body.classList.toggle('fs-lock', $('player').classList.contains('pseudo-fs'));
   document.body.classList.toggle('kid', !!settings.kid);
   if (settings.kid && view.mode !== 'detail' && view.mode !== 'home') view = { mode: 'home' };
   renderChrome();
@@ -1446,8 +1560,9 @@ function render() {
   else html = detailView();
   if (view.mode !== 'detail') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
   $('main').innerHTML = html;
+  syncDock(); placePlayer(); renderTopbar();
   // 儿童模式：进详情直接开始播放
-  if (settings.kid && view.mode === 'detail' && media(ITEMS[view.value])) setTimeout(() => playItem(view.value, null, { instant: true }), 0);
+  if (settings.kid && view.mode === 'detail' && media(ITEMS[view.value]) && player.item !== view.value) setTimeout(() => playItem(view.value, null, { instant: true }), 0);
 }
 /* ---------- transitions ----------
    用 View Transitions 做页面切换：内容区淡入并轻微位移，点开的封面平滑“飞”到详情页大封面；
@@ -1475,6 +1590,27 @@ function transition(update, { dir = 'fade', from = null, to = null } = {}) {
     delete document.documentElement.dataset.dir;
   });
 }
+function renderTopbar() {
+  const det = view.mode === 'detail';
+  const t = det ? ITEMS[view.value].cn : (document.querySelector('#main h1')?.textContent || '');
+  $('tbTitle').textContent = t;
+  const bk = document.querySelector('#main .back'), tb = document.querySelector('.tb-back');
+  tb.hidden = !det; if (det && bk) tb.innerHTML = bk.innerHTML;
+  document.querySelector('.tb-search').hidden = det || view.mode === 'search' || view.mode === 'me' || !!settings.kid;
+  onScrollBar();
+}
+let barRaf = 0;
+function onScrollBar() {
+  cancelAnimationFrame(barRaf);
+  barRaf = requestAnimationFrame(() => {
+    const anchor = document.querySelector(view.mode === 'detail' ? '#main .back' : '#main h1');
+    const h = $('topbar').offsetHeight || 48;
+    const on = !!anchor && anchor.getBoundingClientRect().bottom < (view.mode === 'detail' ? 0 : h - 4);
+    document.body.classList.toggle('bar-on', on);
+    $('topbar').setAttribute('aria-hidden', String(!on));
+  });
+}
+addEventListener('scroll', onScrollBar, { passive: true });
 function rowPositions() {
   const m = {};
   document.querySelectorAll('.row, .tracks').forEach(r => { if (r.scrollLeft) m[r.id] = r.scrollLeft; });
@@ -1599,6 +1735,7 @@ function openAgePicker() {
     dx = Math.max(0, mx);
     main().style.transition = 'none';
     main().style.transform = `translateX(${dx}px)`;
+    const pb = $('player'); if (pb.classList.contains('docked')) { pb.style.transition = 'none'; pb.style.translate = `${dx}px 0`; }
   }, { passive: true });
   document.addEventListener('touchend', () => {
     if (!active) return;
@@ -1609,11 +1746,12 @@ function openAgePicker() {
     const done = dx > w * .35 || v > .45;
     m.style.transition = `transform ${done ? '.32s' : 'var(--t-snappy)'} ${done ? 'var(--ease)' : 'var(--spring-snappy)'}`;
     m.style.transform = done ? `translateX(${w}px)` : 'translateX(0)';
+    const pb = $('player'); if (pb.classList.contains('docked')) { pb.style.transition = m.style.transition.replace('transform', 'translate'); pb.style.translate = done ? `${w}px 0` : '0 0'; }
     let finished = false;
     const end = () => {
       if (finished) return; finished = true;
       m.removeEventListener('transitionend', end);
-      m.style.transition = ''; m.style.transform = '';
+      m.style.transition = ''; m.style.transform = ''; $('player').style.transition = ''; $('player').style.translate = '';
       m.classList.remove('swiping'); document.body.classList.remove('swiping');
       if (done) {
         const entry = navStack.pop() || { view: { mode: 'home' }, y: 0, rows: {} };
@@ -1657,9 +1795,11 @@ document.addEventListener('click', e => {
   if (t.dataset.more) return go(JSON.parse(t.dataset.more));
   if (t.dataset.play) return playItem(Number(t.dataset.play));
   if (t.dataset.ep !== undefined) return playItem(view.value, Number(t.dataset.ep));
-  if (t.dataset.next) { cancelCountdown(); return playItem(view.value, player.idx + 1); }
+  if (t.dataset.next) { cancelCountdown(); return playItem(player.item, player.idx + 1); }
   if (t.dataset.cancelNext) return cancelCountdown();
-  if (t.dataset.replay) return playItem(view.value, player.idx);
+  if (t.dataset.replay) return playItem(player.item, player.idx);
+  if (t.dataset.miniClose) return stopPlayer();
+  if (t.dataset.miniOpen) { if (player.item == null) return; return isHere() ? null : go({ mode: 'detail', value: player.item }, { push: true, dir: 'fwd' }); }
   if (t.dataset.unlock) return unlockMore();
   if (t.dataset.settings) { navStack = []; return go({ mode: 'me' }); }
   if (t.dataset.listen) return toggleListen();
