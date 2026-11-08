@@ -722,7 +722,7 @@ body.bar-on .tb-title { transform: none; opacity: 1; }
 
 /* 全屏 */
 .player:fullscreen, .player:-webkit-full-screen { border-radius: 0; aspect-ratio: auto; width: 100%; height: 100%; max-width: none; }
-.player.pseudo-fs { position: fixed; inset: 0; z-index: 90; border-radius: 0; aspect-ratio: auto; max-width: none; width: 100%; height: 100%; box-shadow: none;
+.player.pseudo-fs { position: fixed; inset: 0; z-index: 100; border-radius: 0; aspect-ratio: auto; max-width: none; width: 100%; height: 100%; box-shadow: none;
   padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
 .player.pseudo-fs iframe { top: env(safe-area-inset-top, 0px); left: env(safe-area-inset-left, 0px); width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
 .fs-close { display: none; position: absolute; z-index: 7; top: calc(12px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); height: 36px; padding: 0 14px;
@@ -732,7 +732,7 @@ body.bar-on .tb-title { transform: none; opacity: 1; }
 body.fs-lock { overflow: hidden; }
 /* 伪全屏时侧栏、标签栏让开；内容区不再单独参与页面转场层级，避免被侧栏盖住 */
 body.fs-lock .side, body.fs-lock .tabbar { display: none; }
-body.fs-lock .main { view-transition-name: none; position: relative; z-index: 100; }
+body.fs-lock .main { view-transition-name: none; }
 
 /* 儿童模式 */
 body.kid .side, body.kid .tabbar, body.kid .m-search, body.kid .gear { display: none !important; }
@@ -833,7 +833,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 转场优化 v1';
+const APP_VERSION = '2026-11-08 全屏修复 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1103,7 +1103,7 @@ function detailView() {
         <span class="elapsed" id="elapsed" title="本集已播放时间（页面估算）"></span>
         <span class="quota" id="quota" hidden></span>
         <button class="icon-btn" type="button" id="listenBtn" data-listen="1" aria-pressed="false">${ic('i-headphones')}<span>只听声音</span></button>
-        <button class="icon-btn" type="button" data-fs="1">${ic('i-expand')}<span>全屏</span></button>
+        <button class="icon-btn" type="button" data-fs="1" title="全屏">${ic('i-expand')}<span>全屏</span></button>
         <button class="btn btn-gray sm" type="button" id="nextBtn" data-next="1">下一集${ic('i-right')}</button>
       </div>
     </section>` : ''}
