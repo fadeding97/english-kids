@@ -454,6 +454,30 @@ body.swiping { background: var(--card); overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0s !important; scroll-behavior: auto !important; } }
 
+/* ---------- 难度分级 ---------- */
+.lv-dot { width: 19px; height: 19px; border-radius: 6px; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #fff; background: linear-gradient(160deg, var(--a), var(--b)); flex: none; }
+.sec-sub2 { font-size: 14px; color: var(--label-2); margin-top: -4px; }
+.sec-sub2 b { color: var(--label); }
+.lv-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.lv-card { position: relative; display: grid; gap: 4px; align-content: start; padding: 16px 16px 14px; border-radius: 14px; color: #fff; text-align: left; min-height: 150px;
+  background: linear-gradient(160deg, var(--a), var(--b)); box-shadow: 0 6px 18px color-mix(in srgb, var(--b) 30%, transparent); transition: transform var(--t-bouncy) var(--spring-bouncy); }
+.lv-card:active { transform: scale(.97); transition: transform .18s var(--press); }
+.lv-card .lv-id { font-size: 13px; font-weight: 800; opacity: .85; letter-spacing: .04em; }
+.lv-card b { font-size: 20px; font-weight: 800; }
+.lv-card span:not(.lv-id) { font-size: 13px; opacity: .92; line-height: 1.4; }
+.lv-card small { margin-top: auto; padding-top: 8px; font-size: 12px; font-weight: 600; opacity: .9; }
+.lv-card.rec::after { content: "建议"; position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .28); }
+.lv-head { border-bottom: 0; }
+.lv-badge { display: inline-block; font-size: 13px; font-weight: 800; color: #fff; padding: 3px 10px; border-radius: 8px; background: linear-gradient(160deg, var(--a), var(--b)); margin-bottom: 6px; }
+.lv-info { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.lv-info div { background: var(--card); border-radius: 12px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.lv-info b { font-size: 13px; color: var(--label-2); font-weight: 600; }
+.lv-info span { font-size: 15px; }
+.lv-next { justify-self: start; display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 14px; color: #fff; background: linear-gradient(160deg, var(--a), var(--b)); }
+.lv-next span { font-size: 13px; opacity: .85; } .lv-next b { font-size: 17px; } .lv-next .ico { width: 18px; height: 18px; stroke-width: 2.4; }
+.lv-pill { display: inline-block; font-size: 11px; font-weight: 800; color: #fff; padding: 2px 8px; border-radius: 6px; margin-right: 4px; background: linear-gradient(160deg, var(--a), var(--b)); vertical-align: 1px; letter-spacing: .02em; }
+@media (max-width: 900px) { .lv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lv-info { grid-template-columns: minmax(0, 1fr); } }
+
 /* ---------- 第三批 ---------- */
 .icon-btn { flex: none; height: 30px; padding: 0 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--label-2); background: var(--fill); transition: background .2s ease, color .2s ease, transform var(--t-bouncy) var(--spring-bouncy); -webkit-tap-highlight-color: transparent; }
 .icon-btn .ico { width: 15px; height: 15px; }
@@ -553,6 +577,7 @@ a.cell2 { text-decoration: none; }
   </label>
   <nav class="nav-group" id="navBrowse" aria-label="浏览"></nav>
   <nav class="nav-group" id="navAges" aria-label="年龄"></nav>
+  <nav class="nav-group" id="navLevels" aria-label="难度"></nav>
   <button class="nav-item settings-item" type="button" data-settings="1"><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>家长设置</button>
   <div class="months">
     <small>宝宝月龄</small>
@@ -581,7 +606,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 第三批 v7';
+const APP_VERSION = '2026-11-08 难度分级 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -631,7 +656,8 @@ function art(it, extra = '', size = 360) {
   </div>`;
 }
 const play = `<span class="a-play">${ic('i-play')}</span>`;
-const sub = it => `${it.age} · 节奏${PACE[it.pace]}${it.warn ? ' · <span class="warn">慎看</span>' : ''}`;
+const lvOf = id => LEVELS.find(l => l.id === id);
+const sub = it => `${it.age} · ${it.lv}${it.warn ? ' · <span class="warn">慎看</span>' : ''}`;
 function tile(it) {
   return `<button class="tile" type="button" data-id="${it.id}">${art(it, play)}
     <span class="t-name">${esc(it.cn)}</span><span class="t-sub">${sub(it)}</span></button>`;
@@ -666,7 +692,7 @@ function shelf(key, title, items, more, kind = 'sq') {
 /* ---------- chrome ---------- */
 function curNav() {
   const v = view.mode === 'detail' ? (navStack.find(e => e.view.mode !== 'detail') || { view: { mode: 'home' } }).view : view;
-  return v.mode === 'home' ? 'home' : v.mode === 'type' ? v.value : v.mode === 'search' ? 'search' : '';
+  return v.mode === 'home' ? 'home' : v.mode === 'type' ? v.value : v.mode === 'search' ? 'search' : v.mode === 'level' ? 'lv:' + v.value : '';
 }
 function renderChrome() {
   const cur = curNav();
@@ -676,6 +702,8 @@ function renderChrome() {
   const kid = stageFor(months);
   $('navAges').innerHTML = `<div class="nav-h">年龄</div>` + STAGES.map(s =>
     `<button class="nav-item" type="button" data-stage="${s.id}" aria-current="${s.id === stage}"><span class="age-dot"><i></i></span>${s.age}${s.id === kid ? '<span class="kid">宝宝</span>' : ''}</button>`).join('');
+  $('navLevels').innerHTML = `<div class="nav-h">难度</div>` + LEVELS.map(l =>
+    `<button class="nav-item" type="button" data-level="${l.id}" aria-current="${'lv:' + l.id === cur}"><span class="lv-dot" style="--a:${l.color[0]};--b:${l.color[1]}">${l.id.slice(1)}</span>${l.id} ${l.name}</button>`).join('');
   $('monthsOut').textContent = months + ' 个月';
   const tabs = [['home', '推荐', 'i-home'], ['song', '儿歌', 'i-music'], ['video', '动画', 'i-tv'], ['book', '绘本', 'i-book'], ['search', '搜索', 'i-search']];
   $('tabbar').innerHTML = tabs.map(([k, l, i]) => `<button class="tab${k === bounceTab ? ' bounce' : ''}" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
@@ -730,6 +758,12 @@ function homeView() {
       <span class="t-name">${esc(it.cn)}</span><span class="t-sub">${m.episodes.length > 1 ? `看到第 ${p.ep + 1} 集` : '看到 ' + fmtDur(p.t)}</span></button>`;
   }).join('')}</div></section>`;
   html += `<section class="sec">${head('为宝宝精选')}${pagers('picks')}<div class="row big" id="row-picks">${picks.map(([it, e]) => pick(it, e)).join('')}</div></section>`;
+  const sl = STAGE_LV[stage] || [];
+  html += `<section class="sec">${head('按难度浏览')}<p class="sec-sub2">${s.age}一般从 <b>${sl.join('–')}</b> 开始，也可以按孩子实际的英语水平选。</p><div class="lv-grid">${LEVELS.map(l => {
+    const n = ITEMS.filter(i => i.lv === l.id && media(i)).length;
+    return `<button class="lv-card${sl.includes(l.id) ? ' rec' : ''}" type="button" data-level="${l.id}" style="--a:${l.color[0]};--b:${l.color[1]}">
+      <span class="lv-id">${l.id}</span><b>${l.name}</b><span>${esc(l.desc)}</span><small>${n} 项可播放</small></button>`;
+  }).join('')}</div></section>`;
   html += `<section class="sec">${head('本阶段怎么做')}<div class="guide">
       <div><h3>${esc(s.title)}</h3><p class="goal">${esc(s.goal)}</p><p class="screen">${ic('i-clock')}<span>${esc(s.screen)}</span></p></div>
       <div><div class="steps">${s.how.map((h, i) => `<div class="step"><em>${i + 1}</em><span>${esc(h)}</span></div>`).join('')}</div>
@@ -753,6 +787,24 @@ function gridView(title, subText, items, empty) {
     (items.length ? `<div class="grid">${items.map(tile).join('')}</div>` : empty);
 }
 
+function levelView() {
+  const l = lvOf(view.value), i = LEVELS.indexOf(l), next = LEVELS[i + 1];
+  const all = ITEMS.filter(x => x.lv === l.id)
+    .map((it, k) => ({ it, k, sc: (media(it) ? 0 : 100) + STAGES.findIndex(st => it.s.includes(st.id)) }))
+    .sort((a, b) => a.sc - b.sc || a.k - b.k).map(x => x.it);
+  const n = all.filter(x => media(x)).length;
+  let html = `<header class="page-h lv-head"><div><span class="lv-badge" style="--a:${l.color[0]};--b:${l.color[1]}">${l.id}</span><h1>${l.name}</h1>
+    <p>${all.length} 项 · ${n} 项可直接播放 · 按适合年龄从小到大排列</p></div></header>
+    <div class="lv-info"><div><b>这一级</b><span>${esc(l.desc)}</span></div><div><b>目标</b><span>${esc(l.goal)}</span></div>
+      ${l.next ? `<div><b>什么时候升级</b><span>${esc(l.next)}</span></div>` : ''}</div>`;
+  Object.entries(TYPES).forEach(([k, [label]]) => {
+    const items = all.filter(x => x.t === k);
+    if (items.length) html += `<section class="sec"><h2 class="sec-h">${label} <span class="ep-count">${items.length}</span></h2><div class="grid">${items.map(tile).join('')}</div></section>`;
+  });
+  if (next) html += `<button class="lv-next" type="button" data-level="${next.id}" style="--a:${next.color[0]};--b:${next.color[1]}"><span>下一级</span><b>${next.id} ${next.name}</b>${ic('i-right')}</button>`;
+  return html;
+}
+
 function searchView() {
   const q = query.toLowerCase();
   const items = q ? ITEMS.filter(i => (i.n + i.cn + i.why + i.o).toLowerCase().includes(q)) : [];
@@ -766,7 +818,7 @@ function detailView() {
   const it = ITEMS[view.value];
   const back = navStack.length ? navStack[navStack.length - 1].view : { mode: 'home' };
   const backLabel = back.mode === 'home' ? '推荐' : back.mode === 'type' ? TYPES[back.value][0] : back.mode === 'tag' ? TAGS[back.value]
-    : back.mode === 'detail' ? ITEMS[back.value].cn : '搜索';
+    : back.mode === 'detail' ? ITEMS[back.value].cn : back.mode === 'level' ? back.value + ' ' + lvOf(back.value).name : '搜索';
   const more = ITEMS.filter(i => i.t === it.t && i.id !== it.id && i.s.some(x => it.s.includes(x)));
   const m = media(it);
   const kid = !!settings.kid;
@@ -793,7 +845,7 @@ function detailView() {
       <div class="album-info">
         <h1>${esc(it.cn)}</h1>
         <p class="en">${esc(it.n)}</p>
-        <p class="meta">${TYPES[it.t][0]}${it.o ? ' · ' + esc(it.o) : ''} · ${it.age} · 节奏${PACE[it.pace]} · ${esc(it.len)}</p>
+        <p class="meta"><button class="lv-pill" type="button" data-level="${it.lv}" style="--a:${lvOf(it.lv).color[0]};--b:${lvOf(it.lv).color[1]}">${it.lv} · ${lvOf(it.lv).name}</button> ${TYPES[it.t][0]}${it.o ? ' · ' + esc(it.o) : ''} · ${it.age} · 节奏${PACE[it.pace]} · ${esc(it.len)}</p>
         <div class="album-actions">${actions}</div>
         <p class="why">${esc(it.why)}</p>
         ${it.tip ? `<p class="tip ${it.warn ? 'warn' : ''}">${esc(it.tip)}</p>` : ''}
@@ -1246,7 +1298,8 @@ function render() {
   } else if (view.mode === 'tag') {
     const items = inStage().filter(i => i.tg.includes(view.value));
     html = gridView(TAGS[view.value], `${s.age} · ${items.length} 项`, items, `<div class="empty"><h3>暂无内容</h3></div>`);
-  } else if (view.mode === 'search') html = searchView();
+  } else if (view.mode === 'level') html = levelView();
+  else if (view.mode === 'search') html = searchView();
   else html = detailView();
   if (view.mode !== 'detail') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
   $('main').innerHTML = html;
@@ -1403,6 +1456,7 @@ document.addEventListener('click', e => {
     query = ''; $('q').value = '';
     return go(t.dataset.ch === 'home' ? { mode: 'home' } : { mode: 'type', value: t.dataset.ch });
   }
+  if (t.dataset.level) { query = ''; $('q').value = ''; return go({ mode: 'level', value: t.dataset.level }); }
   if (t.dataset.stage) return setStage(t.dataset.stage);
   if (t.dataset.step) return step(Number(t.dataset.step));
   if (t.dataset.more) return go(JSON.parse(t.dataset.more));

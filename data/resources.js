@@ -239,3 +239,47 @@ ITEMS.forEach((it, i) => {
   it.o = it.o || ORIGIN[it.n] || '';
   if (it.o.startsWith('美国') && (it.t === 'video' || it.t === 'song')) it.tg.push('us');
 });
+
+/* ---------- 难度分级（与年龄并存） ----------
+   依据：语速、词汇量、句子长短、情节复杂度。没有官方标准，是本站的整理。 */
+const LEVELS = [
+  { id: 'L0', name: '磨耳朵', color: ['#FF8FA3', '#E8486A'],
+    desc: '儿歌、童谣、手指谣和动作儿歌，以听为主。',
+    goal: '熟悉英语的声音和节奏，不要求听懂。',
+    next: '能跟着哼几句、听到熟悉的歌会有反应，就可以加入 L1。' },
+  { id: 'L1', name: '认词短句', color: ['#FFB84D', '#F08A1C'],
+    desc: '节奏很慢，一次一个词或一个短句，大量重复的动画和翻翻书。',
+    goal: '把英文单词和身边的事物对上号，听懂简单指令。',
+    next: '能听懂常见单词、偶尔冒出英文单词，就可以试试 L2。' },
+  { id: 'L2', name: '生活故事', color: ['#5ED47F', '#26A85A'],
+    desc: '日常对话和完整的小故事，语速适中，台词更多。',
+    goal: '听懂一集完整的小故事，开始用短句表达。',
+    next: '能看懂故事、对字母产生兴趣，就可以进入 L3。' },
+  { id: 'L3', name: '拼读与知识', color: ['#6AA8FF', '#3A6FE0'],
+    desc: '自然拼读、分级阅读和科普动画，词汇量大、语速更快。',
+    goal: '学会字母和发音的对应，开始自己读，用英语了解世界。',
+    next: '' },
+];
+const LV = {
+  // 儿歌
+  'Super Simple Songs': 'L0', 'Wee Sing for Baby': 'L0', 'English Lullabies': 'L0', 'Wee Sing Fingerplays': 'L0', 'Mother Goose Club': 'L0',
+  'Raffi': 'L0', 'Dream English Kids': 'L1', 'CoComelon': 'L0', 'Jolly Phonics Songs': 'L3', 'Laurie Berkner': 'L0', 'Little Baby Bum': 'L0',
+  'The Wiggles': 'L0', 'LooLoo Kids': 'L0', 'Dave and Ava': 'L0', 'BabyBus English': 'L0', 'Pinkfong Baby Shark': 'L0', 'ChuChu TV': 'L0', 'Jack Hartmann': 'L3',
+  // 亲子互动
+  'English Fingerplays': 'L0', 'Peekaboo & Pat-a-cake': 'L0', 'Action Songs': 'L0', 'Daily Routine English': 'L1', 'Simon Says': 'L2', 'Pretend Play': 'L2',
+  // 绘本
+  'Ten Little Fingers': 'L1', 'Where Is Baby’s Belly Button?': 'L1', 'Dear Zoo': 'L1', 'Where’s Spot?': 'L1', 'Brown Bear, Brown Bear': 'L1', 'Goodnight Moon': 'L1',
+  'The Very Hungry Caterpillar': 'L1', 'From Head to Toe': 'L1', 'Little Blue Truck': 'L1', 'Go Away, Big Green Monster!': 'L1',
+  'We’re Going on a Bear Hunt': 'L2', 'Pete the Cat': 'L2', 'Chicka Chicka Boom Boom': 'L2', 'Elephant & Piggie': 'L3', 'Biscuit': 'L3', 'Oxford Reading Tree': 'L3',
+  // 动画
+  'Teletubbies': 'L1', 'Pocoyo': 'L1', 'Maisy': 'L1', 'Ms Rachel': 'L1', 'Elmo’s World': 'L1', 'Word Party': 'L1', 'Yakka Dee': 'L1', 'Didi’s Day': 'L1',
+  'Penelope': 'L1', '动物王国大冒险（英文原声）': 'L1', 'WOW English': 'L1', 'Sarah & Duck': 'L1',
+  'Peppa Pig': 'L2', 'Bing': 'L2', 'Daniel Tiger': 'L2', 'Blue’s Clues & You!': 'L2', 'Hey Duggee': 'L2', 'Puffin Rock': 'L2', 'Sesame Street': 'L2',
+  'Bluey': 'L2', 'Ben and Holly': 'L2', 'Charlie and Lola': 'L2', 'Curious George': 'L2', 'Little Bear': 'L2', 'Tumble Leaf': 'L2', 'Mickey Mouse Clubhouse': 'L2',
+  'Clifford the Big Red Dog': 'L2', 'Bubble Guppies': 'L2', 'Scholastic Storybook Treasures': 'L2', 'Blippi': 'L2', 'Big Muzzy': 'L2', 'Dora the Explorer': 'L2',
+  'Alphablocks': 'L3', 'Numberblocks': 'L3', 'WordWorld': 'L3', 'LeapFrog Letter Factory': 'L3', 'Super Why!': 'L3', 'Peg + Cat': 'L3', 'Octonauts': 'L3',
+  'The Magic School Bus': 'L3', 'Martha Speaks': 'L3', 'Arthur': 'L3', 'Wild Kratts': 'L3', 'Ask the StoryBots': 'L3', 'Little Fox': 'L3',
+};
+// 各年龄段一般从哪一级开始
+const STAGE_LV = { s0: ['L0'], s1: ['L0'], s2: ['L0', 'L1'], s3: ['L1', 'L2'], s4: ['L2'], s5: ['L2', 'L3'] };
+ITEMS.forEach(it => { it.lv = LV[it.n] || 'L2'; });
