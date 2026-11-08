@@ -454,6 +454,27 @@ body.swiping { background: var(--card); overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0s !important; scroll-behavior: auto !important; } }
 
+/* ---------- 月龄滚轮 ---------- */
+.age-side { text-align: left; width: 100%; color: var(--label); }
+.age-side .months-row b { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.age-side .chev { width: 14px; height: 14px; stroke-width: 2.4; color: var(--label-3); transform: rotate(90deg); }
+.age-side .age-stage { font-size: 12px; color: var(--label-2); }
+.age-side:active { transform: scale(.97); transition: transform .18s var(--press); }
+.age-pill { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 12px; border-radius: 16px; background: var(--fill-2); color: var(--label); font-size: 15px; font-variant-numeric: tabular-nums; }
+.age-pill b { font-weight: 600; }
+.age-pill .ico { width: 13px; height: 13px; stroke-width: 2.6; color: var(--label-2); transform: rotate(90deg); }
+.age-pill:active { transform: scale(.94); transition: transform .18s var(--press); }
+.wheels { position: relative; display: grid; grid-template-columns: 1fr 1fr; height: 180px; margin: 6px 0 10px; perspective: 600px; }
+.wheel-hl { position: absolute; left: 0; right: 0; top: 72px; height: 36px; border-radius: 9px; background: var(--fill-2); pointer-events: none; }
+.wheel { position: relative; height: 180px; overflow-y: auto; scroll-snap-type: y mandatory; padding-block: 72px; scrollbar-width: none; outline: none; overscroll-behavior: contain;
+  -webkit-mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent); }
+.wheel::-webkit-scrollbar { display: none; }
+.w-it { height: 36px; line-height: 36px; text-align: center; font-size: 20px; color: var(--label-2); scroll-snap-align: center; font-variant-numeric: tabular-nums; cursor: pointer; transform-origin: center; }
+.w-it.on { color: var(--label); font-weight: 600; }
+.age-hint { font-size: 14px; color: var(--label-2); text-align: center; min-height: 20px; }
+.age-hint b { color: var(--label); }
+body.kid .age-pill, body.kid .age-side { display: none !important; }
+
 /* ---------- 难度分级 ---------- */
 .lv-dot { width: 19px; height: 19px; border-radius: 6px; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #fff; background: linear-gradient(160deg, var(--a), var(--b)); flex: none; }
 .sec-sub2 { font-size: 14px; color: var(--label-2); margin-top: -4px; }
@@ -585,19 +606,13 @@ a.cell2 { text-decoration: none; }
     <input id="q" type="search" placeholder="搜索" aria-label="搜索儿歌、动画、绘本">
   </label>
   <nav class="nav-group" id="navBrowse" aria-label="浏览"></nav>
-  <nav class="nav-group" id="navAges" aria-label="年龄"></nav>
   <nav class="nav-group" id="navLevels" aria-label="难度"></nav>
   <button class="nav-item settings-item" type="button" data-settings="1"><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>家长设置</button>
-  <div class="months">
+  <button class="months age-side" type="button" data-age-pick="1" aria-label="选择宝宝月龄">
     <small>宝宝月龄</small>
-    <div class="months-row">
-      <output id="monthsOut">13 个月</output>
-      <div class="stepper">
-        <button type="button" data-step="-1" aria-label="减少 1 个月"><svg class="ico"><use href="#i-minus"/></svg></button>
-        <button type="button" data-step="1" aria-label="增加 1 个月"><svg class="ico"><use href="#i-plus"/></svg></button>
-      </div>
-    </div>
-  </div>
+    <span class="months-row"><b data-months-label>13 个月</b><svg class="ico chev" aria-hidden="true"><use href="#i-right"/></svg></span>
+    <span class="age-stage" id="ageStage"></span>
+  </button>
 </aside>
 
 <main class="main" id="main"></main>
@@ -615,7 +630,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 难度分级 v2';
+const APP_VERSION = '2026-11-08 月龄滚轮 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -708,26 +723,23 @@ function renderChrome() {
   const items = [['home', '推荐', 'i-home'], ...Object.entries(TYPES).map(([k, [l, i]]) => [k, l, i])];
   $('navBrowse').innerHTML = `<div class="nav-h">浏览</div>` + items.map(([k, l, i]) =>
     `<button class="nav-item" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
-  const kid = stageFor(months);
-  $('navAges').innerHTML = `<div class="nav-h">年龄</div>` + STAGES.map(s =>
-    `<button class="nav-item" type="button" data-stage="${s.id}" aria-current="${s.id === stage}"><span class="age-dot"><i></i></span>${s.age}${s.id === kid ? '<span class="kid">宝宝</span>' : ''}</button>`).join('');
   $('navLevels').innerHTML = `<div class="nav-h">难度</div>` + LEVELS.map(l =>
     `<button class="nav-item" type="button" data-level="${l.id}" aria-current="${'lv:' + l.id === cur}"><span class="lv-dot" style="--a:${l.color[0]};--b:${l.color[1]}">${l.id.slice(1)}</span>${l.id} ${l.name}</button>`).join('');
-  $('monthsOut').textContent = months + ' 个月';
+  syncAgeLabels();
   const tabs = [['home', '推荐', 'i-home'], ['song', '儿歌', 'i-music'], ['video', '动画', 'i-tv'], ['book', '绘本', 'i-book'], ['search', '搜索', 'i-search']];
   $('tabbar').innerHTML = tabs.map(([k, l, i]) => `<button class="tab${k === bounceTab ? ' bounce' : ''}" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
   bounceTab = null;
 }
 
-function mobileHead() {
-  const kid = stageFor(months);
-  return `<div class="ages-m m-only" role="group" aria-label="年龄">${STAGES.map(s =>
-    `<button class="chip" type="button" data-stage="${s.id}" aria-pressed="${s.id === stage}">${s.id === kid ? '<i aria-label="宝宝当前阶段"></i>' : ''}${s.age}</button>`).join('')}</div>`;
+function mobileHead() { return ''; }
+const fmtAge = m => m < 12 ? `${m} 个月` : `${Math.floor(m / 12)} 岁${m % 12 ? ' ' + (m % 12) + ' 个月' : ''}`;
+function syncAgeLabels() {
+  document.querySelectorAll('[data-months-label]').forEach(el => { el.textContent = fmtAge(months); });
+  const st = $('ageStage'); if (st) st.textContent = stageById(stage).age + ' 阶段';
 }
 function pageHead(title, subText, showMonths = true) {
   return `<header class="page-h"><div><h1>${esc(title)}</h1><p>${subText}</p></div>
-    ${showMonths ? `<div class="months-row m-only" style="gap:10px"><span data-months-label style="color:var(--label-2);font-size:15px;font-variant-numeric:tabular-nums">宝宝 ${months} 个月</span>
-      <div class="stepper"><button type="button" data-step="-1" aria-label="减少 1 个月">${ic('i-minus')}</button><button type="button" data-step="1" aria-label="增加 1 个月">${ic('i-plus')}</button></div>
+    ${showMonths ? `<div class="months-row m-only" style="gap:10px"><button class="age-pill" type="button" data-age-pick="1" aria-label="选择宝宝月龄"><b data-months-label>${fmtAge(months)}</b>${ic('i-right')}</button>
       <button class="gear" type="button" data-settings="1" aria-label="家长设置">${ic('i-gear')}</button></div>` : ''}
   </header>`;
 }
@@ -1323,7 +1335,7 @@ const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matche
 const HERO = 'hero-art';
 function transition(update, { dir = 'fade', from = null, to = null } = {}) {
   const main = $('main');
-  if (!document.startViewTransition || reduceMotion()) {
+  if (!document.startViewTransition || reduceMotion() || document.hidden) {
     update();
     if (!reduceMotion()) { main.classList.remove('enter', 'fwd', 'back'); void main.offsetWidth; main.classList.add('enter', dir); }
     return;
@@ -1336,7 +1348,8 @@ function transition(update, { dir = 'fade', from = null, to = null } = {}) {
     const target = typeof to === 'function' ? to() : to;
     if (target) target.style.viewTransitionName = HERO;
   });
-  vt.finished.finally(() => {
+  vt.ready.catch(() => {});   // 过渡被浏览器中止（比如窗口被切走）时不报错
+  vt.finished.catch(() => {}).finally(() => {
     document.querySelectorAll('.art, .player').forEach(a => { a.style.viewTransitionName = ''; });
     delete document.documentElement.dataset.dir;
   });
@@ -1387,18 +1400,62 @@ function setStage(id) {
     render(); toTop();
   });
 }
-function step(d) {
-  const next = Math.max(0, Math.min(84, months + d));
-  if (next === months) return;
-  months = next; store.set('kid-months', String(months));
-  const s = stageFor(months);
-  if (s === stage) {   // 同一阶段内只更新数字，不重绘页面
-    $('monthsOut').textContent = months + ' 个月';
-    document.querySelectorAll('[data-months-label]').forEach(el => { el.textContent = `宝宝 ${months} 个月`; });
-    renderChrome();
-    return;
-  }
-  transition(() => { stage = s; rememberStage(); render(); });
+function setMonths(m) {
+  m = Math.max(0, Math.min(84, m));
+  const s = stageFor(m);
+  if (m === months && s === stage) return;
+  months = m; store.set('kid-months', String(months));
+  if (s === stage) { syncAgeLabels(); return; }   // 同一阶段内只更新文字，不重绘页面
+  transition(() => {
+    stage = s; rememberStage();
+    if (view.mode === 'detail' || view.mode === 'search') { navStack = []; view = { mode: 'home' }; }
+    render(); toTop();
+  });
+}
+const step = d => setMonths(months + d);
+
+/* 月龄滚轮（仿 iOS 选择器）：左边“岁”，右边“个月”；松手吸附，点“完成”或点空白处生效 */
+const WH = 36;
+function openAgePicker() {
+  const col = (id, n, unit, cur) => `<div class="wheel" id="${id}" tabindex="0" aria-label="${unit}">${
+    Array.from({ length: n }, (_, i) => `<div class="w-it" data-i="${i}">${i} ${unit}</div>`).join('')}</div>`;
+  let done = false;
+  const pickNow = () => {
+    const y = Math.round($('wY').scrollTop / WH), mo = Math.round($('wM').scrollTop / WH);
+    return Math.min(84, y * 12 + mo);
+  };
+  const apply = () => { if (done) return; done = true; const m = pickNow(); setTimeout(() => setMonths(m), 260); };
+  const sheet = openSheet(`<div class="settings age-sheet">
+    <div class="set-head"><h3>宝宝月龄</h3><button class="btn btn-accent sm" type="button" data-age-done="1">完成</button></div>
+    <div class="wheels"><div class="wheel-hl" aria-hidden="true"></div>${col('wY', 8, '岁')}${col('wM', 12, '个月')}</div>
+    <p class="age-hint" id="ageHint"></p>
+  </div>`, apply);
+  const wY = $('wY'), wM = $('wM');
+  const hint = () => {
+    const m = pickNow(), st = stageById(stageFor(m)), lv = STAGE_LV[st.id] || [];
+    $('ageHint').innerHTML = `<b>${fmtAge(m)}</b> · 推荐 ${st.age}的内容${lv.length ? `，难度从 <b>${lv[0]} ${lvOf(lv[0]).name}</b> 开始` : ''}`;
+  };
+  const paint = w => {
+    const c = w.scrollTop / WH;
+    w.querySelectorAll('.w-it').forEach((el, i) => {
+      const d = Math.max(-3, Math.min(3, i - c));
+      el.style.transform = `rotateX(${-d * 22}deg) scale(${1 - Math.abs(d) * .05})`;
+      el.style.opacity = String(1 - Math.min(1, Math.abs(d) * .3));
+      el.classList.toggle('on', Math.abs(d) < .5);
+    });
+  };
+  [wY, wM].forEach(w => {
+    let raf = 0;
+    w.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { paint(w); hint(); }); }, { passive: true });
+    w.addEventListener('click', e => { const it = e.target.closest('.w-it'); if (it) w.scrollTo({ top: it.dataset.i * WH, behavior: reduceMotion() ? 'instant' : 'smooth' }); });
+    w.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+      e.preventDefault(); w.scrollBy({ top: e.key === 'ArrowUp' ? -WH : WH, behavior: 'smooth' });
+    });
+  });
+  wY.scrollTop = Math.floor(months / 12) * WH; wM.scrollTop = (months % 12) * WH;
+  paint(wY); paint(wM); hint();
+  sheet.querySelector('[data-age-done]').addEventListener('click', () => { closeSheet(); });
 }
 /* 手机上从屏幕左边缘右滑返回（跟手，松手后按速度和距离决定返回还是弹回） */
 (function swipeBack() {
@@ -1469,6 +1526,7 @@ document.addEventListener('click', e => {
   if (t.dataset.level) { query = ''; $('q').value = ''; return go({ mode: 'level', value: t.dataset.level }); }
   if (t.dataset.stage) return setStage(t.dataset.stage);
   if (t.dataset.step) return step(Number(t.dataset.step));
+  if (t.dataset.agePick) return openAgePicker();
   if (t.dataset.more) return go(JSON.parse(t.dataset.more));
   if (t.dataset.play) return playItem(Number(t.dataset.play));
   if (t.dataset.ep !== undefined) return playItem(view.value, Number(t.dataset.ep));
