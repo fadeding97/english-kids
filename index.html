@@ -475,6 +475,38 @@ body.swiping { background: var(--card); overflow: hidden; }
 .age-hint b { color: var(--label); }
 body.kid .age-pill, body.kid .age-side { display: none !important; }
 
+/* 右上角放大镜（手机） */
+.page-h { position: relative; }
+.h-search { position: absolute; top: 4px; right: 0; width: 36px; height: 36px; }
+.h-search .ico { width: 19px; height: 19px; stroke-width: 2.2; }
+.h-search:active { transform: scale(.9); transition: transform .18s var(--press); }
+
+/* ---------- 我的 ---------- */
+.me { max-width: 640px; }
+.me .group { background: var(--card); }
+.me-card { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 16px; border-radius: 14px; background: var(--card); text-align: left; margin-top: 6px; }
+.me-card:active { transform: scale(.98); transition: transform .18s var(--press); }
+.me-ava { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: linear-gradient(160deg, #8E8CF5, #5B4BD8); }
+.me-ava .ico { width: 28px; height: 28px; stroke-width: 2; }
+.me-txt { display: grid; gap: 2px; min-width: 0; }
+.me-txt b { font-size: 20px; font-weight: 700; }
+.me-txt span { font-size: 13px; color: var(--label-2); }
+.me-edit { display: inline-flex; align-items: center; gap: 2px; font-size: 14px; color: var(--label-2); }
+.me-edit .ico { width: 13px; height: 13px; stroke-width: 2.6; }
+.me-bar { height: 6px; margin: 0 14px 14px; border-radius: 3px; background: var(--fill-2); overflow: hidden; }
+.me-bar i { display: block; height: 100%; border-radius: 3px; background: #34C759; }
+.me-bar.low i { background: var(--accent); }
+.hist .h-row { display: grid; grid-template-columns: minmax(0, 1fr) 44px; align-items: center; padding-left: 14px; }
+.hist .track { grid-template-columns: 46px minmax(0, 1fr); }
+.hist .h-row:last-of-type .track-txt { border-bottom: 0; }
+.hist .h-row + .h-row .track-txt { }
+.h-del { width: 44px; height: 44px; display: grid; place-items: center; color: var(--label-3); }
+.h-del .ico { width: 16px; height: 16px; stroke-width: 2.4; }
+.h-del:active { color: #FF3B30; }
+.me .me-h { margin-top: 18px; font-size: 22px; }
+.me .me-h:first-of-type { margin-top: 14px; }
+.me .cell2 .ico { width: 16px; height: 16px; vertical-align: -3px; }
+
 /* ---------- 首页难度标签 ---------- */
 .lv-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: -6px -16px 0; padding: 2px 16px 4px; }
 .lv-chips::-webkit-scrollbar { display: none; }
@@ -614,6 +646,8 @@ a.cell2 { text-decoration: none; }
   <symbol id="i-shrink" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
 </svg>
 
@@ -625,7 +659,7 @@ a.cell2 { text-decoration: none; }
   </label>
   <nav class="nav-group" id="navBrowse" aria-label="浏览"></nav>
   <nav class="nav-group" id="navLevels" aria-label="难度"></nav>
-  <button class="nav-item settings-item" type="button" data-settings="1"><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>家长设置</button>
+  <nav class="nav-group settings-item" id="navMe" aria-label="我的"></nav>
 </aside>
 
 <main class="main" id="main"></main>
@@ -643,7 +677,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 年龄只在首页选 v1';
+const APP_VERSION = '2026-11-08 我的 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -731,17 +765,18 @@ function shelf(key, title, items, more, kind = 'sq') {
 /* ---------- chrome ---------- */
 function curNav() {
   const v = view.mode === 'detail' ? (navStack.find(e => e.view.mode !== 'detail') || { view: { mode: 'home' } }).view : view;
-  return v.mode === 'home' ? 'home' : v.mode === 'type' ? v.value : v.mode === 'search' ? 'search' : v.mode === 'level' ? 'lv:' + v.value : '';
+  return v.mode === 'home' ? 'home' : v.mode === 'type' ? v.value : v.mode === 'search' ? 'search' : v.mode === 'level' ? 'lv:' + v.value : v.mode === 'me' ? 'me' : '';
 }
 function renderChrome() {
   const cur = curNav();
-  const items = [['home', '推荐', 'i-home'], ...Object.entries(TYPES).map(([k, [l, i]]) => [k, l, i])];
+  const items = [['home', '首页', 'i-home'], ...Object.entries(TYPES).map(([k, [l, i]]) => [k, l, i])];
   $('navBrowse').innerHTML = `<div class="nav-h">浏览</div>` + items.map(([k, l, i]) =>
     `<button class="nav-item" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
+  $('navMe').innerHTML = `<button class="nav-item" type="button" data-ch="me" aria-current="${cur === 'me'}">${ic('i-user')}我的</button>`;
   $('navLevels').innerHTML = `<div class="nav-h">难度</div>` + LEVELS.map(l =>
     `<button class="nav-item" type="button" data-level="${l.id}" aria-current="${'lv:' + l.id === cur}"><span class="lv-dot" style="--a:${l.color[0]};--b:${l.color[1]}">${l.id.slice(1)}</span>${l.id} ${l.name}</button>`).join('');
   syncAgeLabels();
-  const tabs = [['home', '推荐', 'i-home'], ['song', '儿歌', 'i-music'], ['video', '动画', 'i-tv'], ['book', '绘本', 'i-book'], ['search', '搜索', 'i-search']];
+  const tabs = [['home', '首页', 'i-home'], ['song', '儿歌', 'i-music'], ['video', '动画', 'i-tv'], ['book', '绘本', 'i-book'], ['me', '我的', 'i-user']];
   $('tabbar').innerHTML = tabs.map(([k, l, i]) => `<button class="tab${k === bounceTab ? ' bounce' : ''}" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
   bounceTab = null;
 }
@@ -755,7 +790,7 @@ function syncAgeLabels() {
 function pageHead(title, subText, showMonths = true, age = false) {
   return `<header class="page-h"><div><h1>${esc(title)}</h1><p>${subText}</p></div>
     ${showMonths ? `<div class="months-row" style="gap:10px">${age ? `<button class="age-pill" type="button" data-age-pick="1" aria-label="选择宝宝月龄"><b data-months-label>${fmtAge(months)}</b>${ic('i-right')}</button>` : ''}
-      <button class="gear m-only" type="button" data-settings="1" aria-label="家长设置">${ic('i-gear')}</button></div>` : ''}
+      <button class="gear h-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></div>` : ''}
   </header>`;
 }
 
@@ -787,7 +822,7 @@ function noVideo() {
 
 function homeView() {
   const s = stageById(stage), list = inStage();
-  if (!list.length) return pageHead('推荐', esc(filterText()), true, true) + lvChips() + lvEmpty('内容');
+  if (!list.length) return pageHead('首页', esc(filterText()), true, true) + lvChips() + lvEmpty('内容');
   const feat = list.find(i => i.n === s.feature) || list[0];
   const picks = [[feat, '本阶段首推']];
   const labels = { song: '每天磨耳朵', book: '今晚读这本', video: '这周看这部', play: '今天玩这个' };
@@ -795,13 +830,13 @@ function homeView() {
     const it = list.find(i => i.t === t && i.id !== feat.id);
     if (it) picks.push([it, labels[t]]);
   });
-  let html = pageHead('推荐', `${esc(filterText())} · ${esc(s.title)}`, true, true) + lvChips();
+  let html = pageHead('首页', `${esc(filterText())} · ${esc(s.title)}`, true, true) + lvChips();
   // 继续观看：最近看过、还没看完的（按最近时间）
   const recent = Object.entries(progress)
     .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
     .filter(x => x.it && media(x.it))
-    .sort((a, b) => b.p.at - a.p.at).slice(0, 12);
-  if (recent.length) html += `<section class="sec">${head('继续观看')}${pagers('recent')}<div class="row sq" id="row-recent">${recent.map(({ it, p }) => {
+    .sort((a, b) => b.p.at - a.p.at).slice(0, 8);
+  if (recent.length) html += `<section class="sec">${head('继续观看', { mode: 'me' })}${pagers('recent')}<div class="row sq" id="row-recent">${recent.map(({ it, p }) => {
     const m = media(it), e = m.episodes[p.ep] || m.episodes[0];
     const pct = e.duration ? Math.min(100, Math.round(p.t / e.duration * 100)) : 0;
     return `<button class="tile" type="button" data-id="${it.id}">${art(it, `<span class="a-progress"><i style="width:${pct}%"></i></span>${play}`)}
@@ -861,7 +896,7 @@ function searchView() {
 function detailView() {
   const it = ITEMS[view.value];
   const back = navStack.length ? navStack[navStack.length - 1].view : { mode: 'home' };
-  const backLabel = back.mode === 'home' ? '推荐' : back.mode === 'type' ? TYPES[back.value][0] : back.mode === 'tag' ? TAGS[back.value]
+  const backLabel = back.mode === 'me' ? '我的' : back.mode === 'home' ? '首页' : back.mode === 'type' ? TYPES[back.value][0] : back.mode === 'tag' ? TAGS[back.value]
     : back.mode === 'detail' ? ITEMS[back.value].cn : back.mode === 'level' ? back.value + ' ' + lvOf(back.value).name : '搜索';
   const more = ITEMS.filter(i => i.t === it.t && i.id !== it.id && i.s.some(x => it.s.includes(x)));
   const m = media(it);
@@ -1256,14 +1291,20 @@ async function openSettings() {
   renderSettings();
 }
 function renderSettings() {
-  rollDay();
-  const opts = [0, 15, 30, 45, 60, 90];
   const sheet = openSheet(`<div class="settings">
     <div class="set-head"><h3>家长设置</h3><button class="btn btn-gray sm" type="button" data-close-sheet="1">完成</button></div>
-    <p class="group-h">每天观看时长</p>
+    ${settingsGroups(true)}
+  </div>`);
+  sheet.addEventListener('click', e => { const b = e.target.closest('button'); if (b) settingsClick(b, renderSettings, sheet); });
+  sheet.addEventListener('change', e => settingsChange(e));
+}
+function settingsGroups(inSheet) {
+  rollDay();
+  const opts = [0, 15, 30, 45, 60, 90];
+  return `<p class="group-h">每天观看时长</p>
     <div class="group">
       <div class="seg-row" role="radiogroup" aria-label="每天观看时长">${opts.map(o => `<button type="button" role="radio" data-limit="${o}" aria-checked="${settings.limit === o}">${o ? o + ' 分' : '不限'}</button>`).join('')}</div>
-      <div class="cell2"><span>今天已看</span><b>${fmtMin(use.sec)}${use.bonus ? `（已加时 ${fmtMin(use.bonus)}）` : ''}</b></div>
+      ${inSheet ? `<div class="cell2"><span>今天已看</span><b>${fmtMin(use.sec)}${use.bonus ? `（已加时 ${fmtMin(use.bonus)}）` : ''}</b></div>` : ''}
       <button class="cell2 link" type="button" data-reset-today="1">今天重新计时</button>
     </div>
     <p class="group-f">建议参考页面上各年龄段的屏幕时间建议。到时间后播放器会锁定，输入家长密码可以加 15 分钟。</p>
@@ -1291,41 +1332,97 @@ function renderSettings() {
     <div class="group">
       <button class="cell2 link" type="button" data-set-pin="1">${settings.pin ? '修改家长密码' : '设置家长密码'}</button>
       ${settings.pin ? '<button class="cell2 link danger" type="button" data-clear-pin="1">关闭家长密码</button>' : ''}
-      <button class="cell2 link danger" type="button" data-clear-progress="1">清除观看记录</button>
+      ${inSheet ? '<button class="cell2 link danger" type="button" data-clear-progress="1">清除观看记录</button>' : ''}
     </div>
     ${settings.pin ? '' : '<p class="group-f">没有设置密码时，任何人都能修改时长和解锁。建议设置。</p>'}
-    <p class="group-f" style="text-align:center;padding-top:14px">版本 ${APP_VERSION}</p>
-  </div>`);
-  sheet.addEventListener('click', async e => {
-    const b = e.target.closest('button'); if (!b) return;
+    <p class="group-f" style="text-align:center;padding-top:14px">版本 ${APP_VERSION}</p>`;
+}
+async function settingsClick(b, refresh, root) {
     if (b.dataset.listenOpt) {
       settings.listen = b.dataset.listenOpt; saveJSON('settings', settings);
-      sheet.querySelectorAll('[data-listen-opt]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+      root.querySelectorAll('[data-listen-opt]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
     } else if (b.dataset.limit != null) {
       settings.limit = Number(b.dataset.limit); saveJSON('settings', settings);
-      sheet.querySelectorAll('[data-limit]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
-      updateQuota();
+      root.querySelectorAll('[data-limit]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+      updateQuota(); if (!root.classList.contains('sheet')) refresh();
     } else if (b.dataset.resetToday) {
-      rollDay(); use.sec = 0; use.bonus = 0; saveJSON('usage', use); toast('今天已重新计时'); renderSettings();
+      rollDay(); use.sec = 0; use.bonus = 0; saveJSON('usage', use); toast('今天已重新计时'); refresh();
     } else if (b.dataset.setPin) {
-      closeSheet(true); await setPin(); renderSettings();
+      if (root.classList.contains('sheet')) closeSheet(true);
+      await setPin(); refresh();
     } else if (b.dataset.clearPin) {
-      settings.pin = ''; saveJSON('settings', settings); toast('已关闭家长密码'); renderSettings();
+      settings.pin = ''; saveJSON('settings', settings); toast('已关闭家长密码'); refresh();
     } else if (b.dataset.clearProgress) {
       for (const k of Object.keys(progress)) delete progress[k];
-      saveJSON('progress', progress); toast('观看记录已清除'); renderSettings();
+      saveJSON('progress', progress); toast('观看记录已清除'); refresh();
       if (view.mode === 'home') render();
     } else if (b.dataset.closeSheet) {
       closeSheet(true);
       if (view.mode === 'home') render();
     }
-  });
-  sheet.addEventListener('change', e => {
+}
+function settingsChange(e) {
     const k = e.target.dataset.set; if (!k) return;
     settings[k] = e.target.checked; saveJSON('settings', settings);
-    if (k === 'kid' && settings.kid) { closeSheet(true); toast('已进入儿童模式'); go({ mode: 'home' }); }
-  });
+    if (k === 'kid' && settings.kid) { closeSheet(true); meUnlocked = false; toast('已进入儿童模式'); navStack = []; go({ mode: 'home' }); }
 }
+
+/* ---------- 我的 ---------- */
+let meUnlocked = false;   // 本次打开页面后输过一次家长密码，就不用再输
+const fmtAgo = t => {
+  const d = (Date.now() - t) / 1000;
+  return d < 60 ? '刚刚' : d < 3600 ? Math.floor(d / 60) + ' 分钟前' : d < 86400 ? Math.floor(d / 3600) + ' 小时前' : d < 86400 * 7 ? Math.floor(d / 86400) + ' 天前' : new Date(t).toLocaleDateString('zh-CN');
+};
+function meView() {
+  rollDay();
+  const st = stageById(stageFor(months)), lv = STAGE_LV[st.id] || [];
+  const lim = limitSec(), pct = lim === Infinity ? 0 : Math.min(100, Math.round(use.sec / lim * 100));
+  const hist = Object.entries(progress)
+    .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p })).filter(x => x.it)
+    .sort((a, b) => b.p.at - a.p.at);
+  const locked = settings.pin && !meUnlocked;
+  return `${pageHead('我的', '宝宝资料、观看记录和家长设置', false)}
+  <div class="settings me">
+    <button class="me-card" type="button" data-age-pick="1">
+      <span class="me-ava">${ic('i-user')}</span>
+      <span class="me-txt"><b>宝宝 ${fmtAge(months)}</b><span>${st.age}阶段 · 建议从 ${lv.map(x => x + ' ' + lvOf(x).name).join('、')} 开始</span></span>
+      <span class="me-edit">修改${ic('i-right')}</span>
+    </button>
+    <h2 class="sec-h me-h">今天</h2>
+    <div class="group">
+      <div class="cell2"><span>已观看</span><b>${fmtMin(use.sec)}${lim === Infinity ? '' : ' / ' + fmtMin(lim)}</b></div>
+      ${lim === Infinity ? '' : `<div class="me-bar${pct >= 90 ? ' low' : ''}"><i style="width:${pct}%"></i></div>`}
+    </div>
+    ${lim === Infinity ? '<p class="group-f">没有设置每日时长上限，可以在下面的家长设置里设置。</p>' : ''}
+    <h2 class="sec-h me-h">观看记录 ${hist.length ? `<span class="ep-count">${hist.length}</span>` : ''}</h2>
+    <div class="group hist">${hist.length ? hist.map(({ it, p }) => {
+      const m = media(it), e = m && (m.episodes[p.ep] || m.episodes[0]);
+      const where = m && m.episodes.length > 1 ? `看到第 ${p.ep + 1} 集` : p.t ? '看到 ' + fmtDur(p.t) : '看过';
+      const pc = e && e.duration ? Math.min(100, Math.round(p.t / e.duration * 100)) : 0;
+      return `<div class="h-row"><button class="track" type="button" data-id="${it.id}">${art(it, pc ? `<span class="a-progress"><i style="width:${pc}%"></i></span>` : '')}
+        <span class="track-txt"><b>${esc(it.cn)}</b><span>${where} · ${fmtAgo(p.at)}</span></span></button>
+        <button class="h-del" type="button" data-del-hist="${esc(it.n)}" aria-label="删除这条记录">${ic('i-x')}</button></div>`;
+    }).join('') : '<div class="cell2"><span style="color:var(--label-2)">还没有观看记录</span></div>'}
+    ${hist.length ? '<button class="cell2 link danger" type="button" data-clear-hist="1">清空观看记录</button>' : ''}</div>
+    <h2 class="sec-h me-h">家长设置</h2>
+    ${locked ? `<div class="group"><button class="cell2 link" type="button" data-me-unlock="1"><span>${ic('i-lock')} 输入家长密码后修改设置</span></button></div>
+      <p class="group-f" style="text-align:center;padding-top:14px">版本 ${APP_VERSION}</p>` : settingsGroups(false)}
+  </div>`;
+}
+document.addEventListener('click', async e => {
+  const root = e.target.closest('.me'); if (!root) return;
+  const b = e.target.closest('button'); if (!b) return;
+  const refresh = () => { const y = scrollY; render(); scrollTo(0, y); };
+  if (b.dataset.delHist) { delete progress[b.dataset.delHist]; saveJSON('progress', progress); return refresh(); }
+  if (b.dataset.clearHist) {
+    if (!confirm('清空全部观看记录？')) return;
+    for (const k of Object.keys(progress)) delete progress[k];
+    saveJSON('progress', progress); toast('观看记录已清空'); return refresh();
+  }
+  if (b.dataset.meUnlock) { if (await askPin('输入家长密码', '修改家长设置')) { meUnlocked = true; refresh(); } return; }
+  settingsClick(b, refresh, root);
+});
+document.addEventListener('change', e => { if (e.target.closest('.me')) settingsChange(e); });
 
 function render() {
   stopPlayer();
@@ -1344,6 +1441,7 @@ function render() {
     const items = inStage().filter(i => i.tg.includes(view.value));
     html = gridView(TAGS[view.value], `${esc(filterText())} · ${items.length} 项`, items, lvPick ? lvEmpty('内容') : `<div class="empty"><h3>暂无内容</h3></div>`);
   } else if (view.mode === 'level') html = levelView();
+  else if (view.mode === 'me') html = meView();
   else if (view.mode === 'search') html = searchView();
   else html = detailView();
   if (view.mode !== 'detail') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
@@ -1543,6 +1641,7 @@ document.addEventListener('click', e => {
   }
   if (t.dataset.ch) {
     if (t.dataset.ch === 'search') { go({ mode: 'search' }); const m = $('mq'); if (m) m.focus(); return; }
+    if (t.dataset.ch === 'me') { query = ''; return go({ mode: 'me' }); }
     query = ''; $('q').value = '';
     return go(t.dataset.ch === 'home' ? { mode: 'home' } : { mode: 'type', value: t.dataset.ch });
   }
@@ -1562,7 +1661,7 @@ document.addEventListener('click', e => {
   if (t.dataset.cancelNext) return cancelCountdown();
   if (t.dataset.replay) return playItem(view.value, player.idx);
   if (t.dataset.unlock) return unlockMore();
-  if (t.dataset.settings) return openSettings();
+  if (t.dataset.settings) { navStack = []; return go({ mode: 'me' }); }
   if (t.dataset.listen) return toggleListen();
   if (t.dataset.fs) return toggleFs();
   if (t.dataset.kidExit) return exitKid();
