@@ -475,6 +475,24 @@ body.swiping { background: var(--card); overflow: hidden; }
 .age-hint b { color: var(--label); }
 body.kid .age-pill, body.kid .age-side { display: none !important; }
 
+/* ---------- 首页难度标签 ---------- */
+.lv-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: -6px -16px 0; padding: 2px 16px 4px; }
+.lv-chips::-webkit-scrollbar { display: none; }
+.lvc { position: relative; flex: none; height: 34px; padding: 0 14px; border-radius: 17px; background: var(--fill-2); color: var(--label); font-size: 14px; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 4px; transition: background .2s ease, color .2s ease, transform var(--t-bouncy) var(--spring-bouncy); }
+.lvc b { font-weight: 800; color: var(--b, var(--label)); }
+.lvc i { width: 6px; height: 6px; border-radius: 50%; background: var(--b, var(--accent)); margin-left: 2px; }
+.lvc.on { color: #fff; background: linear-gradient(160deg, var(--a, var(--label)), var(--b, var(--label))); }
+.lvc.on b { color: #fff; } .lvc.on i { background: #fff; }
+.lvc:not([style]).on { background: var(--label); color: var(--bg); }
+.lvc:active { transform: scale(.94); transition: transform .18s var(--press), background 0s; }
+.lv-note { font-size: 13px; color: var(--label-2); margin-top: -8px; }
+.lv-note b { color: var(--label); }
+.lv-note button { color: var(--accent); font-weight: 600; display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
+.lv-note .ico { width: 12px; height: 12px; stroke-width: 2.6; }
+.empty-acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+@media (min-width: 761px) { .lv-chips { margin-inline: 0; padding-inline: 0; flex-wrap: wrap; } }
+
 /* ---------- 难度分级 ---------- */
 .lv-dot { width: 19px; height: 19px; border-radius: 6px; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #fff; background: linear-gradient(160deg, var(--a), var(--b)); flex: none; }
 .sec-sub2 { font-size: 14px; color: var(--label-2); margin-top: -4px; }
@@ -630,7 +648,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 月龄滚轮 v1';
+const APP_VERSION = '2026-11-08 首页难度标签 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -653,6 +671,8 @@ let stage = (() => {
   } catch (e) {}
   return stageFor(months);
 })();
+let lvPick = store.get('lv-pick') || '';
+if (lvPick && !LEVELS.some(l => l.id === lvPick)) lvPick = '';
 const rememberStage = () => store.set('stage-pick', JSON.stringify({ id: stage, months }));
 let view = { mode: 'home' };
 let navStack = [];
@@ -746,11 +766,25 @@ function pageHead(title, subText, showMonths = true) {
 
 /* ---------- views ---------- */
 const inStage = () => ITEMS
-  .filter(i => i.s.includes(stage))
+  .filter(i => i.s.includes(stage) && (!lvPick || i.lv === lvPick))
   .map((it, k) => ({ it, k, score: (media(it) ? 0 : 100) + it.s.length * 10 + Math.abs(it.s.indexOf(stage) - (it.s.length - 1) / 2) }))
   .sort((a, b) => a.score - b.score || a.k - b.k)
   .map(x => x.it);
 
+const filterText = () => stageById(stage).age + (lvPick ? ` · ${lvPick} ${lvOf(lvPick).name}` : '');
+function lvEmpty(what) {
+  return `<div class="empty"><h3>${stageById(stage).age}暂时没有 ${lvPick} 的${what}</h3>
+    <p>这一级的内容大多适合更大的孩子。可以先看全部难度，或者看看这一级都有什么。</p>
+    <div class="empty-acts"><button class="btn btn-accent" type="button" data-lvpick="">看全部难度</button><button class="btn btn-gray" type="button" data-level="${lvPick}">了解 ${lvPick} ${lvOf(lvPick).name}</button></div></div>`;
+}
+function lvChips() {
+  const sl = STAGE_LV[stage] || [];
+  const chip = (id, label, c) => `<button class="lvc${lvPick === id ? ' on' : ''}" type="button" data-lvpick="${id}" aria-pressed="${lvPick === id}"${c ? ` style="--a:${c[0]};--b:${c[1]}"` : ''}>${label}${sl.includes(id) ? '<i aria-label="建议"></i>' : ''}</button>`;
+  const cur = lvPick && lvOf(lvPick);
+  return `<div class="lv-chips" role="group" aria-label="难度">${chip('', '全部')}${LEVELS.map(l => chip(l.id, `<b>${l.id}</b> ${l.name}`, l.color)).join('')}</div>
+    <p class="lv-note">${cur ? `<span>${esc(cur.desc)}</span> <button type="button" data-level="${cur.id}">了解 ${cur.id}${ic('i-right')}</button>`
+      : `${fmtAge(months)}一般从 <b>${sl.join('–')}</b> 开始（带圆点的），儿歌、动画、绘本页会跟着这里的选择显示。`}</p>`;
+}
 function noVideo() {
   return `<div class="empty"><h3>这个阶段先不看动画</h3>
     <p>${stageById(stage).screen}先把儿歌、绘本和日常英语做好。</p>
@@ -759,14 +793,15 @@ function noVideo() {
 
 function homeView() {
   const s = stageById(stage), list = inStage();
-  const feat = ITEMS.find(i => i.n === s.feature) || list[0];
+  if (!list.length) return pageHead('推荐', esc(filterText())) + lvChips() + lvEmpty('内容');
+  const feat = list.find(i => i.n === s.feature) || list[0];
   const picks = [[feat, '本阶段首推']];
   const labels = { song: '每天磨耳朵', book: '今晚读这本', video: '这周看这部', play: '今天玩这个' };
   ['song', 'book', 'video', 'play'].forEach(t => {
     const it = list.find(i => i.t === t && i.id !== feat.id);
     if (it) picks.push([it, labels[t]]);
   });
-  let html = pageHead('推荐', `${s.age} · ${esc(s.title)}`) + mobileHead();
+  let html = pageHead('推荐', `${esc(filterText())} · ${esc(s.title)}`) + lvChips();
   // 继续观看：最近看过、还没看完的（按最近时间）
   const recent = Object.entries(progress)
     .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
@@ -779,12 +814,6 @@ function homeView() {
       <span class="t-name">${esc(it.cn)}</span><span class="t-sub">${m.episodes.length > 1 ? `看到第 ${p.ep + 1} 集` : '看到 ' + fmtDur(p.t)}</span></button>`;
   }).join('')}</div></section>`;
   html += `<section class="sec">${head('为宝宝精选')}${pagers('picks')}<div class="row big" id="row-picks">${picks.map(([it, e]) => pick(it, e)).join('')}</div></section>`;
-  const sl = STAGE_LV[stage] || [];
-  html += `<section class="sec">${head('按难度浏览')}<p class="sec-sub2">${s.age}一般从 <b>${sl.join('–')}</b> 开始，也可以按孩子实际的英语水平选。</p><div class="lv-grid">${LEVELS.map(l => {
-    const n = ITEMS.filter(i => i.lv === l.id && media(i)).length;
-    return `<button class="lv-card${sl.includes(l.id) ? ' rec' : ''}" type="button" data-level="${l.id}" style="--a:${l.color[0]};--b:${l.color[1]}">
-      <span class="lv-id">${l.id}</span><b>${l.name}</b><span>${esc(l.desc)}</span><small>${n} 项可播放</small></button>`;
-  }).join('')}</div></section>`;
   html += `<section class="sec">${head('本阶段怎么做')}<div class="guide">
       <div><h3>${esc(s.title)}</h3><p class="goal">${esc(s.goal)}</p><p class="screen">${ic('i-clock')}<span>${esc(s.screen)}</span></p></div>
       <div><div class="steps">${s.how.map((h, i) => `<div class="step"><em>${i + 1}</em><span>${esc(h)}</span></div>`).join('')}</div>
@@ -799,7 +828,7 @@ function homeView() {
     if (items.length >= 4) html += shelf('type-' + k, '全部' + label, items, { mode: 'type', value: k }, 'tracks');
     else if (items.length) html += shelf('type-' + k, '全部' + label, items, { mode: 'type', value: k });
   });
-  if (!list.some(i => i.t === 'video')) html += noVideo();
+  if (!lvPick && !list.some(i => i.t === 'video')) html += noVideo();
   return html;
 }
 
@@ -1315,11 +1344,11 @@ function render() {
   if (view.mode === 'home') html = settings.kid ? kidHomeView() : homeView();
   else if (view.mode === 'type') {
     const items = inStage().filter(i => i.t === view.value);
-    html = gridView(TYPES[view.value][0], `${s.age} · ${items.length} 项`, items,
-      view.value === 'video' ? noVideo() : `<div class="empty"><h3>暂无内容</h3><p>换个年龄看看。</p></div>`);
+    html = gridView(TYPES[view.value][0], `${esc(filterText())} · ${items.length} 项`, items,
+      lvPick ? lvEmpty(TYPES[view.value][0]) : view.value === 'video' ? noVideo() : `<div class="empty"><h3>暂无内容</h3><p>换个年龄看看。</p></div>`);
   } else if (view.mode === 'tag') {
     const items = inStage().filter(i => i.tg.includes(view.value));
-    html = gridView(TAGS[view.value], `${s.age} · ${items.length} 项`, items, `<div class="empty"><h3>暂无内容</h3></div>`);
+    html = gridView(TAGS[view.value], `${esc(filterText())} · ${items.length} 项`, items, lvPick ? lvEmpty('内容') : `<div class="empty"><h3>暂无内容</h3></div>`);
   } else if (view.mode === 'level') html = levelView();
   else if (view.mode === 'search') html = searchView();
   else html = detailView();
@@ -1348,7 +1377,7 @@ function transition(update, { dir = 'fade', from = null, to = null } = {}) {
     const target = typeof to === 'function' ? to() : to;
     if (target) target.style.viewTransitionName = HERO;
   });
-  vt.ready.catch(() => {});   // 过渡被浏览器中止（比如窗口被切走）时不报错
+  vt.ready.catch(() => {}); vt.updateCallbackDone.catch(() => {});   // 过渡被浏览器中止（比如窗口被切走）时不报错
   vt.finished.catch(() => {}).finally(() => {
     document.querySelectorAll('.art, .player').forEach(a => { a.style.viewTransitionName = ''; });
     delete document.documentElement.dataset.dir;
@@ -1407,7 +1436,7 @@ function setMonths(m) {
   months = m; store.set('kid-months', String(months));
   if (s === stage) { syncAgeLabels(); return; }   // 同一阶段内只更新文字，不重绘页面
   transition(() => {
-    stage = s; rememberStage();
+    stage = stageFor(months); rememberStage();   // 用最新月龄，避免连续快速修改时停在旧阶段
     if (view.mode === 'detail' || view.mode === 'search') { navStack = []; view = { mode: 'home' }; }
     render(); toTop();
   });
@@ -1522,6 +1551,11 @@ document.addEventListener('click', e => {
     if (t.dataset.ch === 'search') { go({ mode: 'search' }); const m = $('mq'); if (m) m.focus(); return; }
     query = ''; $('q').value = '';
     return go(t.dataset.ch === 'home' ? { mode: 'home' } : { mode: 'type', value: t.dataset.ch });
+  }
+  if (t.dataset.lvpick !== undefined) {
+    lvPick = t.dataset.lvpick; store.set('lv-pick', lvPick);
+    if (view.mode !== 'home') { navStack = []; return go({ mode: 'home' }); }
+    const y = scrollY; render(); scrollTo(0, y); return;
   }
   if (t.dataset.level) { query = ''; $('q').value = ''; return go({ mode: 'level', value: t.dataset.level }); }
   if (t.dataset.stage) return setStage(t.dataset.stage);
