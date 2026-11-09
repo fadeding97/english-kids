@@ -849,7 +849,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-09 循环播放 v3';
+const APP_VERSION = '2026-11-09 单曲循环 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1118,7 +1118,7 @@ function detailView() {
         <span class="now" id="nowTitle"></span>
         <span class="elapsed" id="elapsed" title="本集已播放时间（页面估算）"></span>
         <span class="quota" id="quota" hidden></span>
-        <button class="icon-btn" type="button" id="loopBtn" data-loop="1" aria-pressed="${!!settings.loop}" title="循环播放">${ic('i-repeat')}<span>循环</span></button>
+        <button class="icon-btn" type="button" id="loopBtn" data-loop="1" aria-pressed="${!!settings.loop}" title="单曲循环">${ic('i-repeat')}<span>单曲循环</span></button>
         <button class="icon-btn" type="button" id="listenBtn" data-listen="1" aria-pressed="false">${ic('i-headphones')}<span>只听声音</span></button>
         <button class="icon-btn" type="button" data-fs="1" title="全屏">${ic('i-expand')}<span>全屏</span></button>
         <button class="btn btn-gray sm" type="button" id="nextBtn" data-next="1">下一集${ic('i-right')}</button>
@@ -1311,7 +1311,7 @@ function applyListen() {
 function toggleLoop() {
   settings.loop = !settings.loop; saveJSON('settings', settings);
   document.querySelectorAll('[data-loop]').forEach(b => b.setAttribute('aria-pressed', String(settings.loop)));
-  toast(settings.loop ? '循环播放已打开：播完最后一集会从第 1 集重新开始' : '循环播放已关闭');
+  toast(settings.loop ? '单曲循环已打开：这一首播完会再放一遍' : '单曲循环已关闭');
 }
 function toggleListen() { player.listen = !player.listen; applyListen(); }
 
@@ -1359,7 +1359,7 @@ async function exitKid() {
 
 const touchDevice = matchMedia('(pointer: coarse)').matches;
 const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-const nextIdx = () => { const m = media(ITEMS[player.item]); return player.idx < m.episodes.length - 1 ? player.idx + 1 : settings.loop ? 0 : -1; };
+const nextIdx = () => { const m = media(ITEMS[player.item]); return settings.loop ? player.idx : player.idx < m.episodes.length - 1 ? player.idx + 1 : -1; };
 function onTick() {
   if (player.item == null || player.locked || player.paused || document.visibilityState !== 'visible') return;
   player.t += 1;
@@ -1371,7 +1371,7 @@ function onTick() {
   const hasNext = player.idx < m.episodes.length - 1;
   updateElapsed();
   if (!$('mini').hidden) $('miniProg').style.width = player.dur ? Math.min(100, player.t / player.dur * 100) + '%' : '0%';
-  if (player.dur && hasNext && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; if (isHere()) $('nextBtn')?.classList.add('pulse'); }
+  if (player.dur && hasNext && !settings.loop && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; if (isHere()) $('nextBtn')?.classList.add('pulse'); }
   const goOn = nextIdx() >= 0 && (settings.autoNext || settings.loop);
   const endPad = isIOS ? 5 : 3;   // 倒计时 5 秒，在估算结尾之后 endPad 秒才真正换歌
   if (player.dur && goOn && !player.upShown && !player.endShown && player.t >= Math.max(1, player.dur + endPad - 5)) { player.upShown = true; startCountdown(); }
@@ -1395,7 +1395,7 @@ function updateQuota() {
 function startCountdown() {
   const box = $('player'); if (!box || box.querySelector('.up-next')) return;
   const m = media(ITEMS[player.item]), ni = nextIdx(), next = m.episodes[ni];
-  const label = m.episodes.length === 1 ? '循环 · 再听一遍' : ni === 0 ? `循环 · 回到第 1 集 · ${esc(next.title)}` : `第 ${ni + 1} 集 · ${esc(next.title)}`;
+  const label = ni === player.idx ? `单曲循环 · 再听一遍 · ${esc(next.title)}` : `第 ${ni + 1} 集 · ${esc(next.title)}`;
   let n = 5;
   const el = document.createElement('div');
   el.className = 'up-next';
