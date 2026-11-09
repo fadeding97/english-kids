@@ -794,6 +794,7 @@ a.cell2 { text-decoration: none; }
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24"><path d="M5 5l10 7-10 7z" fill="currentColor"/><path d="M19 5v14"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
 </svg>
 
@@ -848,7 +849,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 全屏状态栏 v1';
+const APP_VERSION = '2026-11-09 循环播放 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1117,6 +1118,7 @@ function detailView() {
         <span class="now" id="nowTitle"></span>
         <span class="elapsed" id="elapsed" title="本集已播放时间（页面估算）"></span>
         <span class="quota" id="quota" hidden></span>
+        <button class="icon-btn" type="button" id="loopBtn" data-loop="1" aria-pressed="${!!settings.loop}" title="循环播放">${ic('i-repeat')}<span>循环</span></button>
         <button class="icon-btn" type="button" id="listenBtn" data-listen="1" aria-pressed="false">${ic('i-headphones')}<span>只听声音</span></button>
         <button class="icon-btn" type="button" data-fs="1" title="全屏">${ic('i-expand')}<span>全屏</span></button>
         <button class="btn btn-gray sm" type="button" id="nextBtn" data-next="1">下一集${ic('i-right')}</button>
@@ -1155,7 +1157,7 @@ const fmtMin = s => s >= 3600 ? `${Math.floor(s / 3600)} 小时 ${Math.round(s %
 const loadJSON = (k, d) => { try { return Object.assign(d, JSON.parse(store.get(k) || '{}')); } catch (e) { return d; } };
 const saveJSON = (k, v) => store.set(k, JSON.stringify(v));
 
-const settings = loadJSON('settings', { limit: 0, pin: '', autoNext: true, strict: false, kid: false, listen: 'auto' });
+const settings = loadJSON('settings', { limit: 0, pin: '', autoNext: true, strict: false, kid: false, listen: 'auto', loop: false });
 const progress = loadJSON('progress', {});   // 资源名 → { ep, t, at }
 const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 function usage() {
@@ -1253,7 +1255,7 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
     const sameItem = player.item === id;
     clearInterval(player.tick); clearInterval(player.countdown);
     if (wrap) { wrap.hidden = false; document.querySelector('.album')?.classList.add('playing'); }
-    player.item = id; player.idx = idx; player.t = startAt; player.dur = e.duration || 0; player.locked = false; player.pulsed = false; player.upShown = false; player.endShown = false; player.touched = false;
+    player.item = id; player.idx = idx; player.t = startAt; player.dur = e.duration || 0; player.locked = false; player.paused = false; player.pulsed = false; player.upShown = false; player.endShown = false; player.touched = false;
     if (!sameItem) player.listen = wantListen(it);
     $('nextBtn')?.classList.remove('pulse');
     syncDock();
@@ -1303,6 +1305,11 @@ function applyListen() {
   const shield = box.querySelector('.shield');
   box.insertBefore(el, shield ? shield.nextSibling : null);
 }
+function toggleLoop() {
+  settings.loop = !settings.loop; saveJSON('settings', settings);
+  document.querySelectorAll('[data-loop]').forEach(b => b.setAttribute('aria-pressed', String(settings.loop)));
+  toast(settings.loop ? '循环播放已打开：播完最后一集会从第 1 集重新开始' : '循环播放已关闭');
+}
 function toggleListen() { player.listen = !player.listen; applyListen(); }
 
 /* 全屏：优先用浏览器全屏；iPhone 不支持对普通元素全屏，就把播放器铺满屏幕（伪全屏） */
@@ -1347,8 +1354,9 @@ async function exitKid() {
   go({ mode: 'home' });
 }
 
+const nextIdx = () => { const m = media(ITEMS[player.item]); return player.idx < m.episodes.length - 1 ? player.idx + 1 : settings.loop ? 0 : -1; };
 function onTick() {
-  if (player.item == null || player.locked || document.visibilityState !== 'visible') return;
+  if (player.item == null || player.locked || player.paused || document.visibilityState !== 'visible') return;
   player.t += 1;
   rollDay(); use.sec += 1;
   if (use.sec % 5 === 0) { saveJSON('usage', use); saveProgress(); }
@@ -1359,8 +1367,9 @@ function onTick() {
   updateElapsed();
   if (!$('mini').hidden) $('miniProg').style.width = player.dur ? Math.min(100, player.t / player.dur * 100) + '%' : '0%';
   if (player.dur && hasNext && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; if (isHere()) $('nextBtn')?.classList.add('pulse'); }
-  if (player.dur && hasNext && settings.autoNext && !player.upShown && !player.endShown && player.t >= player.dur + 1) { player.upShown = true; startCountdown(); }
-  else if (player.dur && (!hasNext || !settings.autoNext) && !player.endShown && player.t >= player.dur + 1) { player.endShown = true; showEnd(hasNext); }
+  const goOn = nextIdx() >= 0 && (settings.autoNext || settings.loop);
+  if (player.dur && goOn && !player.upShown && !player.endShown && player.t >= player.dur + 1) { player.upShown = true; startCountdown(); }
+  else if (player.dur && !goOn && !player.endShown && player.t >= player.dur + 1) { player.endShown = true; showEnd(hasNext); }
 }
 
 function updateElapsed() {
@@ -1379,11 +1388,12 @@ function updateQuota() {
 /* 快播完时：在播放器上显示“5 秒后播放下一集”，可以取消 */
 function startCountdown() {
   const box = $('player'); if (!box || box.querySelector('.up-next')) return;
-  const m = media(ITEMS[player.item]), next = m.episodes[player.idx + 1];
+  const m = media(ITEMS[player.item]), ni = nextIdx(), next = m.episodes[ni];
+  const label = m.episodes.length === 1 ? '循环 · 再听一遍' : ni === 0 ? `循环 · 回到第 1 集 · ${esc(next.title)}` : `第 ${ni + 1} 集 · ${esc(next.title)}`;
   let n = 5;
   const el = document.createElement('div');
   el.className = 'up-next';
-  el.innerHTML = `<div class="up-card"><span class="up-label">即将播放</span><b>第 ${player.idx + 2} 集 · ${esc(next.title)}</b>
+  el.innerHTML = `<div class="up-card"><span class="up-label">即将播放</span><b>${label}</b>
     <div class="up-actions"><button class="btn btn-accent sm" type="button" data-next="1">立即播放</button><button class="btn btn-glass sm" type="button" data-cancel-next="1">取消</button></div>
     <span class="up-count" id="upCount">${n}</span></div>`;
   box.appendChild(el);
@@ -1392,7 +1402,7 @@ function startCountdown() {
     if (document.visibilityState !== 'visible') return;
     n -= 1;
     const c = $('upCount'); if (c) c.textContent = n;
-    if (n <= 0) { clearInterval(player.countdown); playItem(player.item, player.idx + 1); }
+    if (n <= 0) { clearInterval(player.countdown); playItem(player.item, ni); }
   }, 1000);
 }
 /* 播完了（最后一集，或关闭了自动下一集）：盖住 B站结尾的推荐视频 */
@@ -1439,15 +1449,24 @@ async function unlockMore() {
 window.addEventListener('blur', () => setTimeout(() => {
   const f = document.activeElement;
   if (!f || f.tagName !== 'IFRAME' || !f.closest('#player') || player.item == null || player.touched) return;
-  player.touched = true; player.everStarted = true;
+  const resumed = player.paused;
+  player.touched = true; player.everStarted = true; if (resumed) { player.paused = false; if (!$('mini').hidden) syncMini(); }
   $('player').querySelector('.listen')?.classList.add('started', 'touched');   // 封面中间：▶ 换成声波动画，隐藏“没声音？”提示
-  if (player.t <= 90) { player.t = 0; updateElapsed(); }
+  if (!resumed && player.t <= 90) { player.t = 0; updateElapsed(); }
 }, 0));
 ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
   document.querySelectorAll('[data-fs] span').forEach(sp => { sp.textContent = isFs() ? '退出全屏' : '全屏'; });
 }));
+const touchDevice = matchMedia('(pointer: coarse)').matches;
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') { saveJSON('usage', use); saveProgress(); }
+  if (document.visibilityState === 'hidden') { saveJSON('usage', use); saveProgress(); player.wasHidden = true; return; }
+  if (!touchDevice || !player.wasHidden || player.item == null || player.locked) return;
+  player.wasHidden = false;
+  player.touched = false; player.paused = true;
+  const f = document.activeElement; if (f && f.tagName === 'IFRAME') f.blur();   // 让下一次点击播放器能被察觉到
+  const l = $('player').querySelector('.listen');
+  if (l) { l.classList.remove('started', 'touched'); const st = l.querySelector('.listen-start'); if (st) st.textContent = '点这里继续'; }
+  if (!$('mini').hidden) $('miniSub').textContent = '已暂停 · 点开后按 ▶ 继续';
 });
 window.addEventListener('pagehide', () => { saveJSON('usage', use); saveProgress(); });
 
@@ -1941,7 +1960,8 @@ document.addEventListener('click', e => {
   if (t.dataset.more) return go(JSON.parse(t.dataset.more));
   if (t.dataset.play) return playItem(Number(t.dataset.play));
   if (t.dataset.ep !== undefined) return playItem(view.value, Number(t.dataset.ep));
-  if (t.dataset.next) { cancelCountdown(); return playItem(player.item, player.idx + 1); }
+  if (t.dataset.next) { cancelCountdown(); const ni = player.item != null && t.closest('.up-next') ? nextIdx() : player.idx + 1; return playItem(player.item, ni); }
+  if (t.dataset.loop) return toggleLoop();
   if (t.dataset.cancelNext) return cancelCountdown();
   if (t.dataset.replay) return playItem(player.item, player.idx);
   if (t.dataset.miniClose) return stopPlayer();
