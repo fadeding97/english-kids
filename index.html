@@ -849,7 +849,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-09 循环播放 v2';
+const APP_VERSION = '2026-11-09 循环播放 v3';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1181,11 +1181,12 @@ function saveProgress() {
   progress[it.n] = { ep: player.idx, t: Math.floor(player.t), at: Date.now() };
   saveJSON('progress', progress);
 }
+function silenceOld(box) { box.querySelectorAll('iframe').forEach(f => { try { f.src = 'about:blank'; } catch (e) {} f.remove(); }); }
 function stopPlayer() {
   if (player.item != null) saveProgress();
   clearInterval(player.tick); clearInterval(player.countdown);
   player.item = null; player.locked = false;
-  const box = $('player'); box.innerHTML = ''; box.classList.remove('pseudo-fs'); document.body.classList.remove('fs-lock');
+  const box = $('player'); silenceOld(box); box.innerHTML = ''; box.classList.remove('pseudo-fs'); document.body.classList.remove('fs-lock');
   placePlayer();
 }
 const isHere = () => player.item != null && view.mode === 'detail' && view.value === player.item;
@@ -1263,6 +1264,7 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
     saveProgress();
     if (remaining() <= 0) { lockPlayer(); return; }
     const sandbox = settings.strict ? ' sandbox="allow-scripts allow-same-origin allow-presentation allow-storage-access-by-user-activation"' : '';
+    silenceOld(box);
     box.innerHTML = `<iframe src="${esc(biliEmbed(e, startAt))}" title="${esc(e.title)}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
       allowfullscreen referrerpolicy="strict-origin-when-cross-origin" scrolling="no"${sandbox}></iframe><div class="shield" aria-hidden="true"></div><div class="dm-block" aria-hidden="true"></div>
       <button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button><span class="fs-rotate">横过手机看，画面更大，状态栏也会隐藏</span>`;
@@ -1371,7 +1373,8 @@ function onTick() {
   if (!$('mini').hidden) $('miniProg').style.width = player.dur ? Math.min(100, player.t / player.dur * 100) + '%' : '0%';
   if (player.dur && hasNext && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; if (isHere()) $('nextBtn')?.classList.add('pulse'); }
   const goOn = nextIdx() >= 0 && (settings.autoNext || settings.loop);
-  if (player.dur && goOn && !player.upShown && !player.endShown && player.t >= Math.max(1, player.dur - 3)) { player.upShown = true; startCountdown(); }
+  const endPad = isIOS ? 5 : 3;   // 倒计时 5 秒，在估算结尾之后 endPad 秒才真正换歌
+  if (player.dur && goOn && !player.upShown && !player.endShown && player.t >= Math.max(1, player.dur + endPad - 5)) { player.upShown = true; startCountdown(); }
   else if (player.dur && !goOn && !player.endShown && player.t >= player.dur + 1) { player.endShown = true; showEnd(hasNext); }
 }
 
@@ -1430,6 +1433,7 @@ function lockPlayer() {
   const box = $('player'); if (!box) return;
   player.locked = true;
   clearInterval(player.countdown);
+  silenceOld(box);
   saveProgress();
   box.innerHTML = `<div class="lock">
     <svg class="ico lock-ico" aria-hidden="true"><use href="#i-moon"/></svg>
