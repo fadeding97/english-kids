@@ -849,7 +849,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-09 循环播放 v1';
+const APP_VERSION = '2026-11-09 循环播放 v2';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1267,6 +1267,7 @@ function playItem(id, idx, { resume = false, instant = false } = {}) {
       allowfullscreen referrerpolicy="strict-origin-when-cross-origin" scrolling="no"${sandbox}></iframe><div class="shield" aria-hidden="true"></div><div class="dm-block" aria-hidden="true"></div>
       <button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button><span class="fs-rotate">横过手机看，画面更大，状态栏也会隐藏</span>`;
     applyListen();
+    if (isIOS && player.everStarted && !$('mini').hidden) $('miniSub').textContent = '下一首已准备好 · 点这里，再按 ▶';
     if (lastPos) toast(`上次看到 ${fmtDur(lastPos)}，可以拖动进度条接着看`, 4200);
     updateQuota();
     player.tick = setInterval(onTick, 1000);
@@ -1293,13 +1294,13 @@ function applyListen() {
   const it = ITEMS[player.item], m = media(it), e = m.episodes[player.idx];
   const img = m.cover ? `<img src="${esc(coverUrl(m.cover, 360))}" alt="" referrerpolicy="no-referrer">` : '';
   const el = document.createElement('div');
-  el.className = 'listen' + (player.touched || player.everStarted ? ' started' : '') + (player.touched ? ' touched' : '');
+  el.className = 'listen' + (player.touched || (player.everStarted && !isIOS) ? ' started' : '') + (player.touched ? ' touched' : '');
   // 封面中心 = 视频画面中心：B站暂停时的 ▶ 按钮就在这里，点封面中间的圆钮 = 点 B站的播放键
   el.innerHTML = `<div class="listen-bg">${img}</div>
     <div class="listen-txt"><span class="listen-label">${ic('i-headphones')}只听声音</span><b>${esc(it.cn)}</b><span>${esc(m.episodes.length > 1 ? e.title : it.n)}</span>
       <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
     <div class="listen-center">${img ? `<div class="listen-art">${img}</div>` : ''}<span class="listen-play">${ic('i-play')}</span>
-      <span class="listen-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="listen-start">点这里开始</span></div>
+      <span class="listen-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="listen-start">${player.everStarted ? '点一下继续' : '点这里开始'}</span></div>
     <span class="listen-hint">没声音？点封面中间的 ▶</span>
     <div class="listen-block" aria-hidden="true"></div>`;
   const shield = box.querySelector('.shield');
@@ -1354,6 +1355,8 @@ async function exitKid() {
   go({ mode: 'home' });
 }
 
+const touchDevice = matchMedia('(pointer: coarse)').matches;
+const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const nextIdx = () => { const m = media(ITEMS[player.item]); return player.idx < m.episodes.length - 1 ? player.idx + 1 : settings.loop ? 0 : -1; };
 function onTick() {
   if (player.item == null || player.locked || player.paused || document.visibilityState !== 'visible') return;
@@ -1368,7 +1371,7 @@ function onTick() {
   if (!$('mini').hidden) $('miniProg').style.width = player.dur ? Math.min(100, player.t / player.dur * 100) + '%' : '0%';
   if (player.dur && hasNext && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; if (isHere()) $('nextBtn')?.classList.add('pulse'); }
   const goOn = nextIdx() >= 0 && (settings.autoNext || settings.loop);
-  if (player.dur && goOn && !player.upShown && !player.endShown && player.t >= player.dur + 1) { player.upShown = true; startCountdown(); }
+  if (player.dur && goOn && !player.upShown && !player.endShown && player.t >= Math.max(1, player.dur - 3)) { player.upShown = true; startCountdown(); }
   else if (player.dur && !goOn && !player.endShown && player.t >= player.dur + 1) { player.endShown = true; showEnd(hasNext); }
 }
 
@@ -1457,7 +1460,7 @@ window.addEventListener('blur', () => setTimeout(() => {
 ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
   document.querySelectorAll('[data-fs] span').forEach(sp => { sp.textContent = isFs() ? '退出全屏' : '全屏'; });
 }));
-const touchDevice = matchMedia('(pointer: coarse)').matches;
+
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') { saveJSON('usage', use); saveProgress(); player.wasHidden = true; return; }
   if (!touchDevice || !player.wasHidden || player.item == null || player.locked) return;
