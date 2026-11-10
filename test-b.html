@@ -1,0 +1,1411 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="英语启蒙">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>英语启蒙地图</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: 音乐 App 式。桌面：左侧半透明侧栏（搜索 / 浏览 / 年龄 / 月龄）+ 右侧内容（大标题 → 精选大卡 → 方形封面横排 → 列表式分栏）；手机：底部标签栏。点卡片进入“专辑页”式详情 */
+:root {
+  --bg: #FFFFFF;
+  --side: rgba(246, 246, 248, .86);
+  --card: #F5F5F7;
+  --label: #1D1D1F;
+  --label-2: #6E6E73;
+  --label-3: #AEAEB2;
+  --sep: rgba(0, 0, 0, .1);
+  --fill: rgba(0, 0, 0, .05);
+  --fill-2: rgba(0, 0, 0, .08);
+  --accent: #FA233B;
+  --on-accent: #FFFFFF;
+  --tabbar: rgba(250, 250, 252, .86);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", "Microsoft YaHei", system-ui, sans-serif;
+  --ease: cubic-bezier(.32, .72, 0, 1);
+  --press: cubic-bezier(.2, 0, 0, 1);
+  /* 苹果式弹簧曲线（由阻尼弹簧方程采样成 linear()）：
+     smooth = 无回弹（response .5s, damping 1），用于转场；snappy = 微回弹（.35s, .86）；bouncy = 明显回弹（.4s, .62），用于松手和图标弹跳 */
+  --spring-smooth: cubic-bezier(.32, .72, 0, 1);
+  --spring-snappy: cubic-bezier(.25, 1, .4, 1.04);
+  --spring-bouncy: cubic-bezier(.34, 1.4, .64, 1);
+  --t-smooth: .69s; --t-snappy: .47s; --t-bouncy: .65s;
+  --spring: var(--spring-snappy);
+  --side-w: 260px;
+}
+@supports (animation-timing-function: linear(0, 1)) {
+  :root {
+    --spring-smooth: linear(0, 0.0249, 0.0853, 0.1648, 0.2523, 0.3408, 0.4258, 0.5047, 0.5762, 0.6398, 0.6957, 0.7442, 0.7859, 0.8215, 0.8516, 0.8771, 0.8985, 0.9163, 0.9312, 0.9435, 0.9537, 0.9622, 0.9691, 0.9748, 0.9795, 0.9833, 0.9865, 0.989, 0.9911, 0.9928, 0.9942, 0.9953, 0.9962, 0.9969, 0.9975, 0.998, 1);
+    --spring-snappy: linear(0, 0.0235, 0.0824, 0.1625, 0.2531, 0.347, 0.4388, 0.5251, 0.6041, 0.6745, 0.7362, 0.7892, 0.8341, 0.8715, 0.9023, 0.9273, 0.9473, 0.963, 0.9752, 0.9845, 0.9914, 0.9964, 0.9999, 1.0023, 1.0038, 1.0046, 1.005, 1.005, 1.0048, 1.0044, 1.004, 1.0035, 1.0031, 1.0026, 1.0022, 1.0018, 1);
+    --spring-bouncy: linear(0, 0.0353, 0.1247, 0.2461, 0.382, 0.5191, 0.6478, 0.762, 0.8584, 0.9358, 0.9946, 1.0364, 1.0634, 1.0782, 1.0834, 1.0815, 1.0747, 1.065, 1.0537, 1.0422, 1.0313, 1.0215, 1.0132, 1.0064, 1.0012, 0.9975, 0.995, 0.9936, 0.9931, 0.9931, 0.9936, 0.9944, 0.9953, 0.9963, 0.9972, 0.9981, 1);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1E1E1E; --side: rgba(40, 40, 42, .86); --card: #2C2C2E; --label: #F5F5F7; --label-2: #A1A1A6; --label-3: #636366;
+    --sep: rgba(255, 255, 255, .12); --fill: rgba(255, 255, 255, .06); --fill-2: rgba(255, 255, 255, .1);
+    --accent: #FF375F; --tabbar: rgba(30, 30, 30, .86);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1E1E1E; --side: rgba(40, 40, 42, .86); --card: #2C2C2E; --label: #F5F5F7; --label-2: #A1A1A6; --label-3: #636366;
+  --sep: rgba(255, 255, 255, .12); --fill: rgba(255, 255, 255, .06); --fill-2: rgba(255, 255, 255, .1);
+  --accent: #FF375F; --tabbar: rgba(30, 30, 30, .86);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--label); font-family: var(--font); font-size: 15px; line-height: 1.4; letter-spacing: -.01em; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; padding: 0; letter-spacing: inherit; text-align: left; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+.ico { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- sidebar (desktop) ---------- */
+.side {
+  position: fixed; top: 0; bottom: 0; left: 0; width: calc(var(--side-w) + env(safe-area-inset-left, 0px)); z-index: 20;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) 14px calc(16px + env(safe-area-inset-bottom, 0px)) calc(14px + env(safe-area-inset-left, 0px));
+  background: var(--side); backdrop-filter: saturate(180%) blur(30px); -webkit-backdrop-filter: saturate(180%) blur(30px);
+  border-right: .5px solid var(--sep); display: flex; flex-direction: column; gap: 18px; overflow-y: auto;
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+.app-ico { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #fff; background: linear-gradient(180deg, #6AA4FF, #3A5BE0); }
+.app-ico .ico { width: 17px; height: 17px; stroke-width: 2.4; }
+.brand b { font-size: 17px; font-weight: 700; }
+.s-search { position: relative; display: block; }
+.s-search .ico { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--label-2); }
+.s-search input { width: 100%; height: 32px; border-radius: 8px; border: .5px solid var(--sep); background: var(--fill); color: var(--label); font: 14px var(--font); padding: 0 10px 0 30px; }
+.s-search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.nav-group { display: grid; gap: 1px; }
+.nav-h { font-size: 11px; font-weight: 600; color: var(--label-2); padding: 0 8px 6px; letter-spacing: .02em; }
+.nav-item { height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 8px; border-radius: 8px; font-size: 15px; width: 100%; font-variant-numeric: tabular-nums; }
+.nav-item .ico { color: var(--accent); width: 19px; height: 19px; }
+.nav-item:hover { background: var(--fill); }
+.nav-item[aria-current="true"] { background: var(--fill-2); font-weight: 600; }
+.nav-item .kid { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--accent); }
+.age-dot { width: 19px; display: grid; place-items: center; }
+.age-dot i { width: 7px; height: 7px; border-radius: 50%; background: var(--label-3); }
+.nav-item[aria-current="true"] .age-dot i { background: var(--accent); }
+.months { margin-top: auto; background: var(--fill); border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; }
+.months small { font-size: 11px; font-weight: 600; color: var(--label-2); }
+.months-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.months-row output { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stepper { display: flex; background: var(--fill-2); border-radius: 8px; overflow: hidden; }
+.stepper button { width: 38px; height: 30px; display: grid; place-items: center; }
+.stepper button:active { background: var(--sep); }
+.stepper button + button { box-shadow: -.5px 0 0 var(--sep); }
+.stepper .ico { width: 14px; height: 14px; stroke-width: 2.4; }
+
+/* ---------- main ---------- */
+.main {
+  margin-left: calc(var(--side-w) + env(safe-area-inset-left, 0px)); min-width: 0;
+  padding: calc(28px + env(safe-area-inset-top, 0px)) max(40px, env(safe-area-inset-right, 0px)) 64px 40px;
+  display: grid; gap: 34px;
+}
+.page-h { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 20px; padding-bottom: 14px; border-bottom: .5px solid var(--sep); }
+.page-h h1 { font-size: 34px; font-weight: 700; letter-spacing: .005em; line-height: 1.15; }
+.page-h p { font-size: 15px; color: var(--label-2); margin-top: 2px; }
+.m-only { display: none; }
+
+.sec { min-width: 0; display: grid; gap: 12px; position: relative; }
+.sec-h { display: flex; align-items: center; gap: 2px; font-size: 20px; font-weight: 700; width: fit-content; letter-spacing: .005em; }
+button.sec-h:hover { color: var(--label); }
+button.sec-h .ico { width: 18px; height: 18px; color: var(--label-2); stroke-width: 2.4; }
+.sec-sub { font-size: 13px; color: var(--label-2); margin-top: -8px; }
+
+.row {
+  display: grid; grid-auto-flow: column; gap: 20px; overflow-x: auto; scroll-snap-type: x proximity; scroll-behavior: smooth; scrollbar-width: none;
+  margin-inline: -40px; padding-inline: 40px; scroll-padding-inline: 40px; padding-bottom: 4px;
+}
+.row::-webkit-scrollbar { display: none; }
+.row > * { scroll-snap-align: start; }
+.row.sq { grid-auto-columns: calc((100% - 80px - 5 * 20px) / 6); min-width: 0; }
+.row.big { grid-auto-columns: calc((100% - 80px - 3 * 20px) / 4); }
+.pager { position: absolute; top: 50%; width: 30px; height: 30px; border-radius: 50%; display: none; place-items: center; background: var(--side); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 1px 6px rgba(0, 0, 0, .18); opacity: 0; transition: opacity .2s ease; z-index: 2; }
+.pager .ico { width: 15px; height: 15px; stroke-width: 2.4; }
+.pager.l { left: -16px; } .pager.r { right: -16px; }
+@media (hover: hover) and (pointer: fine) { .pager { display: grid; } .sec:hover .pager { opacity: 1; } }
+
+/* artwork */
+.art { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 8px; overflow: hidden; color: #fff; background: linear-gradient(160deg, var(--c1), var(--c2)); box-shadow: 0 0 0 .5px var(--sep) inset; }
+.a-title { position: absolute; left: 10%; right: 10%; top: 9%; font-size: clamp(16px, 1.6vw, 22px); font-weight: 800; line-height: 1.08; letter-spacing: -.02em; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.a-kind { position: absolute; left: 10%; bottom: 8%; font-size: 11px; font-weight: 700; opacity: .85; letter-spacing: .04em; }
+.a-play { position: absolute; left: 8px; bottom: 8px; width: 30px; height: 30px; border-radius: 50%; background: rgba(0, 0, 0, .4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: grid; place-items: center; opacity: 0; transition: opacity .2s ease; }
+.a-play .ico { width: 13px; height: 13px; fill: #fff; stroke: none; margin-left: 2px; }
+
+.tile { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.tile:hover .a-play { opacity: 1; }
+.tile:hover .a-kind { opacity: 0; }
+/* 按压反馈：按下快速缩小，松手带一点回弹地恢复（类似 iOS） */
+.tile .art, .pick-card, .btn, .track, .nav-item, .chip, .tab, .sec-h, .back, .stepper button {
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.tile .art { transition: transform var(--t-bouncy) var(--spring-bouncy), box-shadow .3s ease; will-change: transform; }
+.tile:active .art { transform: scale(.96); transition: transform .18s var(--press), box-shadow .3s ease; }
+@media (hover: hover) and (pointer: fine) { .tile:hover .art { box-shadow: 0 0 0 .5px var(--sep) inset, 0 8px 20px rgba(0, 0, 0, .16); } }
+.track { border-radius: 6px; transition: background .2s ease; }
+.track:active { background: var(--fill); transition-duration: 0s; }
+.track .art { transition: transform var(--t-bouncy) var(--spring-bouncy); }
+.track:active .art { transform: scale(.93); transition: transform .18s var(--press); }
+.t-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.t-sub { font-size: 13px; color: var(--label-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -4px; }
+.t-sub .warn { color: var(--accent); }
+
+/* top picks */
+.pick { display: grid; gap: 8px; min-width: 0; align-content: start; }
+.pick .eyebrow { font-size: 12px; color: var(--label-2); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pick-card { border-radius: 10px; overflow: hidden; display: grid; background: var(--c2); color: #fff; transition: transform var(--t-bouncy) var(--spring-bouncy), box-shadow .3s ease; will-change: transform; }
+.pick-card:active { transform: scale(.97); transition: transform .18s var(--press); }
+@media (hover: hover) and (pointer: fine) { .pick-card:hover { box-shadow: 0 10px 26px rgba(0, 0, 0, .18); } }
+.pick-card .art { border-radius: 0; box-shadow: none; }
+.pick-card .a-title { font-size: clamp(20px, 2vw, 28px); }
+.pick-body { padding: 12px 14px 14px; display: grid; gap: 4px; min-height: 96px; align-content: start; }
+.pick-body b { font-size: 15px; font-weight: 600; }
+.pick-body span { font-size: 13px; opacity: .85; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* stage guide */
+.guide { background: var(--card); border-radius: 12px; padding: 22px 24px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px 36px; }
+.guide h3 { font-size: 22px; font-weight: 700; }
+.guide .goal { font-size: 15px; color: var(--label-2); margin-top: 6px; }
+.screen { margin-top: 14px; font-size: 13px; color: var(--label-2); display: flex; gap: 8px; align-items: flex-start; }
+.screen .ico { width: 16px; height: 16px; color: var(--accent); margin-top: 1px; }
+.steps { display: grid; }
+.step { display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 10px 0; border-bottom: .5px solid var(--sep); font-size: 15px; }
+.step:first-child { padding-top: 0; }
+.step em { font-style: normal; font-size: 15px; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+.phr { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 12px; }
+.phr span { font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 999px; background: var(--bg); }
+
+/* track list columns */
+.tracks { display: grid; grid-auto-flow: column; grid-template-rows: repeat(4, auto); grid-auto-columns: calc((100% - 80px - 2 * 24px) / 3); column-gap: 24px;
+  overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; margin-inline: -40px; padding-inline: 40px; scroll-padding-inline: 40px; }
+.tracks::-webkit-scrollbar { display: none; }
+.track { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 6px 0; min-width: 0; scroll-snap-align: start; }
+.track .art { border-radius: 5px; }
+.track .art .a-title, .track .art .a-kind { display: none; }
+.track-txt { min-width: 0; padding: 8px 0; border-bottom: .5px solid var(--sep); align-self: stretch; display: grid; align-content: center; }
+.track-txt b { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track-txt span { font-size: 13px; color: var(--label-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track .dur { font-size: 13px; color: var(--label-2); align-self: stretch; display: grid; align-content: center; border-bottom: .5px solid var(--sep); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.track:hover .track-txt b { color: var(--accent); }
+
+/* grid list */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 24px 20px; }
+
+.empty { background: var(--card); border-radius: 12px; padding: 28px 20px; text-align: center; display: grid; gap: 6px; justify-items: center; }
+.empty h3 { font-size: 17px; font-weight: 600; }
+.empty p { color: var(--label-2); max-width: 46ch; }
+.btn { height: 34px; padding: 0 16px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 15px; font-weight: 600; white-space: nowrap;
+  transition: transform var(--t-bouncy) var(--spring-bouncy), opacity .3s ease; }
+/* iOS 系统按钮：按下立刻变暗并轻微收缩，松手时淡回、弹回 */
+.btn:active { transform: scale(.97); opacity: .55; transition: transform .18s var(--press), opacity 0s; }
+.nav-item { transition: background .12s ease; }
+.nav-item:active { background: var(--sep); transition-duration: 0s; }
+.chip, .stepper button { transition: background .2s ease, color .2s ease, transform var(--t-bouncy) var(--spring-bouncy); }
+.chip:active, .stepper button:active { transform: scale(.93); transition: transform .18s var(--press), background 0s; }
+.tab { transition: color .2s ease; }
+.tab:active .ico { opacity: .5; }
+/* SF Symbols 式弹跳：标签被选中时图标先压缩再弹起 */
+.tab.bounce .ico { animation: sym-bounce var(--t-bouncy) both; }
+@keyframes sym-bounce {
+  0% { transform: scale(1); animation-timing-function: var(--press); }
+  22% { transform: scale(.78); animation-timing-function: var(--spring-bouncy); }
+  100% { transform: scale(1); }
+}
+.sec-h, .back { transition: opacity .3s ease; }
+.sec-h:active, .back:active { opacity: .4; transition-duration: 0s; }
+
+/* ---------- 苹果式转场（View Transitions） ----------
+   切换频道/年龄：像 iOS 切标签一样，只做极短的交叉淡化，不位移。
+   打开详情：iOS 18 的缩放转场（zoom）——封面从原位置无回弹地放大到大封面，原页面同时略微缩小、变暗淡出。
+   返回：反向缩回；手机上还可以从屏幕左边缘右滑返回（跟手）。 */
+.side { view-transition-name: side; }
+.tabbar { view-transition-name: tabbar; }
+.main { view-transition-name: main; background: var(--bg); }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-group(*) { animation-duration: var(--t-smooth); animation-timing-function: var(--spring-smooth); }
+::view-transition-old(main) { animation: vt-fade-out .14s linear both; }
+::view-transition-new(main) { animation: vt-fade-in .22s ease-out both; }
+:root[data-dir="fwd"]::view-transition-old(main) { animation: vt-recede .42s var(--spring-smooth) both; }
+:root[data-dir="fwd"]::view-transition-new(main) { animation: vt-fade-in .32s ease-out .08s both; }
+:root[data-dir="back"]::view-transition-old(main) { animation: vt-fade-out .2s ease-out both; }
+:root[data-dir="back"]::view-transition-new(main) { animation: vt-come-back var(--t-smooth) var(--spring-smooth) both; }
+/* 原地展开播放器：页面不淡入淡出，只有封面变形成播放器 */
+:root[data-dir="none"]::view-transition-old(main) { display: none; }
+:root[data-dir="none"]::view-transition-new(main) { animation: none; }
+::view-transition-group(hero-art) { animation-duration: var(--t-smooth); animation-timing-function: var(--spring-smooth); z-index: 5; }
+::view-transition-old(hero-art), ::view-transition-new(hero-art) { animation-duration: .25s; height: 100%; object-fit: cover; }
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }
+@keyframes vt-recede { to { opacity: 0; transform: scale(.94); filter: brightness(.9); } }
+@keyframes vt-come-back { from { opacity: 0; transform: scale(.94); } }
+/* 不支持 View Transitions 时的退路 */
+.main.enter { animation: vt-fade-in .22s ease-out both; }
+.main.enter.fwd { animation: vt-zoom-in var(--t-smooth) var(--spring-smooth) both; }
+.main.enter.back { animation: vt-come-back var(--t-smooth) var(--spring-smooth) both; }
+@keyframes vt-zoom-in { from { opacity: 0; transform: scale(1.04); } }
+/* 右滑返回 */
+body.swiping { background: var(--card); overflow: hidden; }
+.main.swiping { box-shadow: -10px 0 30px rgba(0, 0, 0, .14); will-change: transform; }
+.btn .ico { width: 14px; height: 14px; }
+.btn-accent { background: var(--accent); color: var(--on-accent); }
+.btn-accent .ico { fill: currentColor; stroke: none; }
+.btn-gray { background: var(--fill-2); color: var(--accent); }
+.empty .btn { margin-top: 8px; }
+
+/* detail (album page) */
+.back { display: inline-flex; align-items: center; gap: 2px; color: var(--accent); font-size: 15px; width: fit-content; margin-bottom: -14px; }
+.back .ico { width: 18px; height: 18px; stroke-width: 2.4; }
+.album { display: grid; grid-template-columns: minmax(180px, 270px) minmax(0, 1fr); gap: 28px; align-items: end; }
+.album .art { border-radius: 10px; box-shadow: 0 8px 30px rgba(0, 0, 0, .18); }
+.album .a-title { font-size: clamp(22px, 2.4vw, 32px); }
+.album-info { display: grid; gap: 6px; min-width: 0; }
+.album-info h1 { font-size: 28px; font-weight: 700; line-height: 1.15; }
+.album-info .en { font-size: 22px; color: var(--accent); font-weight: 400; }
+.album-info .meta { font-size: 12px; font-weight: 600; color: var(--label-2); text-transform: uppercase; letter-spacing: .02em; }
+.album-info .why { font-size: 15px; color: var(--label-2); margin-top: 8px; max-width: 60ch; }
+.album-info .tip { font-size: 13px; color: var(--label-2); max-width: 60ch; }
+.album-info .tip.warn { color: var(--accent); }
+.album-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.album-actions .btn { min-width: 120px; }
+
+/* real cover art */
+.art.has-img { background: var(--c2); }
+.art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.art.has-img .a-play { z-index: 1; }
+
+/* embedded player */
+.stage-player { display: grid; gap: 10px; scroll-margin-top: calc(16px + env(safe-area-inset-top, 0px)); }
+.player { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 10px 34px rgba(0, 0, 0, .22); }
+.player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.player .shield { position: absolute; left: 0; right: 0; top: 0; height: 52px; z-index: 2; }
+.player-bar { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.player-bar .src { flex: none; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--fill-2); color: var(--label-2); letter-spacing: .02em; }
+.player-bar .src.official { background: color-mix(in srgb, #34C759 18%, transparent); color: #248A3D; }
+.player-bar .now { flex: 1; min-width: 0; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.btn.sm { height: 30px; padding: 0 12px; font-size: 13px; flex: none; }
+.btn.sm .ico { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; }
+.btn.pulse { background: var(--accent); color: var(--on-accent); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { transform: scale(1.06); } }
+
+/* episode list */
+.ep-count { font-size: 15px; font-weight: 400; color: var(--label-2); margin-left: 6px; }
+.eps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); column-gap: 24px; max-height: 420px; overflow-y: auto; }
+.ep { width: 100%; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 11px 4px; border-bottom: .5px solid var(--sep); font-size: 14px; border-radius: 6px; transition: background .2s ease; }
+.ep:active { background: var(--fill); transition-duration: 0s; }
+.ep-n { color: var(--label-2); font-variant-numeric: tabular-nums; text-align: center; }
+.ep-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ep-d { color: var(--label-2); font-size: 13px; font-variant-numeric: tabular-nums; }
+.ep[aria-current="true"] { color: var(--accent); font-weight: 600; }
+.ep[aria-current="true"] .ep-n { color: var(--accent); }
+
+/* quota / progress */
+.player-bar .elapsed { flex: none; font-size: 12px; color: var(--label-2); font-variant-numeric: tabular-nums; }
+.player-bar .quota { flex: none; font-size: 12px; color: var(--label-2); font-variant-numeric: tabular-nums; }
+.player-bar .quota.low { color: var(--accent); font-weight: 600; }
+.a-progress { position: absolute; left: 8px; right: 8px; bottom: 8px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .35); overflow: hidden; z-index: 1; }
+.a-progress i { display: block; height: 100%; background: #fff; border-radius: 2px; }
+.tile .a-progress ~ .a-play { bottom: 18px; }
+
+/* up next (countdown) */
+.up-next, .end-cover { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; padding: 14px; background: rgba(12, 12, 16, .72); backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); opacity: 0; transition: opacity .25s ease; }
+.end-cover.show { opacity: 1; }
+.end-card { display: grid; justify-items: center; gap: 10px; color: #fff; text-align: center; }
+.end-card .ico { width: 34px; height: 34px; color: #FFD66B; }
+.end-card h3 { font-size: clamp(18px, 2.4vw, 24px); font-weight: 700; }
+.up-next.show { opacity: 1; }
+.up-card { position: relative; width: min(340px, 100%); padding: 14px 16px; border-radius: 14px; color: #fff; display: grid; gap: 6px;
+  background: rgba(40, 40, 44, .62); backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px);
+  transform: translateY(10px) scale(.98); transition: transform var(--t-snappy) var(--spring-snappy); }
+.up-next.show .up-card { transform: none; }
+.up-label { font-size: 11px; font-weight: 600; opacity: .7; letter-spacing: .04em; }
+.up-card b { font-size: 15px; font-weight: 600; padding-right: 30px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-actions { display: flex; gap: 8px; margin-top: 4px; }
+.up-count { position: absolute; right: 14px; top: 12px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: rgba(255, 255, 255, .18); font-variant-numeric: tabular-nums; }
+.btn-glass { background: rgba(255, 255, 255, .18); color: #fff; }
+
+/* lock screen */
+.lock { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; padding: 20px; text-align: center; color: #fff;
+  background: radial-gradient(120% 120% at 50% 0%, #2B2F55, #0E1022 70%); }
+.lock-ico { width: 40px; height: 40px; color: #FFD66B; margin-bottom: 4px; }
+.lock h3 { font-size: clamp(18px, 2.4vw, 24px); font-weight: 700; }
+.lock p { font-size: 14px; opacity: .75; max-width: 30ch; }
+.lock .btn { margin-top: 10px; }
+
+/* settings entry */
+.settings-item { margin-top: auto; }
+.settings-item .ico { color: var(--label-2) !important; }
+.side .months { margin-top: 6px; }
+.gear { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--fill-2); color: var(--label-2); }
+.gear .ico { width: 18px; height: 18px; }
+
+/* toast */
+.toast { position: fixed; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom, 0px)); z-index: 60; transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+  padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--label); background: var(--side);
+  backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px); box-shadow: 0 6px 24px rgba(0, 0, 0, .16);
+  transition: transform var(--t-snappy) var(--spring-snappy), opacity .2s ease; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 760px) { .toast { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
+
+/* sheet */
+.sheet-wrap { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; }
+.sheet-scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .32); opacity: 0; transition: opacity .3s ease; }
+.sheet { position: relative; width: min(440px, 100%); max-height: calc(100% - 20px); overflow-y: auto; background: var(--bg); border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+  padding: 20px; outline: none; opacity: 0; transform: scale(.96); transition: transform var(--t-snappy) var(--spring-snappy), opacity .2s ease; }
+.sheet-wrap.open .sheet-scrim { opacity: 1; }
+.sheet-wrap.open .sheet { opacity: 1; transform: none; }
+.sheet-wrap.closing .sheet { transition: transform .25s var(--ease), opacity .2s ease; }
+@media (max-width: 760px) {
+  .sheet-wrap { place-items: end stretch; padding: 0; }
+  .sheet { width: 100%; border-radius: 16px 16px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateY(100%); opacity: 1;
+    transition: transform var(--t-smooth) var(--spring-smooth); }
+  .sheet-wrap.closing .sheet { transform: translateY(100%); transition: transform .28s var(--ease); }
+}
+
+/* pin pad */
+.pin { display: grid; justify-items: center; gap: 6px; padding: 8px 0 4px; }
+.pin h3 { font-size: 20px; font-weight: 600; }
+.pin-sub { font-size: 13px; color: var(--label-2); min-height: 18px; }
+.pin-dots { display: flex; gap: 18px; margin: 14px 0 22px; }
+.pin-dots i { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--label); transition: background .12s ease; }
+.pin-dots i.on { background: var(--label); }
+.pin-pad { display: grid; grid-template-columns: repeat(3, 72px); gap: 14px 22px; }
+.pin-pad button { width: 72px; height: 72px; border-radius: 50%; background: var(--fill-2); font-size: 28px; font-weight: 400; display: grid; place-items: center;
+  transition: background .3s ease; touch-action: manipulation; }
+.pin-pad button:active { background: var(--label-3); transition-duration: 0s; }
+.pin-pad .pin-text { background: none; font-size: 15px; color: var(--label); }
+.pin-pad .pin-text .ico { width: 22px; height: 22px; }
+
+/* settings sheet */
+.settings { display: grid; gap: 6px; }
+.set-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.set-head h3 { font-size: 22px; font-weight: 700; }
+.settings .group-h { font-size: 13px; color: var(--label-2); padding: 10px 4px 4px; }
+.settings .group-f { font-size: 12px; color: var(--label-2); padding: 4px 4px 6px; line-height: 1.45; }
+.settings .group { background: var(--card); border-radius: 12px; overflow: hidden; }
+.seg-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; margin: 10px; padding: 2px; background: var(--fill-2); border-radius: 9px; }
+.seg-row button { height: 30px; border-radius: 7px; font-size: 13px; text-align: center; transition: background .2s ease; }
+.seg-row button[aria-checked="true"] { background: var(--bg); font-weight: 600; box-shadow: 0 2px 6px rgba(0, 0, 0, .12); }
+.cell2 { min-height: 46px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; font-size: 15px; position: relative; text-align: left; }
+.cell2 + .cell2::before, .seg-row + .cell2::before { content: ""; position: absolute; left: 14px; right: 0; top: 0; height: .5px; background: var(--sep); }
+.cell2 b { font-weight: 400; color: var(--label-2); font-size: 14px; text-align: right; }
+.cell2.link { color: var(--accent); }
+.cell2.link.danger { color: #FF3B30; }
+.switch { appearance: none; -webkit-appearance: none; flex: none; width: 51px; height: 31px; border-radius: 16px; background: var(--fill-2); position: relative; cursor: pointer; transition: background .25s ease; margin: 0; }
+.switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 3px 8px rgba(0, 0, 0, .15), 0 1px 1px rgba(0, 0, 0, .16); transition: transform var(--t-snappy) var(--spring-snappy); }
+.switch:checked { background: #34C759; }
+.switch:checked::after { transform: translateX(20px); }
+.fit { font-size: 13px; color: var(--label-2); display: flex; flex-wrap: wrap; gap: 4px 14px; padding-top: 14px; border-top: .5px solid var(--sep); }
+.fit button { color: var(--accent); }
+
+.foot { font-size: 12px; color: var(--label-2); display: grid; gap: 4px; padding-top: 14px; border-top: .5px solid var(--sep); }
+
+/* ---------- mobile tab bar ---------- */
+.tabbar { display: none; }
+.m-search { display: none; }
+@media (max-width: 1100px) {
+  .row.sq { grid-auto-columns: calc((100% - 80px - 3 * 20px) / 4.3); }
+  .row.big { grid-auto-columns: calc((100% - 80px - 2 * 20px) / 3); }
+  .tracks { grid-auto-columns: calc((100% - 80px - 24px) / 2); }
+}
+@media (max-width: 760px) {
+  .side { display: none; }
+  .main { margin-left: 0; padding: calc(14px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(96px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); gap: 28px; }
+  .m-only { display: flex; }
+  .row, .tracks { margin-inline: -16px; padding-inline: 16px; scroll-padding-inline: 16px; gap: 12px; }
+  .tracks { column-gap: 16px; }
+  .row.sq { grid-auto-columns: 40%; }
+  .row.big { grid-auto-columns: 78%; }
+  .tracks { grid-auto-columns: 88%; }
+  .guide { grid-template-columns: minmax(0, 1fr); padding: 18px; }
+  .album { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .album .art { width: min(72vw, 260px); }
+  .album-info { justify-items: center; }
+  .album-actions { justify-content: center; width: 100%; }
+  .album-actions .btn { flex: 1; height: 44px; border-radius: 10px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 14px; }
+  .m-search { display: block; position: relative; }
+  .m-search .ico { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--label-2); }
+  .m-search input { width: 100%; height: 38px; border: 0; border-radius: 10px; background: var(--fill-2); color: var(--label); font: 17px var(--font); padding: 0 12px 0 34px; }
+  .m-search input:focus { outline: none; }
+  .tabbar {
+    display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+    background: var(--tabbar); backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px); border-top: .5px solid var(--sep);
+  }
+  .tab { display: grid; justify-items: center; gap: 2px; font-size: 10px; font-weight: 500; color: var(--label-3); min-height: 44px; align-content: center; text-align: center; }
+  .tab .ico { width: 24px; height: 24px; }
+  .tab[aria-current="true"] { color: var(--accent); }
+  .ages-m { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding-inline: 16px; }
+  .ages-m::-webkit-scrollbar { display: none; }
+  .chip { height: 32px; padding: 0 14px; border-radius: 16px; background: var(--fill-2); font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; display: inline-flex; align-items: center; gap: 6px; }
+  .chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+  .chip i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .chip[aria-pressed="true"] i { background: var(--on-accent); }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0s !important; scroll-behavior: auto !important; } }
+
+/* ---------- 第三批 ---------- */
+.icon-btn { flex: none; height: 30px; padding: 0 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--label-2); background: var(--fill); transition: background .2s ease, color .2s ease, transform var(--t-bouncy) var(--spring-bouncy); -webkit-tap-highlight-color: transparent; }
+.icon-btn .ico { width: 15px; height: 15px; }
+.icon-btn:active { transform: scale(.94); transition: transform .12s var(--press); }
+.icon-btn[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+@media (max-width: 760px) { .icon-btn span { display: none; } .icon-btn { width: 34px; padding: 0; justify-content: center; } .player-bar .elapsed { display: none; } }
+
+/* 只听声音 */
+.listen { position: absolute; left: 0; right: 0; top: 0; bottom: 52px; z-index: 2; overflow: hidden; display: grid; place-items: center; color: #fff; background: #1c1c1e; }
+.listen-bg { position: absolute; inset: -40px; }
+.listen-bg img { width: 100%; height: 100%; object-fit: cover; filter: blur(40px) saturate(160%) brightness(.65); transform: scale(1.1); }
+.listen-card { position: relative; display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); padding: 16px; max-width: 92%; }
+.listen-art { flex: none; width: clamp(96px, 22vw, 210px); aspect-ratio: 1; border-radius: 10px; overflow: hidden; box-shadow: 0 18px 50px rgba(0, 0, 0, .45); }
+.listen-art img { width: 100%; height: 100%; object-fit: cover; }
+.listen-txt { display: grid; gap: 4px; min-width: 0; }
+.listen-label { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; opacity: .75; letter-spacing: .03em; }
+.listen-label .ico { width: 14px; height: 14px; }
+.listen-txt b { font-size: clamp(18px, 2.6vw, 28px); font-weight: 700; line-height: 1.15; }
+.listen-txt > span:not(.listen-label):not(.eq) { font-size: 14px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40ch; }
+.eq { display: flex; align-items: flex-end; gap: 3px; height: 18px; margin-top: 8px; }
+.eq i { width: 3px; height: 100%; border-radius: 2px; background: #fff; opacity: .85; transform-origin: bottom; animation: eq 1.1s ease-in-out infinite; }
+.eq i:nth-child(2) { animation-delay: -.3s; } .eq i:nth-child(3) { animation-delay: -.6s; } .eq i:nth-child(4) { animation-delay: -.15s; } .eq i:nth-child(5) { animation-delay: -.45s; }
+@keyframes eq { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { .eq i { animation: none; transform: scaleY(.5); } }
+
+/* 全屏 */
+.player:fullscreen, .player:-webkit-full-screen { border-radius: 0; aspect-ratio: auto; width: 100%; height: 100%; max-width: none; }
+.player.pseudo-fs { position: fixed; inset: 0; z-index: 90; border-radius: 0; aspect-ratio: auto; max-width: none; width: 100%; height: 100%; box-shadow: none;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+.player.pseudo-fs iframe { top: env(safe-area-inset-top, 0px); left: env(safe-area-inset-left, 0px); width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
+.fs-close { display: none; position: absolute; z-index: 7; top: calc(12px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); height: 36px; padding: 0 14px;
+  border-radius: 18px; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #fff; background: rgba(0, 0, 0, .45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.fs-close .ico { width: 15px; height: 15px; }
+.player:fullscreen .fs-close, .player:-webkit-full-screen .fs-close, .player.pseudo-fs .fs-close { display: inline-flex; }
+body.fs-lock { overflow: hidden; }
+/* 伪全屏时侧栏、标签栏让开；内容区不再单独参与页面转场层级，避免被侧栏盖住 */
+body.fs-lock .side, body.fs-lock .tabbar { display: none; }
+body.fs-lock .main { view-transition-name: none; position: relative; z-index: 100; }
+
+/* 儿童模式 */
+body.kid .side, body.kid .tabbar, body.kid .m-search, body.kid .gear { display: none !important; }
+body.kid .main { margin-left: 0; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); max-width: 1180px; margin-inline: auto; }
+body.kid .album-actions a, body.kid .album-info .tip, body.kid .album-info .meta, body.kid .player-bar .src, body.kid .foot, body.kid .album-info .why { display: none; }
+body.kid .back { font-size: 18px; font-weight: 600; }
+.kid-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding-bottom: 6px; }
+.kid-h h1 { font-size: clamp(30px, 5vw, 40px); font-weight: 800; letter-spacing: .01em; }
+.kid-h p { color: var(--label-2); font-size: 15px; margin-top: 2px; }
+.kid-exit { flex: none; height: 36px; padding: 0 14px; border-radius: 18px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--label-2); background: var(--fill-2); }
+.kid-exit .ico { width: 15px; height: 15px; }
+.kid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 22px 18px; }
+.kid-grid .art { border-radius: 18px; }
+.kid-grid .t-name { font-size: 17px; font-weight: 600; text-align: center; margin-top: 4px; }
+.kid-grid .a-title { font-size: clamp(18px, 2vw, 24px); }
+.kid-note { color: var(--label-2); font-size: 14px; text-align: center; }
+@media (max-width: 760px) { .kid-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; } }
+.mini-seg { display: flex; gap: 2px; padding: 2px; background: var(--fill-2); border-radius: 8px; }
+.mini-seg button { height: 28px; padding: 0 12px; border-radius: 6px; font-size: 13px; }
+.mini-seg button[aria-checked="true"] { background: var(--bg); font-weight: 600; box-shadow: 0 2px 6px rgba(0, 0, 0, .12); }
+a.cell2 { text-decoration: none; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8 4.5 4 4.5v14c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2v-14c-4 0-6.5.5-8 2z"/><path d="M12 6.5v14"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11m0-1V4.5a1.5 1.5 0 0 1 3 0V11m0-5.5a1.5 1.5 0 0 1 3 0V12m0-3.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-4.6-2.2L3.5 14.5a1.5 1.5 0 0 1 2.3-1.9L8 15"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-shrink" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+</svg>
+
+<aside class="side" aria-label="导航">
+  <div class="brand"><span class="app-ico" aria-hidden="true"><svg class="ico"><use href="#i-music"/></svg></span><b>英语启蒙</b></div>
+  <label class="s-search" for="q">
+    <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+    <input id="q" type="search" placeholder="搜索" aria-label="搜索儿歌、动画、绘本">
+  </label>
+  <nav class="nav-group" id="navBrowse" aria-label="浏览"></nav>
+  <nav class="nav-group" id="navAges" aria-label="年龄"></nav>
+  <button class="nav-item settings-item" type="button" data-settings="1"><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>家长设置</button>
+  <div class="months">
+    <small>宝宝月龄</small>
+    <div class="months-row">
+      <output id="monthsOut">13 个月</output>
+      <div class="stepper">
+        <button type="button" data-step="-1" aria-label="减少 1 个月"><svg class="ico"><use href="#i-minus"/></svg></button>
+        <button type="button" data-step="1" aria-label="增加 1 个月"><svg class="ico"><use href="#i-plus"/></svg></button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<main class="main" id="main"></main>
+
+<nav class="tabbar" id="tabbar" aria-label="标签栏"></nav>
+
+<script src="data/resources.js"></script>
+<script src="data/media.js"></script>
+<script>
+
+const LINKS = {
+  song: [['B站收听', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)], ['QQ音乐', q => 'https://y.qq.com/n/ryqq/search?w=' + encodeURIComponent(q)]],
+  video: [['B站观看', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)], ['腾讯视频', q => 'https://v.qq.com/x/search/?q=' + encodeURIComponent(q)]],
+  book: [['京东购买', q => 'https://search.jd.com/Search?enc=utf-8&keyword=' + encodeURIComponent(q)], ['B站听朗读', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q + ' read aloud')]],
+  play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
+};
+const PACE = ['', '慢', '中', '快'];
+const APP_VERSION = '测试旧版 2026-11-07 第三批 v1';
+
+const $ = id => document.getElementById(id);
+const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+};
+const hash = s => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
+const stageFor = m => (STAGES.find(s => m >= s.from && m < s.to) || STAGES[STAGES.length - 1]).id;
+const stageById = id => STAGES.find(s => s.id === id);
+
+let months = parseInt(store.get('kid-months') || '13', 10);
+if (isNaN(months) || months < 0 || months > 84) months = 13;
+let stage = stageFor(months);
+let view = { mode: 'home' };
+let navStack = [];
+let bounceTab = null;
+let query = '';
+
+/* ---------- building blocks ---------- */
+const MEDIA_ = window.MEDIA || {};
+const media = it => MEDIA_[it.n];
+// B站图片服务：按尺寸居中裁切并转 webp
+const coverUrl = (url, w, h = w) => `${url}@${w}w_${h}h_1c.webp`;
+function art(it, extra = '', size = 360) {
+  const tt = TINTS[it.t][hash(it.n) % TINTS[it.t].length];
+  const m = media(it);
+  if (m && m.cover) {
+    return `<div class="art has-img" style="--c1:${tt[0]};--c2:${tt[1]}">
+      <img src="${esc(coverUrl(m.cover, size))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">
+      ${extra}
+    </div>`;
+  }
+  return `<div class="art" style="--c1:${tt[0]};--c2:${tt[1]}">
+    <span class="a-title">${esc(it.n)}</span>
+    <span class="a-kind">${TYPES[it.t][0]}</span>
+    ${extra}
+  </div>`;
+}
+const play = `<span class="a-play">${ic('i-play')}</span>`;
+const sub = it => `${it.age} · 节奏${PACE[it.pace]}${it.warn ? ' · <span class="warn">慎看</span>' : ''}`;
+function tile(it) {
+  return `<button class="tile" type="button" data-id="${it.id}">${art(it, play)}
+    <span class="t-name">${esc(it.cn)}</span><span class="t-sub">${sub(it)}</span></button>`;
+}
+function pick(it, eyebrow) {
+  const tt = TINTS[it.t][hash(it.n) % TINTS[it.t].length];
+  return `<div class="pick"><span class="eyebrow">${esc(eyebrow)}</span>
+    <button class="pick-card" type="button" data-id="${it.id}" style="--c2:${tt[1]}">${art(it)}
+      <span class="pick-body"><b>${esc(it.cn)}</b><span>${esc(it.why)}</span></span>
+    </button></div>`;
+}
+function track(it) {
+  return `<button class="track" type="button" data-id="${it.id}">${art(it)}
+    <span class="track-txt"><b>${esc(it.cn)}</b><span>${esc(it.n)} · ${it.age}</span></span>
+    <span class="dur">${esc(it.len)}</span></button>`;
+}
+function head(title, more) {
+  return more
+    ? `<button class="sec-h" type="button" data-more='${JSON.stringify(more)}'>${esc(title)}${ic('i-right')}</button>`
+    : `<h2 class="sec-h">${esc(title)}</h2>`;
+}
+function pagers(key) {
+  return `<button class="pager l" type="button" data-scroll="${key}" data-dir="-1" aria-label="向左">${ic('i-left')}</button>
+    <button class="pager r" type="button" data-scroll="${key}" data-dir="1" aria-label="向右">${ic('i-right')}</button>`;
+}
+function shelf(key, title, items, more, kind = 'sq') {
+  const body = kind === 'tracks' ? `<div class="tracks" id="row-${key}">${items.map(track).join('')}</div>`
+    : `<div class="row ${kind}" id="row-${key}">${items.map(tile).join('')}</div>`;
+  return `<section class="sec">${head(title, more)}${pagers(key)}${body}</section>`;
+}
+
+/* ---------- chrome ---------- */
+function curNav() {
+  const v = view.mode === 'detail' ? (navStack.find(e => e.view.mode !== 'detail') || { view: { mode: 'home' } }).view : view;
+  return v.mode === 'home' ? 'home' : v.mode === 'type' ? v.value : v.mode === 'search' ? 'search' : '';
+}
+function renderChrome() {
+  const cur = curNav();
+  const items = [['home', '推荐', 'i-home'], ...Object.entries(TYPES).map(([k, [l, i]]) => [k, l, i])];
+  $('navBrowse').innerHTML = `<div class="nav-h">浏览</div>` + items.map(([k, l, i]) =>
+    `<button class="nav-item" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
+  const kid = stageFor(months);
+  $('navAges').innerHTML = `<div class="nav-h">年龄</div>` + STAGES.map(s =>
+    `<button class="nav-item" type="button" data-stage="${s.id}" aria-current="${s.id === stage}"><span class="age-dot"><i></i></span>${s.age}${s.id === kid ? '<span class="kid">宝宝</span>' : ''}</button>`).join('');
+  $('monthsOut').textContent = months + ' 个月';
+  const tabs = [['home', '推荐', 'i-home'], ['song', '儿歌', 'i-music'], ['video', '动画', 'i-tv'], ['book', '绘本', 'i-book'], ['search', '搜索', 'i-search']];
+  $('tabbar').innerHTML = tabs.map(([k, l, i]) => `<button class="tab${k === bounceTab ? ' bounce' : ''}" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
+  bounceTab = null;
+}
+
+function mobileHead() {
+  const kid = stageFor(months);
+  return `<div class="ages-m m-only" role="group" aria-label="年龄">${STAGES.map(s =>
+    `<button class="chip" type="button" data-stage="${s.id}" aria-pressed="${s.id === stage}">${s.id === kid ? '<i aria-label="宝宝当前阶段"></i>' : ''}${s.age}</button>`).join('')}</div>`;
+}
+function pageHead(title, subText, showMonths = true) {
+  return `<header class="page-h"><div><h1>${esc(title)}</h1><p>${subText}</p></div>
+    ${showMonths ? `<div class="months-row m-only" style="gap:10px"><span data-months-label style="color:var(--label-2);font-size:15px;font-variant-numeric:tabular-nums">宝宝 ${months} 个月</span>
+      <div class="stepper"><button type="button" data-step="-1" aria-label="减少 1 个月">${ic('i-minus')}</button><button type="button" data-step="1" aria-label="增加 1 个月">${ic('i-plus')}</button></div>
+      <button class="gear" type="button" data-settings="1" aria-label="家长设置">${ic('i-gear')}</button></div>` : ''}
+  </header>`;
+}
+
+/* ---------- views ---------- */
+const inStage = () => ITEMS.filter(i => i.s.includes(stage));
+
+function noVideo() {
+  return `<div class="empty"><h3>这个阶段先不看动画</h3>
+    <p>${stageById(stage).screen}先把儿歌、绘本和日常英语做好。</p>
+    <button class="btn btn-gray" type="button" data-stage="s2">查看 18–24 个月的动画</button></div>`;
+}
+
+function homeView() {
+  const s = stageById(stage), list = inStage();
+  const feat = ITEMS.find(i => i.n === s.feature) || list[0];
+  const picks = [[feat, '本阶段首推']];
+  const labels = { song: '每天磨耳朵', book: '今晚读这本', video: '这周看这部', play: '今天玩这个' };
+  ['song', 'book', 'video', 'play'].forEach(t => {
+    const it = list.find(i => i.t === t && i.id !== feat.id);
+    if (it) picks.push([it, labels[t]]);
+  });
+  let html = pageHead('推荐', `${s.age} · ${esc(s.title)}`) + mobileHead();
+  // 继续观看：最近看过、还没看完的（按最近时间）
+  const recent = Object.entries(progress)
+    .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
+    .filter(x => x.it && media(x.it))
+    .sort((a, b) => b.p.at - a.p.at).slice(0, 12);
+  if (recent.length) html += `<section class="sec">${head('继续观看')}${pagers('recent')}<div class="row sq" id="row-recent">${recent.map(({ it, p }) => {
+    const m = media(it), e = m.episodes[p.ep] || m.episodes[0];
+    const pct = e.duration ? Math.min(100, Math.round(p.t / e.duration * 100)) : 0;
+    return `<button class="tile" type="button" data-id="${it.id}">${art(it, `<span class="a-progress"><i style="width:${pct}%"></i></span>${play}`)}
+      <span class="t-name">${esc(it.cn)}</span><span class="t-sub">${m.episodes.length > 1 ? `看到第 ${p.ep + 1} 集` : '看到 ' + fmtDur(p.t)}</span></button>`;
+  }).join('')}</div></section>`;
+  html += `<section class="sec">${head('为宝宝精选')}${pagers('picks')}<div class="row big" id="row-picks">${picks.map(([it, e]) => pick(it, e)).join('')}</div></section>`;
+  html += `<section class="sec">${head('本阶段怎么做')}<div class="guide">
+      <div><h3>${esc(s.title)}</h3><p class="goal">${esc(s.goal)}</p><p class="screen">${ic('i-clock')}<span>${esc(s.screen)}</span></p></div>
+      <div><div class="steps">${s.how.map((h, i) => `<div class="step"><em>${i + 1}</em><span>${esc(h)}</span></div>`).join('')}</div>
+        <div class="phr" aria-label="常用英文短句">${s.phrases.map(p => `<span>${esc(p)}</span>`).join('')}</div></div>
+    </div></section>`;
+  Object.entries(TAGS).forEach(([k, label]) => {
+    const items = list.filter(i => i.tg.includes(k));
+    if (items.length >= 3) html += shelf('tag-' + k, label, items, { mode: 'tag', value: k });
+  });
+  Object.entries(TYPES).forEach(([k, [label]]) => {
+    const items = list.filter(i => i.t === k);
+    if (items.length >= 4) html += shelf('type-' + k, '全部' + label, items, { mode: 'type', value: k }, 'tracks');
+    else if (items.length) html += shelf('type-' + k, '全部' + label, items, { mode: 'type', value: k });
+  });
+  if (!list.some(i => i.t === 'video')) html += noVideo();
+  return html;
+}
+
+function gridView(title, subText, items, empty) {
+  return pageHead(title, subText) + mobileHead() +
+    (items.length ? `<div class="grid">${items.map(tile).join('')}</div>` : empty);
+}
+
+function searchView() {
+  const q = query.toLowerCase();
+  const items = q ? ITEMS.filter(i => (i.n + i.cn + i.why + i.o).toLowerCase().includes(q)) : [];
+  return pageHead('搜索', q ? `“${esc(query)}” · 全部年龄 · ${items.length} 项` : '按中文名或英文名搜索', false) +
+    `<label class="m-search" for="mq">${ic('i-search')}<input id="mq" type="search" placeholder="儿歌、动画、绘本" value="${esc(query)}"></label>` +
+    (q ? (items.length ? `<div class="grid">${items.map(tile).join('')}</div>` : `<div class="empty"><h3>无结果</h3><p>试试 Peppa、佩奇、翻翻书。</p></div>`)
+       : `<div class="grid">${ITEMS.filter(i => i.tg.includes('classic')).map(tile).join('')}</div>`);
+}
+
+function detailView() {
+  const it = ITEMS[view.value];
+  const back = navStack.length ? navStack[navStack.length - 1].view : { mode: 'home' };
+  const backLabel = back.mode === 'home' ? '推荐' : back.mode === 'type' ? TYPES[back.value][0] : back.mode === 'tag' ? TAGS[back.value]
+    : back.mode === 'detail' ? ITEMS[back.value].cn : '搜索';
+  const more = ITEMS.filter(i => i.t === it.t && i.id !== it.id && i.s.some(x => it.s.includes(x)));
+  const m = media(it);
+  const kid = !!settings.kid;
+  const actions = m
+    ? `<button class="btn btn-accent" type="button" data-play="${it.id}">${ic('i-play')}${progress[it.n] ? (m.episodes.length > 1 ? `继续播放 · 第 ${progress[it.n].ep + 1} 集` : '继续播放') : '播放'}</button>
+       <a class="btn btn-gray" href="https://www.bilibili.com/video/${m.bvid}" target="_blank" rel="noopener">在 B站打开</a>`
+    : LINKS[it.t].map(([l, fn], i) =>
+        `<a class="btn ${i ? 'btn-gray' : 'btn-accent'}" href="${fn(it.q)}" target="_blank" rel="noopener">${i ? '' : ic('i-play')}${l}</a>`).join('');
+  return `<button class="back" type="button" data-back="1">${ic('i-left')}${esc(kid ? '返回' : backLabel)}</button>
+    ${m ? `<section class="stage-player" id="stagePlayer" hidden>
+      <div class="player" id="player"></div>
+      <div class="player-bar">
+        <span class="src ${m.official ? 'official' : ''}">${m.official ? '官方账号' : '非官方上传'}</span>
+        <span class="now" id="nowTitle"></span>
+        <span class="elapsed" id="elapsed" title="本集已播放时间（页面估算）"></span>
+        <span class="quota" id="quota" hidden></span>
+        <button class="icon-btn" type="button" id="listenBtn" data-listen="1" aria-pressed="false">${ic('i-headphones')}<span>只听声音</span></button>
+        <button class="icon-btn" type="button" data-fs="1">${ic('i-expand')}<span>全屏</span></button>
+        <button class="btn btn-gray sm" type="button" id="nextBtn" data-next="1">下一集${ic('i-right')}</button>
+      </div>
+    </section>` : ''}
+    <section class="album">
+      ${art(it, '', 540).replace('<div class="art', '<div id="albumArt" class="art')}
+      <div class="album-info">
+        <h1>${esc(it.cn)}</h1>
+        <p class="en">${esc(it.n)}</p>
+        <p class="meta">${TYPES[it.t][0]}${it.o ? ' · ' + esc(it.o) : ''} · ${it.age} · 节奏${PACE[it.pace]} · ${esc(it.len)}</p>
+        <div class="album-actions">${actions}</div>
+        <p class="why">${esc(it.why)}</p>
+        ${it.tip ? `<p class="tip ${it.warn ? 'warn' : ''}">${esc(it.tip)}</p>` : ''}
+        ${m ? `<p class="tip">视频来源：B站 · ${esc(m.owner)}${m.official ? '（官方账号）' : '（非官方上传，可能失效）'}</p>` : ''}
+      </div>
+    </section>
+    ${m && m.episodes.length > 1 ? `<section class="sec">
+      <h2 class="sec-h">选集 <span class="ep-count">${m.episodes.length} 集</span></h2>
+      <ol class="eps" id="eps">${m.episodes.map((e, i) => `<li><button class="ep" type="button" data-ep="${i}">
+        <span class="ep-n">${i + 1}</span><span class="ep-t">${esc(e.title)}</span><span class="ep-d">${fmtDur(e.duration)}</span></button></li>`).join('')}</ol>
+    </section>` : ''}
+    ${kid ? '' : `<div class="fit">适合阶段 ${it.s.map(sid => `<button type="button" data-stage="${sid}">${stageById(sid).age}</button>`).join('')}</div>`}
+    ${!kid && more.length ? shelf('more', '同类推荐', more) : ''}
+    <p class="foot" style="border:0;padding:0">${m ? '视频由 B站播放器播放，本站不存储视频。登录 B站后可看高清。' : '链接为平台搜索页，请优先选择官方账号或正版资源。'}</p>`;
+}
+
+/* ---------- player ----------
+   用 B站官方嵌入播放器（借鉴 KidsTube）：关弹幕、自动播放；顶部加透明遮挡，避免孩子点标题跳去 B站。
+   B站播放器不会告诉网页播放进度，所以由本页自己计时（页面在前台时才计）：
+   - 估算播完 → 倒计时自动播下一集（可取消）；
+   - 记录看到第几集、第几秒 → 下次接着看；
+   - 累计今日观看时长 → 到达家长设定的上限就锁定播放器。 */
+const fmtDur = s => { s = Math.round(s || 0); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+const fmtMin = s => s >= 3600 ? `${Math.floor(s / 3600)} 小时 ${Math.round(s % 3600 / 60)} 分钟` : `${Math.max(0, Math.ceil(s / 60))} 分钟`;
+const loadJSON = (k, d) => { try { return Object.assign(d, JSON.parse(store.get(k) || '{}')); } catch (e) { return d; } };
+const saveJSON = (k, v) => store.set(k, JSON.stringify(v));
+
+const settings = loadJSON('settings', { limit: 0, pin: '', autoNext: true, strict: false, kid: false, listen: 'auto' });
+const progress = loadJSON('progress', {});   // 资源名 → { ep, t, at }
+const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+function usage() {
+  const u = loadJSON('usage', { day: todayKey(), sec: 0, bonus: 0 });
+  if (u.day !== todayKey()) { u.day = todayKey(); u.sec = 0; u.bonus = 0; }
+  return u;
+}
+let use = usage();
+// 跨天时清零（在内存里累计，定期写入存储）
+function rollDay() { if (use.day !== todayKey()) { use = { day: todayKey(), sec: 0, bonus: 0 }; saveJSON('usage', use); } return use; }
+const limitSec = () => settings.limit ? settings.limit * 60 + use.bonus : Infinity;
+const remaining = () => limitSec() - use.sec;
+
+const player = { item: null, idx: 0, t: 0, dur: 0, tick: 0, countdown: 0, locked: false };
+function biliEmbed(e, t) {
+  return `https://player.bilibili.com/player.html?bvid=${e.bvid}&page=${e.page || 1}&autoplay=1&danmaku=0&high_quality=1&isOutside=true`;
+}
+function saveProgress() {
+  if (player.item == null) return;
+  const it = ITEMS[player.item];
+  progress[it.n] = { ep: player.idx, t: Math.floor(player.t), at: Date.now() };
+  saveJSON('progress', progress);
+}
+function stopPlayer() {
+  if (player.item != null) saveProgress();
+  clearInterval(player.tick); clearInterval(player.countdown);
+  player.item = null; player.locked = false;
+}
+
+function playItem(id, idx, { resume = false, instant = false } = {}) {
+  const it = ITEMS[id], m = media(it);
+  if (!m) return;
+  const saved = progress[it.n];
+  if (idx == null) { idx = saved ? saved.ep : (m.start || 0); resume = true; }
+  idx = Math.max(0, Math.min(m.episodes.length - 1, idx));
+  const box = $('player'), wrap = $('stagePlayer');
+  if (!box || !wrap) return;
+  const first = wrap.hidden && !instant;
+  const e = m.episodes[idx];
+  // 续播：B站外嵌播放器无法可靠地从指定秒数开始（未登录时只给试看片段，带起始时间会直接跳到片尾），
+  // 所以按“集”续播，并提示上次看到的位置，家长可以拖动进度条。
+  const lastPos = resume && saved && saved.ep === idx && saved.t > 15 && (!e.duration || saved.t < e.duration - 20) ? saved.t : 0;
+  const startAt = 0;
+  const mount = () => {
+    if (player.item != null && (player.item !== id || player.idx !== idx)) saveProgress();
+    const sameItem = player.item === id;
+    clearInterval(player.tick); clearInterval(player.countdown);
+    wrap.hidden = false;
+    player.item = id; player.idx = idx; player.t = startAt; player.dur = e.duration || 0; player.locked = false; player.pulsed = false; player.upShown = false; player.endShown = false;
+    updateElapsed();
+    $('nowTitle').textContent = m.episodes.length > 1 ? `第 ${idx + 1} 集 · ${e.title}` : e.title;
+    $('nextBtn').hidden = idx >= m.episodes.length - 1;
+    $('nextBtn').classList.remove('pulse');
+    document.querySelectorAll('.ep').forEach(b => b.setAttribute('aria-current', String(Number(b.dataset.ep) === idx)));
+    saveProgress();
+    if (remaining() <= 0) { lockPlayer(); return; }
+    const sandbox = settings.strict ? ' sandbox="allow-scripts allow-same-origin allow-presentation allow-storage-access-by-user-activation"' : '';
+    box.innerHTML = `<iframe src="${esc(biliEmbed(e, startAt))}" title="${esc(e.title)}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+      allowfullscreen referrerpolicy="strict-origin-when-cross-origin" scrolling="no"${sandbox}></iframe><div class="shield" aria-hidden="true"></div>
+      <button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button>`;
+    if (!sameItem) player.listen = wantListen(it);
+    applyListen();
+    if (lastPos) toast(`上次看到 ${fmtDur(lastPos)}，可以拖动进度条接着看`, 4200);
+    updateQuota();
+    player.tick = setInterval(onTick, 1000);
+  };
+  if (first) {
+    // 第一次播放：专辑封面平滑“变成”播放器
+    transition(mount, { dir: 'none', from: $('albumArt'), to: () => box });
+    setTimeout(() => wrap.scrollIntoView({ behavior: reduceMotion() ? 'instant' : 'smooth', block: 'start' }), 60);
+  } else mount();
+}
+
+/* 只听声音：在播放器上盖一张“正在播放”的封面卡片，只露出底部控制条。
+   默认规则：18 个月以下的宝宝，儿歌自动只放声音（屏幕时间建议）。家长可在设置里改成“总是/关闭”，播放时也能随时切换。 */
+function wantListen(it) {
+  if (settings.listen === 'on') return true;
+  if (settings.listen === 'off') return false;
+  return it.t === 'song' && months < 18;
+}
+function applyListen() {
+  const box = $('player'); if (!box || player.item == null) return;
+  box.querySelector('.listen')?.remove();
+  const b = $('listenBtn');
+  if (b) { b.setAttribute('aria-pressed', String(!!player.listen)); b.querySelector('span').textContent = player.listen ? '显示画面' : '只听声音'; }
+  if (!player.listen || player.locked) return;
+  const it = ITEMS[player.item], m = media(it), e = m.episodes[player.idx];
+  const img = m.cover ? `<img src="${esc(coverUrl(m.cover, 360))}" alt="" referrerpolicy="no-referrer">` : '';
+  const el = document.createElement('div');
+  el.className = 'listen';
+  el.innerHTML = `<div class="listen-bg">${img}</div>
+    <div class="listen-card">${img ? `<div class="listen-art">${img}</div>` : ''}
+      <div class="listen-txt"><span class="listen-label">${ic('i-headphones')}只听声音</span><b>${esc(it.cn)}</b><span>${esc(m.episodes.length > 1 ? e.title : it.n)}</span>
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div></div>`;
+  const shield = box.querySelector('.shield');
+  box.insertBefore(el, shield ? shield.nextSibling : null);
+}
+function toggleListen() { player.listen = !player.listen; applyListen(); }
+
+/* 全屏：优先用浏览器全屏；iPhone 不支持对普通元素全屏，就把播放器铺满屏幕（伪全屏） */
+function isFs() { return !!(document.fullscreenElement || document.webkitFullscreenElement) || !!$('player')?.classList.contains('pseudo-fs'); }
+function toggleFs() {
+  const box = $('player'); if (!box) return;
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    return;
+  }
+  if (box.classList.contains('pseudo-fs')) { box.classList.remove('pseudo-fs'); document.body.classList.remove('fs-lock'); return; }
+  const req = box.requestFullscreen || box.webkitRequestFullscreen;
+  const pseudo = () => { box.classList.add('pseudo-fs'); document.body.classList.add('fs-lock'); };
+  if (req) { try { const p = req.call(box); if (p && p.catch) p.catch(pseudo); } catch (e) { pseudo(); } }
+  else pseudo();
+}
+
+/* 儿童模式：只显示宝宝这个阶段能直接播放的内容，大封面，点了就播；
+   不显示搜索、设置和任何跳出本站的链接，退出要输家长密码。 */
+function kidHomeView() {
+  const ks = stageFor(months);
+  const list = ITEMS.filter(i => i.s.includes(ks) && media(i));
+  const songs = list.filter(i => i.t !== 'video');
+  const videos = months >= 18 ? list.filter(i => i.t === 'video') : [];
+  const recent = Object.entries(progress)
+    .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
+    .filter(x => x.it && list.includes(x.it))
+    .sort((a, b) => b.p.at - a.p.at).slice(0, 6).map(x => x.it);
+  const grid = items => `<div class="kid-grid">${items.map(it => `<button class="tile" type="button" data-id="${it.id}">${art(it, play, 480)}<span class="t-name">${esc(it.cn)}</span></button>`).join('')}</div>`;
+  let html = `<header class="kid-h"><div><h1>宝宝的英语时间</h1><p>${months} 个月 · 点图片就能播放</p></div>
+    <button class="kid-exit" type="button" data-kid-exit="1">${ic('i-lock')}家长</button></header>`;
+  if (recent.length) html += `<section class="sec"><h2 class="sec-h">接着看</h2>${grid(recent)}</section>`;
+  if (songs.length) html += `<section class="sec"><h2 class="sec-h">儿歌</h2>${grid(songs)}</section>`;
+  if (videos.length) html += `<section class="sec"><h2 class="sec-h">动画</h2>${grid(videos)}</section>`;
+  if (months < 18) html += `<p class="kid-note">18 个月前先听儿歌，动画等大一点再看。</p>`;
+  return html;
+}
+async function exitKid() {
+  if (!(await askPin('输入家长密码', '退出儿童模式'))) return;
+  settings.kid = false; saveJSON('settings', settings);
+  toast('已退出儿童模式');
+  go({ mode: 'home' });
+}
+
+function onTick() {
+  if (player.item == null || player.locked || document.visibilityState !== 'visible') return;
+  player.t += 1;
+  rollDay(); use.sec += 1;
+  if (use.sec % 5 === 0) { saveJSON('usage', use); saveProgress(); }
+  updateQuota();
+  if (remaining() <= 0) { saveJSON('usage', use); return lockPlayer(); }
+  const m = media(ITEMS[player.item]);
+  const hasNext = player.idx < m.episodes.length - 1;
+  updateElapsed();
+  if (player.dur && hasNext && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; $('nextBtn')?.classList.add('pulse'); }
+  if (player.dur && hasNext && settings.autoNext && !player.upShown && !player.endShown && player.t >= player.dur + 1) { player.upShown = true; startCountdown(); }
+  else if (player.dur && (!hasNext || !settings.autoNext) && !player.endShown && player.t >= player.dur + 1) { player.endShown = true; showEnd(hasNext); }
+}
+
+function updateElapsed() {
+  const el = $('elapsed'); if (!el) return;
+  el.textContent = player.dur ? `${fmtDur(player.t)} / ${fmtDur(player.dur)}` : fmtDur(player.t);
+}
+function updateQuota() {
+  const q = $('quota'); if (!q) return;
+  if (!settings.limit) { q.hidden = true; return; }
+  const r = remaining();
+  q.hidden = false;
+  q.textContent = `今日还能看 ${fmtMin(r)}`;
+  q.classList.toggle('low', r <= 300);
+}
+
+/* 快播完时：在播放器上显示“5 秒后播放下一集”，可以取消 */
+function startCountdown() {
+  const box = $('player'); if (!box || box.querySelector('.up-next')) return;
+  const m = media(ITEMS[player.item]), next = m.episodes[player.idx + 1];
+  let n = 5;
+  const el = document.createElement('div');
+  el.className = 'up-next';
+  el.innerHTML = `<div class="up-card"><span class="up-label">即将播放</span><b>第 ${player.idx + 2} 集 · ${esc(next.title)}</b>
+    <div class="up-actions"><button class="btn btn-accent sm" type="button" data-next="1">立即播放</button><button class="btn btn-glass sm" type="button" data-cancel-next="1">取消</button></div>
+    <span class="up-count" id="upCount">${n}</span></div>`;
+  box.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  player.countdown = setInterval(() => {
+    if (document.visibilityState !== 'visible') return;
+    n -= 1;
+    const c = $('upCount'); if (c) c.textContent = n;
+    if (n <= 0) { clearInterval(player.countdown); playItem(player.item, player.idx + 1); }
+  }, 1000);
+}
+/* 播完了（最后一集，或关闭了自动下一集）：盖住 B站结尾的推荐视频 */
+function showEnd(hasNext) {
+  const box = $('player'); if (!box || box.querySelector('.end-cover')) return;
+  const el = document.createElement('div');
+  el.className = 'end-cover';
+  el.innerHTML = `<div class="end-card"><svg class="ico" aria-hidden="true"><use href="#i-star"/></svg><h3>这一集看完啦</h3>
+    <div class="up-actions"><button class="btn btn-glass sm" type="button" data-replay="1">再看一遍</button>${hasNext ? '<button class="btn btn-accent sm" type="button" data-next="1">下一集</button>' : ''}</div></div>`;
+  box.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+}
+function cancelCountdown() {
+  clearInterval(player.countdown);
+  const el = document.querySelector('.up-next');
+  if (el) { el.classList.remove('show'); setTimeout(() => el.remove(), 250); }
+  if (player.item != null && player.dur && player.t >= player.dur) { player.endShown = true; setTimeout(() => showEnd(true), 260); }
+}
+
+/* 到达每日上限：移除播放器，显示“今天的动画时间到啦” */
+function lockPlayer() {
+  const box = $('player'); if (!box) return;
+  player.locked = true;
+  clearInterval(player.countdown);
+  saveProgress();
+  box.innerHTML = `<div class="lock">
+    <svg class="ico lock-ico" aria-hidden="true"><use href="#i-moon"/></svg>
+    <h3>今天的动画时间到啦</h3>
+    <p>明天再接着看吧。现在可以去听听儿歌、一起读本绘本。</p>
+    <button class="btn btn-glass" type="button" data-unlock="1">家长：再看 15 分钟</button>
+  </div><button class="fs-close" type="button" data-fs="1">${ic('i-shrink')}退出全屏</button>`;
+  updateQuota();
+}
+async function unlockMore() {
+  if (!(await askPin('输入家长密码', '再看 15 分钟'))) return;
+  rollDay(); use.bonus += 15 * 60; saveJSON('usage', use);
+  toast('已增加 15 分钟');
+  if (player.item != null) playItem(player.item, player.idx, { resume: true });
+}
+
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+  document.querySelectorAll('[data-fs] span').forEach(sp => { sp.textContent = isFs() ? '退出全屏' : '全屏'; });
+}));
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { saveJSON('usage', use); saveProgress(); }
+});
+window.addEventListener('pagehide', () => { saveJSON('usage', use); saveProgress(); });
+
+/* ---------- toast ---------- */
+let toastTimer = 0;
+function toast(msg, ms = 2200) {
+  let el = $('toast');
+  if (!el) { el = document.createElement('div'); el.id = 'toast'; el.className = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), ms);
+}
+
+/* ---------- 家长密码（4 位数字，类似 iPhone 锁屏键盘） ---------- */
+async function sha(s) {
+  try {
+    const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('english-start:' + s));
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+  } catch (e) { return 'h' + hash('english-start:' + s); }
+}
+function pinPad(title, sub) {
+  return new Promise(resolve => {
+    const sheet = openSheet(`<div class="pin">
+      <h3>${esc(title)}</h3><p class="pin-sub">${esc(sub || '')}</p>
+      <div class="pin-dots" id="pinDots">${'<i></i>'.repeat(4)}</div>
+      <div class="pin-pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button type="button" data-k="${n}">${n}</button>`).join('')}
+        <button type="button" data-k="cancel" class="pin-text">取消</button><button type="button" data-k="0">0</button>
+        <button type="button" data-k="del" class="pin-text" aria-label="删除">${ic('i-left')}</button></div>
+    </div>`, () => resolve(null));
+    let v = '';
+    const dots = () => sheet.querySelectorAll('#pinDots i').forEach((d, i) => d.classList.toggle('on', i < v.length));
+    const press = k => {
+      if (k === 'cancel') { closeSheet(); return resolve(null); }
+      if (k === 'del') v = v.slice(0, -1); else if (v.length < 4) v += k;
+      dots();
+      if (v.length === 4) setTimeout(() => { closeSheet(true); resolve(v); }, 120);
+    };
+    sheet.addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (b) press(b.dataset.k); });
+    sheet.addEventListener('keydown', e => {
+      if (/^\d$/.test(e.key)) press(e.key); else if (e.key === 'Backspace') press('del');
+    });
+    sheet.querySelector('[data-k="1"]').focus();
+  });
+}
+async function askPin(title, sub) {
+  if (!settings.pin) return true;
+  for (let i = 0; i < 3; i++) {
+    const v = await pinPad(title, i ? '密码不对，再试一次' : sub);
+    if (v == null) return false;
+    if (await sha(v) === settings.pin) return true;
+  }
+  toast('密码错误');
+  return false;
+}
+async function setPin() {
+  const a = await pinPad('设置家长密码', '用于解锁观看时长和进入家长设置'); if (a == null) return false;
+  const b = await pinPad('再输入一次', ''); if (b == null) return false;
+  if (a !== b) { toast('两次输入不一致'); return false; }
+  settings.pin = await sha(a); saveJSON('settings', settings);
+  toast('家长密码已设置');
+  return true;
+}
+
+/* ---------- 底部面板（手机从下方滑出，电脑居中） ---------- */
+let sheetClose = null;
+function openSheet(html, onDismiss) {
+  closeSheet(true);
+  const wrap = document.createElement('div');
+  wrap.className = 'sheet-wrap';
+  wrap.innerHTML = `<div class="sheet-scrim"></div><div class="sheet" role="dialog" aria-modal="true" tabindex="-1">${html}</div>`;
+  document.body.appendChild(wrap);
+  requestAnimationFrame(() => wrap.classList.add('open'));
+  wrap.querySelector('.sheet-scrim').addEventListener('click', () => { closeSheet(); onDismiss && onDismiss(); });
+  sheetClose = onDismiss;
+  const sheet = wrap.querySelector('.sheet');
+  sheet.focus();
+  return sheet;
+}
+function closeSheet(silent) {
+  const wrap = document.querySelector('.sheet-wrap:not(.closing)'); if (!wrap) return;
+  wrap.classList.remove('open');
+  wrap.classList.add('closing');
+  setTimeout(() => wrap.remove(), 320);
+  if (!silent && sheetClose) { const f = sheetClose; sheetClose = null; f(); }
+  sheetClose = null;
+}
+
+/* ---------- 家长设置 ---------- */
+async function openSettings() {
+  if (!(await askPin('输入家长密码', '进入家长设置'))) return;
+  renderSettings();
+}
+function renderSettings() {
+  rollDay();
+  const opts = [0, 15, 30, 45, 60, 90];
+  const sheet = openSheet(`<div class="settings">
+    <div class="set-head"><h3>家长设置</h3><button class="btn btn-gray sm" type="button" data-close-sheet="1">完成</button></div>
+    <p class="group-h">每天观看时长</p>
+    <div class="group">
+      <div class="seg-row" role="radiogroup" aria-label="每天观看时长">${opts.map(o => `<button type="button" role="radio" data-limit="${o}" aria-checked="${settings.limit === o}">${o ? o + ' 分' : '不限'}</button>`).join('')}</div>
+      <div class="cell2"><span>今天已看</span><b>${fmtMin(use.sec)}${use.bonus ? `（已加时 ${fmtMin(use.bonus)}）` : ''}</b></div>
+      <button class="cell2 link" type="button" data-reset-today="1">今天重新计时</button>
+    </div>
+    <p class="group-f">建议参考页面上各年龄段的屏幕时间建议。到时间后播放器会锁定，输入家长密码可以加 15 分钟。</p>
+    <p class="group-h">播放</p>
+    <div class="group">
+      <label class="cell2"><span>自动播放下一集</span><input type="checkbox" class="switch" data-set="autoNext" ${settings.autoNext ? 'checked' : ''}></label>
+      <label class="cell2"><span>严格模式：禁止从播放器跳到 B站</span><input type="checkbox" class="switch" data-set="strict" ${settings.strict ? 'checked' : ''}></label>
+      <div class="cell2"><span>只听声音</span>
+        <div class="mini-seg" role="radiogroup" aria-label="只听声音">${[['auto', '自动'], ['on', '总是'], ['off', '关闭']].map(([v, l]) => `<button type="button" role="radio" data-listen-opt="${v}" aria-checked="${settings.listen === v}">${l}</button>`).join('')}</div></div>
+    </div>
+    <p class="group-f">严格模式会阻止播放器里所有跳转链接，如果开启后视频无法播放，请关闭它。“只听声音”选自动时，18 个月以下的宝宝听儿歌只放声音、不看画面；播放时也可以随时切换。</p>
+    <p class="group-h">儿童模式</p>
+    <div class="group">
+      <label class="cell2"><span>儿童模式</span><input type="checkbox" class="switch" data-set="kid" ${settings.kid ? 'checked' : ''}></label>
+    </div>
+    <p class="group-f">打开后只显示宝宝这个阶段能直接播放的内容，大图标、点了就播，隐藏搜索、设置和所有外部链接。退出时需要家长密码${settings.pin ? '' : '（建议先设置密码，否则孩子也能退出）'}。</p>
+    <p class="group-h">高清画质</p>
+    <div class="group">
+      <a class="cell2 link" href="https://passport.bilibili.com/login" target="_blank" rel="noopener">在这个浏览器里登录 B站</a>
+    </div>
+    <p class="group-f">播放器来自 B站，没登录时一般只有标清。在同一个浏览器里登录 B站账号（有大会员可看会员画质）后刷新本页即可。iPhone 的 Safari 需要在“设置 → Safari”里关闭“阻止跨站跟踪”，否则网页拿不到登录状态。</p>
+    <p class="group-h">加到手机桌面</p>
+    <p class="group-f">iPhone：用 Safari 打开本站 → 点底部“分享” → “添加到主屏幕”。安卓：用 Chrome 打开 → 右上角菜单 → “添加到主屏幕”。之后从桌面图标打开，就像一个独立的 App，没有浏览器地址栏。</p>
+    <p class="group-h">安全</p>
+    <div class="group">
+      <button class="cell2 link" type="button" data-set-pin="1">${settings.pin ? '修改家长密码' : '设置家长密码'}</button>
+      ${settings.pin ? '<button class="cell2 link danger" type="button" data-clear-pin="1">关闭家长密码</button>' : ''}
+      <button class="cell2 link danger" type="button" data-clear-progress="1">清除观看记录</button>
+    </div>
+    ${settings.pin ? '' : '<p class="group-f">没有设置密码时，任何人都能修改时长和解锁。建议设置。</p>'}
+    <p class="group-f" style="text-align:center;padding-top:14px">版本 ${APP_VERSION}</p>
+  </div>`);
+  sheet.addEventListener('click', async e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.listenOpt) {
+      settings.listen = b.dataset.listenOpt; saveJSON('settings', settings);
+      sheet.querySelectorAll('[data-listen-opt]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+    } else if (b.dataset.limit != null) {
+      settings.limit = Number(b.dataset.limit); saveJSON('settings', settings);
+      sheet.querySelectorAll('[data-limit]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+      updateQuota();
+    } else if (b.dataset.resetToday) {
+      rollDay(); use.sec = 0; use.bonus = 0; saveJSON('usage', use); toast('今天已重新计时'); renderSettings();
+    } else if (b.dataset.setPin) {
+      closeSheet(true); await setPin(); renderSettings();
+    } else if (b.dataset.clearPin) {
+      settings.pin = ''; saveJSON('settings', settings); toast('已关闭家长密码'); renderSettings();
+    } else if (b.dataset.clearProgress) {
+      for (const k of Object.keys(progress)) delete progress[k];
+      saveJSON('progress', progress); toast('观看记录已清除'); renderSettings();
+      if (view.mode === 'home') render();
+    } else if (b.dataset.closeSheet) {
+      closeSheet(true);
+      if (view.mode === 'home') render();
+    }
+  });
+  sheet.addEventListener('change', e => {
+    const k = e.target.dataset.set; if (!k) return;
+    settings[k] = e.target.checked; saveJSON('settings', settings);
+    if (k === 'kid' && settings.kid) { closeSheet(true); toast('已进入儿童模式'); go({ mode: 'home' }); }
+  });
+}
+
+function render() {
+  stopPlayer();
+  document.body.classList.remove('fs-lock');
+  document.body.classList.toggle('kid', !!settings.kid);
+  if (settings.kid && view.mode !== 'detail' && view.mode !== 'home') view = { mode: 'home' };
+  renderChrome();
+  const s = stageById(stage);
+  let html;
+  if (view.mode === 'home') html = settings.kid ? kidHomeView() : homeView();
+  else if (view.mode === 'type') {
+    const items = inStage().filter(i => i.t === view.value);
+    html = gridView(TYPES[view.value][0], `${s.age} · ${items.length} 项`, items,
+      view.value === 'video' ? noVideo() : `<div class="empty"><h3>暂无内容</h3><p>换个年龄看看。</p></div>`);
+  } else if (view.mode === 'tag') {
+    const items = inStage().filter(i => i.tg.includes(view.value));
+    html = gridView(TAGS[view.value], `${s.age} · ${items.length} 项`, items, `<div class="empty"><h3>暂无内容</h3></div>`);
+  } else if (view.mode === 'search') html = searchView();
+  else html = detailView();
+  if (view.mode !== 'detail') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
+  $('main').innerHTML = html;
+  // 儿童模式：进详情直接开始播放
+  if (settings.kid && view.mode === 'detail' && media(ITEMS[view.value])) setTimeout(() => playItem(view.value, null, { instant: true }), 0);
+}
+/* ---------- transitions ----------
+   用 View Transitions 做页面切换：内容区淡入并轻微位移，点开的封面平滑“飞”到详情页大封面；
+   不支持的浏览器退回到 CSS 淡入。返回时恢复原来的滚动位置。 */
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const HERO = 'hero-art';
+function transition(update, { dir = 'fade', from = null, to = null } = {}) {
+  const main = $('main');
+  if (!document.startViewTransition || reduceMotion()) {
+    update();
+    if (!reduceMotion()) { main.classList.remove('enter', 'fwd', 'back'); void main.offsetWidth; main.classList.add('enter', dir); }
+    return;
+  }
+  document.documentElement.dataset.dir = dir;
+  if (from) from.style.viewTransitionName = HERO;
+  const vt = document.startViewTransition(() => {
+    if (from) from.style.viewTransitionName = '';
+    update();
+    const target = typeof to === 'function' ? to() : to;
+    if (target) target.style.viewTransitionName = HERO;
+  });
+  vt.finished.finally(() => {
+    document.querySelectorAll('.art, .player').forEach(a => { a.style.viewTransitionName = ''; });
+    delete document.documentElement.dataset.dir;
+  });
+}
+function rowPositions() {
+  const m = {};
+  document.querySelectorAll('.row, .tracks').forEach(r => { if (r.scrollLeft) m[r.id] = r.scrollLeft; });
+  return m;
+}
+function restoreRows(m) {
+  Object.entries(m || {}).forEach(([id, x]) => {
+    const r = $(id); if (!r) return;
+    r.style.scrollBehavior = 'auto'; r.scrollLeft = x; r.style.scrollBehavior = '';
+  });
+}
+const toTop = () => window.scrollTo({ top: 0, behavior: 'instant' });
+
+function go(v, { keep = false, push = false, dir = 'fade', from = null } = {}) {
+  transition(() => {
+    if (push) navStack.push({ view, y: window.scrollY, rows: rowPositions() });
+    else if (v.mode !== 'detail') navStack = [];
+    view = v; render();
+    if (!keep) toTop();
+  }, { dir, from, to: v.mode === 'detail' ? () => $('albumArt') : null });
+}
+function goBack() {
+  if (view.mode !== 'detail') return;
+  const id = view.value;
+  const entry = navStack.pop() || { view: { mode: 'home' }, y: 0, rows: {} };
+  transition(() => {
+    view = entry.view; render();
+    restoreRows(entry.rows);
+    window.scrollTo({ top: entry.y, behavior: 'instant' });
+  }, { dir: 'back', from: $('albumArt'), to: () => {
+    const el = [...document.querySelectorAll(`[data-id="${id}"] .art`)].find(a => {
+      const r = a.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+    });
+    return el || null;
+  } });
+}
+
+/* ---------- events ---------- */
+function setStage(id) {
+  if (id === stage && view.mode !== 'detail' && view.mode !== 'search') return;
+  transition(() => {
+    stage = id;
+    if (view.mode === 'detail' || view.mode === 'search') { navStack = []; view = { mode: 'home' }; }
+    render(); toTop();
+  });
+}
+function step(d) {
+  const next = Math.max(0, Math.min(84, months + d));
+  if (next === months) return;
+  months = next; store.set('kid-months', String(months));
+  const s = stageFor(months);
+  if (s === stage) {   // 同一阶段内只更新数字，不重绘页面
+    $('monthsOut').textContent = months + ' 个月';
+    document.querySelectorAll('[data-months-label]').forEach(el => { el.textContent = `宝宝 ${months} 个月`; });
+    renderChrome();
+    return;
+  }
+  transition(() => { stage = s; render(); });
+}
+/* 手机上从屏幕左边缘右滑返回（跟手，松手后按速度和距离决定返回还是弹回） */
+(function swipeBack() {
+  let x0 = 0, y0 = 0, t0 = 0, dx = 0, active = false, locked = false;
+  const main = () => $('main');
+  document.addEventListener('touchstart', e => {
+    if (view.mode !== 'detail' || innerWidth > 760 || reduceMotion()) return;
+    const p = e.touches[0];
+    if (p.clientX > 28) return;
+    x0 = p.clientX; y0 = p.clientY; t0 = performance.now(); dx = 0; active = true; locked = false;
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if (!active) return;
+    const p = e.touches[0], mx = p.clientX - x0, my = p.clientY - y0;
+    if (!locked) {
+      if (Math.abs(my) > Math.abs(mx) && Math.abs(my) > 8) { active = false; return; }
+      if (mx > 8) { locked = true; document.body.classList.add('swiping'); main().classList.add('swiping'); }
+      else return;
+    }
+    dx = Math.max(0, mx);
+    main().style.transition = 'none';
+    main().style.transform = `translateX(${dx}px)`;
+  }, { passive: true });
+  document.addEventListener('touchend', () => {
+    if (!active) return;
+    active = false;
+    if (!locked) return;
+    const v = dx / Math.max(1, performance.now() - t0);   // px/ms
+    const m = main(), w = innerWidth;
+    const done = dx > w * .35 || v > .45;
+    m.style.transition = `transform ${done ? '.32s' : 'var(--t-snappy)'} ${done ? 'var(--ease)' : 'var(--spring-snappy)'}`;
+    m.style.transform = done ? `translateX(${w}px)` : 'translateX(0)';
+    let finished = false;
+    const end = () => {
+      if (finished) return; finished = true;
+      m.removeEventListener('transitionend', end);
+      m.style.transition = ''; m.style.transform = '';
+      m.classList.remove('swiping'); document.body.classList.remove('swiping');
+      if (done) {
+        const entry = navStack.pop() || { view: { mode: 'home' }, y: 0, rows: {} };
+        view = entry.view; render(); restoreRows(entry.rows);
+        window.scrollTo({ top: entry.y, behavior: 'instant' });
+        m.classList.remove('enter', 'fwd', 'back'); void m.offsetWidth; m.classList.add('enter');
+      }
+    };
+    m.addEventListener('transitionend', end);
+    setTimeout(end, 700);   // 位移为 0 时不会触发 transitionend，兜底
+  });
+})();
+
+// 让 iOS Safari 的 :active 按压态生效
+document.addEventListener('touchstart', () => {}, { passive: true });
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.ch && t.classList.contains('tab')) {
+    bounceTab = t.dataset.ch;
+    // 和 iOS 一样：再点一次当前标签，回到顶部
+    if (t.getAttribute('aria-current') === 'true' && view.mode !== 'detail') {
+      t.classList.remove('bounce'); void t.offsetWidth; t.classList.add('bounce'); bounceTab = null;
+      return window.scrollTo({ top: 0, behavior: reduceMotion() ? 'instant' : 'smooth' });
+    }
+  }
+  if (t.dataset.ch) {
+    if (t.dataset.ch === 'search') { go({ mode: 'search' }); const m = $('mq'); if (m) m.focus(); return; }
+    query = ''; $('q').value = '';
+    return go(t.dataset.ch === 'home' ? { mode: 'home' } : { mode: 'type', value: t.dataset.ch });
+  }
+  if (t.dataset.stage) return setStage(t.dataset.stage);
+  if (t.dataset.step) return step(Number(t.dataset.step));
+  if (t.dataset.more) return go(JSON.parse(t.dataset.more));
+  if (t.dataset.play) return playItem(Number(t.dataset.play));
+  if (t.dataset.ep !== undefined) return playItem(view.value, Number(t.dataset.ep));
+  if (t.dataset.next) { cancelCountdown(); return playItem(view.value, player.idx + 1); }
+  if (t.dataset.cancelNext) return cancelCountdown();
+  if (t.dataset.replay) return playItem(view.value, player.idx);
+  if (t.dataset.unlock) return unlockMore();
+  if (t.dataset.settings) return openSettings();
+  if (t.dataset.listen) return toggleListen();
+  if (t.dataset.fs) return toggleFs();
+  if (t.dataset.kidExit) return exitKid();
+  if (t.dataset.back) return goBack();
+  if (t.dataset.scroll) { const r = $('row-' + t.dataset.scroll); return r && r.scrollBy({ left: r.clientWidth * .8 * Number(t.dataset.dir) }); }
+  if (t.dataset.id !== undefined) {
+    if (view.mode === 'detail' && Number(t.dataset.id) === view.value) return;
+    return go({ mode: 'detail', value: Number(t.dataset.id) }, { push: true, dir: 'fwd', from: t.querySelector('.art') });
+  }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') goBack(); });
+let qt;
+function onSearch(v, fromMobile) {
+  query = v.trim();
+  clearTimeout(qt);
+  qt = setTimeout(() => {
+    if (fromMobile) {
+      const pos = $('mq').selectionStart;
+      view = { mode: 'search' }; render();
+      const m = $('mq'); m.focus(); try { m.setSelectionRange(pos, pos); } catch (e) {}
+    } else { navStack = []; view = query ? { mode: 'search' } : { mode: 'home' }; render(); }
+  }, 200);
+}
+$('q').addEventListener('input', e => onSearch(e.target.value, false));
+document.addEventListener('input', e => { if (e.target.id === 'mq') onSearch(e.target.value, true); });
+
+render();
+</script>
