@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iPhone 自动下一首测试</title>
+<style>
+body{margin:0;font-family:-apple-system,"PingFang SC",system-ui,sans-serif;background:#fff;color:#1d1d1f;padding:16px 16px 40px}
+h1{font-size:24px;margin:8px 0 4px}p{color:#6e6e73;font-size:14px;margin:4px 0 12px;line-height:1.5}
+.btns{display:grid;gap:10px;margin:14px 0}
+button{font:inherit;font-size:16px;font-weight:600;border:0;border-radius:12px;padding:14px;background:#f2f2f7;color:#1d1d1f}
+button.a{background:#FA233B;color:#fff}
+.box{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+.box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#log{margin-top:12px;font-size:14px;line-height:1.7;background:#f5f5f7;border-radius:12px;padding:10px 12px;min-height:60px}
+b{color:#FA233B}
+</style></head><body>
+<h1>iPhone 自动下一首测试</h1>
+<p>每个测试会连放 3 首很短的歌（每首约 18 秒）。点下面的按钮开始，<b>第 1 首需要点一下播放器中间的 ▶</b>，之后不要再碰手机，只听第 2、3 首会不会自己出声。</p>
+<div class="btns">
+  <button class="a" id="t1">测试 1：静音保活 + 唱完再换</button>
+  <button class="a" id="t2">测试 2：静音保活 + 快唱完时提前换</button>
+  <button id="t0">对照：不保活（现在网站的做法）</button>
+</div>
+<div class="box" id="box"></div>
+<div id="log">还没开始</div>
+<script>
+const EPS = [{ page: 14, dur: 18 }, { page: 15, dur: 19 }, { page: 16, dur: 19 }];
+const BV = 'BV1S34y1M7Zt';
+const $ = id => document.getElementById(id);
+let mode = '', idx = 0, t = 0, started = false, tick = 0, keep = null;
+const log = m => { $('log').innerHTML += '<br>' + m; };
+// 1 秒静音 wav，循环播放，让页面一直处于“有声音在播”的状态
+function silentWav() {
+  const n = 8000, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, 8000, true); v.setUint32(28, 16000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+  return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+}
+function load(i) {
+  idx = i; t = 0; started = i > 0;   // 第 2 首起按“自动开始”计时
+  $('box').innerHTML = `<iframe src="https://player.bilibili.com/player.html?bvid=${BV}&page=${EPS[i].page}&autoplay=1&danmaku=0&isOutside=true" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
+  log(`▶ 第 ${i + 1} 首已加载` + (i ? '（不要碰手机，听它会不会自己出声）' : '（请点播放器中间的 ▶）'));
+}
+function start(m) {
+  mode = m; clearInterval(tick); $('log').innerHTML = '开始：' + { t0: '对照（不保活）', t1: '测试 1', t2: '测试 2' }[m];
+  if (keep) { keep.pause(); keep = null; }
+  if (m !== 't0') { keep = new Audio(silentWav()); keep.loop = true; keep.play().then(() => log('静音保活：已开启')).catch(e => log('静音保活失败：' + e.name)); }
+  load(0);
+  tick = setInterval(() => {
+    if (!started) return;
+    t++;
+    const end = EPS[idx].dur + (mode === 't2' ? -2 : 2);
+    if (t >= end) {
+      if (idx < EPS.length - 1) load(idx + 1);
+      else { clearInterval(tick); log('测试结束。请告诉我：第 2、3 首有没有自己出声？'); if (keep) keep.pause(); }
+    }
+  }, 1000);
+}
+// 第 1 首：点进播放器（页面失去焦点）时开始计时
+addEventListener('blur', () => setTimeout(() => { if (!started && document.activeElement?.tagName === 'IFRAME') { started = true; log('已检测到点击，开始计时'); } }, 0));
+$('t0').onclick = () => start('t0'); $('t1').onclick = () => start('t1'); $('t2').onclick = () => start('t2');
+</script>
+</body></html>
