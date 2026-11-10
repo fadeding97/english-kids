@@ -18,6 +18,8 @@ b{color:#FA233B}
 <div class="btns">
   <button class="a" id="t1">测试 1：静音保活 + 唱完再换</button>
   <button class="a" id="t2">测试 2：静音保活 + 快唱完时提前换</button>
+  <button class="a" id="t3">测试 3：同一个播放框里换地址</button>
+  <button class="a" id="t4">测试 4：同一个播放框换地址 + 静音保活</button>
   <button id="t0">对照：不保活（现在网站的做法）</button>
 </div>
 <div class="box" id="box"></div>
@@ -37,13 +39,16 @@ function silentWav() {
 }
 function load(i) {
   idx = i; t = 0; started = i > 0;   // 第 2 首起按“自动开始”计时
-  $('box').innerHTML = `<iframe src="https://player.bilibili.com/player.html?bvid=${BV}&page=${EPS[i].page}&autoplay=1&danmaku=0&isOutside=true" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
+  const url = `https://player.bilibili.com/player.html?bvid=${BV}&page=${EPS[i].page}&autoplay=1&danmaku=0&isOutside=true`;
+  const f = $('box').querySelector('iframe');
+  if (i > 0 && f && (mode === 't3' || mode === 't4')) f.src = url;   // 测试 3/4：不换播放框，只换里面的地址
+  else $('box').innerHTML = `<iframe src="${url}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
   log(`▶ 第 ${i + 1} 首已加载` + (i ? '（不要碰手机，听它会不会自己出声）' : '（请点播放器中间的 ▶）'));
 }
 function start(m) {
-  mode = m; clearInterval(tick); $('log').innerHTML = '开始：' + { t0: '对照（不保活）', t1: '测试 1', t2: '测试 2' }[m];
+  mode = m; clearInterval(tick); $('log').innerHTML = '开始：' + { t0: '对照（不保活）', t1: '测试 1', t2: '测试 2', t3: '测试 3', t4: '测试 4' }[m];
   if (keep) { keep.pause(); keep = null; }
-  if (m !== 't0') { keep = new Audio(silentWav()); keep.loop = true; keep.play().then(() => log('静音保活：已开启')).catch(e => log('静音保活失败：' + e.name)); }
+  if (m === 't1' || m === 't2' || m === 't4') { keep = new Audio(silentWav()); keep.loop = true; keep.play().then(() => log('静音保活：已开启')).catch(e => log('静音保活失败：' + e.name)); }
   load(0);
   tick = setInterval(() => {
     if (!started) return;
@@ -57,6 +62,6 @@ function start(m) {
 }
 // 第 1 首：点进播放器（页面失去焦点）时开始计时
 addEventListener('blur', () => setTimeout(() => { if (!started && document.activeElement?.tagName === 'IFRAME') { started = true; log('已检测到点击，开始计时'); } }, 0));
-$('t0').onclick = () => start('t0'); $('t1').onclick = () => start('t1'); $('t2').onclick = () => start('t2');
+$('t0').onclick = () => start('t0'); $('t1').onclick = () => start('t1'); $('t2').onclick = () => start('t2'); $('t3').onclick = () => start('t3'); $('t4').onclick = () => start('t4');
 </script>
 </body></html>
