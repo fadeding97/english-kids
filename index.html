@@ -606,6 +606,7 @@ body.kid .age-pill, body.kid .age-side { display: none !important; }
 .pl-unlock { display: grid; justify-items: center; gap: 2px; padding: 12px; border-radius: 14px; background: var(--label); color: var(--bg); max-width: 640px; }
 .pl-unlock b { font-size: 16px; } .pl-unlock small { font-size: 12px; opacity: .75; }
 .pl-vip { font-size: 13px; color: #26A85A; font-weight: 600; }
+.pl-adv { font-size: 13px; color: #8A4B00; background: #FFF6E5; border-radius: 10px; padding: 8px 10px; }
 .guide-sheet { grid-template-columns: minmax(0, 1fr) !important; padding: 16px; }
 /* 打印资料 */
 .lib { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px 14px; }
@@ -1033,7 +1034,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-17 改版全部 v1';
+const APP_VERSION = '2026-11-17 每周指定儿歌 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1129,7 +1130,8 @@ function renderChrome() {
   $('navBrowse').innerHTML = `<div class="nav-h">浏览</div>` + items.map(([k, l, i]) =>
     `<button class="nav-item" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
   $('navMe').innerHTML = `<button class="nav-item" type="button" data-ch="me" aria-current="${cur === 'me'}">${ic('i-user')}我的</button>`;
-  $('navLevels').innerHTML = `<div class="nav-h">难度</div>` + LEVELS.map(l =>
+  $('navLevels').innerHTML = '';
+  void LEVELS.map(l =>
     `<button class="nav-item" type="button" data-level="${l.id}" aria-current="${'lv:' + l.id === cur}"><span class="lv-dot" style="--a:${l.color[0]};--b:${l.color[1]}">${l.id.slice(1)}</span>${l.id} ${l.name}</button>`).join('');
   syncAgeLabels();
   const tabs = [['home', '今天', 'i-sun'], ['plan', '计划', 'i-cal'], ['res', '资源', 'i-grid'], ['me', '我的', 'i-user']];
@@ -1860,7 +1862,6 @@ function meView() {
     <p class="group-h">宝宝信息</p>
     <div class="group">
       ${row('月龄', fmtAge(months), 'data-age-pick="1"')}
-      ${row('难度', l ? l.id + ' ' + l.name : '全部（建议 ' + sl.join('–') + '）', 'data-lv-menu="1"')}
       ${row('英语环境', profile.env || '未填写', 'data-me-edit="env"')}
       ${row('宝宝喜欢', profile.likes.length ? profile.likes.join('、') : '未填写', 'data-me-edit="likes"')}
     </div>
@@ -1971,9 +1972,9 @@ function render() {
     if (img && m && m.cover) setTimeout(() => { const hi = new Image(); hi.referrerPolicy = 'no-referrer'; hi.onload = () => { if (img.isConnected) img.src = hi.src; }; hi.src = coverUrl(m.cover, 540); }, 450);
   }
   // 儿童模式：进详情直接开始播放
-  if ((settings.kid || view.task != null) && view.mode === 'detail' && media(ITEMS[view.value]) && player.item !== view.value) {
-    const vid = view.value;
-    setTimeout(() => { if (view.mode === 'detail' && view.value === vid) playItem(vid, null, { instant: true }); }, 0);
+  if ((settings.kid || view.task != null) && view.mode === 'detail' && media(ITEMS[view.value]) && (player.item !== view.value || (view.ep != null && player.idx !== view.ep))) {
+    const vid = view.value, vep = view.ep != null ? view.ep : null;
+    setTimeout(() => { if (view.mode === 'detail' && view.value === vid) playItem(vid, vep, { instant: true }); }, 0);
   }
 }
 /* ---------- transitions ----------

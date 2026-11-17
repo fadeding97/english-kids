@@ -61,16 +61,20 @@ function genericWeeks(st) {
   }));
 }
 const rotate = (a, n) => a.length ? a.slice(n % a.length).concat(a.slice(0, n % a.length)) : a;
+/* 家里经常说英语或双语家庭：计划提前用下一个阶段的内容 */
+const advanced = () => ['经常说', '双语家庭'].includes(profile.env);
+function planStage() { const i = STAGES.findIndex(x => x.id === stage); return advanced() && STAGES[i + 1] ? STAGES[i + 1].id : stage; }
 const weeksFor = st => (PLAN_WEEKS[st] && PLAN_WEEKS[st].length) ? PLAN_WEEKS[st] : genericWeeks(st);
 
 // 计划从哪天开始：第一次打开（或换了月龄阶段）的那天
 function planStart() {
   const ps = pstore.get('plan-start', {});
-  if (!ps[stage]) { ps[stage] = midnight(); pstore.set('plan-start', ps); }
-  return ps[stage];
+  const st = planStage();
+  if (!ps[st]) { ps[st] = midnight(); pstore.set('plan-start', ps); }
+  return ps[st];
 }
 function planPos() {
-  const ws = weeksFor(stage), start = planStart();
+  const ws = weeksFor(planStage()), start = planStart();
   const diff = Math.max(0, Math.round((midnight() - start) / DAY));
   const w = Math.min(ws.length - 1, Math.floor(diff / 7));
   return { ws, w, d: diff % 7, dayN: diff + 1, weekStart: start + w * 7 * DAY };
@@ -78,16 +82,33 @@ function planPos() {
 const weekLocked = w => w >= PLAN_FREE_WEEKS && !isVip();
 
 const SLOTS = [['song', '儿歌', 5], ['book', '绘本跟读', 3], ['play', '亲子游戏', 5]];
+// 集名清理：去掉前面的编号（012. / 0A 1. / 第1季•第12集）和后面的说明（_ Nursery Rhymes、| …）
+const cleanEp = t => {
+  const s = String(t).replace(/Knees - Toes/i, 'Knees & Toes').replace(/^第\d+季•第\d+集/, '').replace(/^\s*(\d+[A-Z]?\s+)?\d+[.、]\s*/, '').replace(/^.*?Unit\d+\s*/, '').replace(/^\d+-\d+\s+/, '');
+  const segs = s.split(/\s+[_|]\s+|\s+-\s+|\s+_\s*$/).map(x => x.split('(')[0].replace(/[-–\s,_]+$/, '').trim()).filter(Boolean);
+  const brand = /^(little baby bum|the wiggles( nursery rhymes)?|mother goose club|super simple songs|english rhymes|nursery rhymes)$/i;
+  return segs.find(x => !brand.test(x)) || segs[0] || t;
+};
 function todayTasks() {
   const pos = planPos();
   const locked = weekLocked(pos.w);
-  const week = locked ? Object.assign(genericWeeks(stage)[pos.w % 6], { theme: '自由练习', en: 'Free practice', locked: true }) : pos.ws[pos.w];
+  const week = locked ? Object.assign(genericWeeks(planStage())[pos.w % 6], { theme: '自由练习', en: 'Free practice', locked: true }) : pos.ws[pos.w];
   const tasks = SLOTS.map(([t, label, min], k) => {
-    const names = week[t] && week[t].length ? week[t] : [];
-    let it = null;
-    for (let j = 0; j < names.length && !it; j++) it = ITEMS.find(i => i.n === names[(pos.d + j) % names.length] && media(i)) || null;
-    if (!it) it = ITEMS.find(i => i.s.includes(stage) && media(i) && (i.t === t || i.t === 'song')) || ITEMS.find(i => media(i));
-    return { k, t, label, min, it, tip: (week.tips && week.tips[t]) || '' };
+    const list = week[t] && week[t].length ? week[t] : [];
+    let it = null, ep = null, epTitle = '';
+    for (let j = 0; j < list.length && !it; j++) {
+      const x = list[(pos.d + j) % list.length], n = typeof x === 'string' ? x : x.n;
+      const cand = ITEMS.find(i => i.n === n && media(i));
+      if (!cand) continue;
+      if (typeof x !== 'string' && x.t) {   // 固定播放这一集（这周要学的词就在这首歌里）
+        const eps = media(cand).episodes, i = eps.findIndex(e => e.title.toLowerCase().includes(x.t.toLowerCase()));
+        if (i < 0) continue;
+        ep = i; epTitle = cleanEp(eps[i].title);
+      }
+      it = cand;
+    }
+    if (!it) it = ITEMS.find(i => i.s.includes(planStage()) && media(i) && (i.t === t || i.t === 'song')) || ITEMS.find(i => media(i));
+    return { k, t, label, min, it, ep, name: epTitle || it.cn, from: epTitle ? it.cn : '', tip: (week.tips && week.tips[t]) || '' };
   });
   return Object.assign({}, pos, { week, locked, tasks });
 }
@@ -120,14 +141,14 @@ function weekStats(pos) {
 /* ---------- 今天（新首页） ---------- */
 function todayView() {
   const T = todayTasks(), done = doneToday(), left = 3 - done.length;
-  const s = stageById(stage), l = lvPick && lvOf(lvPick);
+  const s = stageById(stage);
   const ph = T.week.phrases[T.d % T.week.phrases.length] || ['Hello!', ''];
   const now = new Date(), st = streak(), ws = weekStats(T);
   const recent = Object.entries(progress).map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
     .filter(x => x.it && media(x.it)).sort((a, b) => b.p.at - a.p.at).slice(0, 8);
   return `<header class="page-h td-h"><div><p class="td-date">${now.getMonth() + 1}月${now.getDate()}日 星期${WEEKDAY[now.getDay()]}</p><h1>今天</h1></div>
       <button class="gear h-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></header>
-    <button class="lv-btn td-lv" type="button" data-lv-menu="1"${l ? ` style="--c:${l.color[1]}"` : ''}>宝宝 ${fmtAge(months)} · ${l ? `<b>${l.id}</b>${l.name}` : s.age}${ic('i-right')}</button>
+    <button class="lv-btn td-lv" type="button" data-age-pick="1">宝宝 ${fmtAge(months)} · ${s.age}${ic('i-right')}</button>
     <section class="td-card">
       <div class="td-top">
         <div><span class="td-sub">今日启蒙 · 第 ${T.dayN} 天</span><b class="td-title">${left ? `还差 ${left} 件事` : '今天都完成啦'}</b></div>
@@ -138,7 +159,7 @@ function todayView() {
         const ok = done.includes(x.k);
         return `<button class="td-task${ok ? ' ok' : ''}" type="button" data-task="${x.k}">
           <span class="td-thumb">${art(x.it, '', 120)}</span>
-          <span class="td-txt"><small>${'①②③'[x.k]} ${x.label} · ${x.min} 分钟</small><b>${esc(x.it.cn)}</b></span>
+          <span class="td-txt"><small>${'①②③'[x.k]} ${x.label} · ${x.min} 分钟${x.from ? ' · ' + esc(x.from) : ''}</small><b>${esc(x.name)}</b></span>
           <span class="td-state" aria-label="${ok ? '已完成' : '开始'}">${ok ? ic('i-check') : ic('i-play')}</span></button>`;
       }).join('')}</div>
       ${T.locked ? `<button class="td-lock" type="button" data-go-vip="1">第 ${PLAN_FREE_WEEKS + 1} 周起的主题计划是会员内容，现在是自由练习 · 了解会员 ›</button>` : ''}
@@ -163,7 +184,7 @@ function taskPanel(it) {
   if (!x || x.it.id !== it.id) return '';
   const ok = doneToday().includes(x.k), last = doneToday().filter(k => k !== x.k).length >= 2;
   return `<section class="tk">
-      <div class="tk-head"><span>任务 ${x.k + 1} / 3 · ${x.label}</span>${ok ? '<em>已完成</em>' : ''}</div>
+      <div class="tk-head"><span>任务 ${x.k + 1} / 3 · ${x.label}${x.from ? '：' + esc(x.name) : ''}</span>${ok ? '<em>已完成</em>' : ''}</div>
       ${x.tip ? `<div class="tk-tip"><b>家长怎么陪</b><span>${esc(x.tip)}</span></div>` : ''}
       ${T.week.words && T.week.words.length ? `<div class="tk-words"><b>这周会听到的词</b><div>${T.week.words.map(w => `<span>${esc(w)}</span>`).join('')}</div></div>` : ''}
       <button class="btn btn-accent tk-done" type="button" data-task-done="${x.k}">${last ? '完成，今天打卡' : '完成，下一件事'}</button>
@@ -175,12 +196,12 @@ function finishTask(k) {
   const next = [0, 1, 2].find(i => !doneToday().includes(i));
   const T = todayTasks();
   navStack = [{ view: { mode: 'home' }, y: 0, rows: {} }];
-  go({ mode: 'detail', value: T.tasks[next].it.id, task: next }, { dir: 'fwd' });
+  go({ mode: 'detail', value: T.tasks[next].it.id, task: next, ep: T.tasks[next].ep }, { dir: 'fwd' });
 }
 function openTask(k) {
   const T = todayTasks(), x = T.tasks[k];
   if (!x) return;
-  go({ mode: 'detail', value: x.it.id, task: k }, { push: true, dir: 'fwd' });
+  go({ mode: 'detail', value: x.it.id, task: k, ep: x.ep }, { push: true, dir: 'fwd' });
 }
 
 /* ---------- 打卡完成 + 分享卡 ---------- */
@@ -253,6 +274,7 @@ function planView2() {
     <div class="pa-bar"><i style="width:${pct}%"></i><b style="left:${pct}%"></b></div>
     <div class="pa-ticks"><span>0 岁</span><span>2 岁</span><span>4 岁</span><span>6 岁</span></div>
     <p><b>宝宝 ${fmtAge(months)}</b> · ${s.age}：${esc(s.title)} <button type="button" data-guide="1">本阶段怎么做 ›</button></p>
+    ${advanced() && planStage() !== stage ? `<p class="pl-adv">英语环境是「${esc(profile.env)}」，计划提前用 ${stageById(planStage()).age} 的内容。可在「我的 → 英语环境」修改。</p>` : ''}
   </div>
   <section class="pw">
     <div class="pw-top"><b>本周已打卡 ${stt.days} 天</b><span>听了 ${stt.min} 分钟${wk.words && wk.words.length ? ` · ${wk.words.length} 个新词` : ''}</span></div>
