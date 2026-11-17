@@ -71,6 +71,20 @@ for (const [name, src] of Object.entries(sources)) {
     if (m.episodes.length > MAX_EPISODES) m.episodes = m.episodes.slice(0, MAX_EPISODES);
     // 从指定的那一集开始（合集里选定的视频）
     m.start = Math.max(0, m.episodes.findIndex(e => e.bvid === d.bvid && e.page === (src.page || 1)));
+    // 长连播版（一个视频连着放很多首，≥20 分钟）：放在选集最前面并默认从它开始。
+    // iPhone 不允许网页自动播放下一个视频，长连播版点一次就能一直听下去。
+    if (src.longs?.length) {
+      const longs = [];
+      for (const b of src.longs) {
+        try {
+          const v = await view(b);
+          longs.push({ bvid: v.bvid, page: 1, long: true, duration: v.duration,
+            title: `连播 ${Math.round(v.duration / 60)} 分钟 · ${v.title.replace(/【[^】]*】/g, '').trim().slice(0, 40)}` });
+        } catch (e) { console.log(`  连播版 ${b} 读取失败：${e.message}`); }
+        await sleep(600);
+      }
+      if (longs.length) { m.episodes = [...longs, ...m.episodes]; m.start = 0; }
+    }
     media[name] = m;
     console.log(`ok   ${name}  ${m.episodes.length} 集  ${m.owner}${m.official ? '（官方）' : ''}`);
   } catch (e) {

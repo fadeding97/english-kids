@@ -848,7 +848,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-08 全屏状态栏 v1';
+const APP_VERSION = '2026-11-17 手机选集修复 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1171,7 +1171,9 @@ const remaining = () => limitSec() - use.sec;
 
 const player = { item: null, idx: 0, t: 0, dur: 0, tick: 0, countdown: 0, locked: false };
 function biliEmbed(e, t) {
-  return `https://player.bilibili.com/player.html?bvid=${e.bvid}&page=${e.page || 1}&autoplay=1&danmaku=0&high_quality=1&isOutside=true`;
+  // 手机上 B站会跳到另一个手机版播放器：它只认 p（不认 page）、布尔值只认 true（不认 1），所以两种写法都带上
+  const p = e.page || 1;
+  return `https://player.bilibili.com/player.html?bvid=${e.bvid}&page=${p}&p=${p}&autoplay=true&danmaku=0&danmakuClosed=true&high_quality=1&isOutside=true`;
 }
 function saveProgress() {
   if (player.item == null) return;

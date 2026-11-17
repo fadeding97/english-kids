@@ -39,7 +39,7 @@ function silentWav() {
 }
 function load(i) {
   idx = i; t = 0; started = i > 0;   // 第 2 首起按“自动开始”计时
-  const url = `https://player.bilibili.com/player.html?bvid=${BV}&page=${EPS[i].page}&autoplay=1&danmaku=0&isOutside=true`;
+  const url = `https://player.bilibili.com/player.html?bvid=${BV}&page=${EPS[i].page}&p=${EPS[i].page}&autoplay=true&danmaku=0&danmakuClosed=true&isOutside=true`;
   const f = $('box').querySelector('iframe');
   if (i > 0 && f && (mode === 't3' || mode === 't4')) f.src = url;   // 测试 3/4：不换播放框，只换里面的地址
   else $('box').innerHTML = `<iframe src="${url}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
