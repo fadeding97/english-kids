@@ -440,7 +440,7 @@ body.swiping { background: var(--card); overflow: hidden; }
   .m-search input { width: 100%; height: 38px; border: 0; border-radius: 10px; background: var(--fill-2); color: var(--label); font: 17px var(--font); padding: 0 12px 0 34px; }
   .m-search input:focus { outline: none; }
   .tabbar {
-    display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
     padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
     background: var(--tabbar); backdrop-filter: saturate(180%) blur(24px); -webkit-backdrop-filter: saturate(180%) blur(24px); border-top: .5px solid var(--sep);
   }
@@ -478,6 +478,37 @@ body.swiping { background: var(--card); overflow: hidden; }
 body.kid .age-pill, body.kid .age-side { display: none !important; }
 
 .eps-more { justify-self: start; }
+
+/* ---------- 第一批框架：资源分段、计划页、我的 ---------- */
+.rseg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 2px; border-radius: 10px; background: var(--fill-2); max-width: 520px; margin-top: -14px; }
+.rseg button { height: 34px; border-radius: 8px; font-size: 14px; color: var(--label); }
+.rseg button[aria-checked="true"] { background: var(--bg); font-weight: 700; box-shadow: 0 1px 4px rgba(0, 0, 0, .12); }
+.res-filter { font-size: 14px; color: var(--label-2); margin-top: -18px; }
+.res-filter button { font-weight: 700; color: var(--label); display: inline-flex; align-items: center; gap: 2px; }
+.res-filter .ico { width: 12px; height: 12px; stroke-width: 2.8; transform: rotate(90deg); }
+.plan-age { display: grid; gap: 8px; margin-top: -12px; }
+.pa-bar { position: relative; height: 8px; border-radius: 4px; background: var(--fill-2); }
+.pa-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; background: #34C759; }
+.pa-bar b { position: absolute; top: -5px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: var(--bg); border: 4px solid var(--accent); box-sizing: border-box; }
+.pa-ticks { display: flex; justify-content: space-between; font-size: 12px; color: var(--label-2); }
+.plan-age p { font-size: 14px; color: var(--label-2); } .plan-age p b { color: var(--label); }
+.route { display: grid; gap: 2px; background: var(--card); border-radius: 14px; padding: 10px 12px; }
+.rt { display: grid; grid-template-columns: 14px 90px minmax(0, 1fr); gap: 10px; align-items: center; padding: 8px; border-radius: 10px; font-size: 14px; color: var(--label-2); }
+.rt i { width: 10px; height: 10px; border-radius: 50%; background: var(--label-3); }
+.rt.done i { background: #34C759; }
+.rt.now { background: var(--bg); color: var(--label); font-weight: 700; }
+.rt.now i { background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent); }
+.rt-rec { font-style: normal; font-size: 11px; font-weight: 700; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 5px; padding: 1px 6px; margin-left: 6px; }
+.plan-soon { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 14px; border: 1px dashed var(--sep); color: var(--label-2); }
+.plan-soon .ico { width: 22px; height: 22px; flex: none; }
+.plan-soon div { display: grid; gap: 2px; } .plan-soon b { color: var(--label); font-size: 15px; } .plan-soon span { font-size: 13px; }
+.me .cell2 b { font-weight: 400; }
+.me-vip .cell2 { gap: 12px; }
+.vip-ico { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: #fff; display: grid; place-items: center; flex: none; }
+.vip-ico .ico { width: 16px; height: 16px; }
+.vip-txt { flex: 1; display: grid; gap: 1px; } .vip-txt b { font-weight: 600 !important; color: var(--label) !important; font-size: 15px !important; text-align: left !important; } .vip-txt small { font-size: 12px; color: var(--label-2); }
+.me-input { border: 0; background: none; font: inherit; font-size: 16px; text-align: right; color: var(--label); min-width: 0; flex: 1; outline: none; }
+.me-check { color: var(--accent); } .me-check .ico { width: 18px; height: 18px; stroke-width: 2.6; }
 
 /* ---------- 手机搜索浮层 ---------- */
 .sov { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--bg); }
@@ -773,6 +804,9 @@ a.cell2 { text-decoration: none; }
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></symbol>
   <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></symbol>
   <symbol id="i-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/></symbol>
@@ -848,7 +882,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-17 手机选集修复 v1';
+const APP_VERSION = '2026-11-17 改版第一批 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -936,18 +970,18 @@ function shelf(key, title, items, more, kind = 'sq') {
 /* ---------- chrome ---------- */
 function curNav() {
   const v = view.mode === 'detail' ? (navStack.find(e => e.view.mode !== 'detail') || { view: { mode: 'home' } }).view : view;
-  return v.mode === 'home' ? 'home' : v.mode === 'type' ? v.value : v.mode === 'search' ? 'search' : v.mode === 'level' ? 'lv:' + v.value : v.mode === 'me' ? 'me' : '';
+  return v.mode === 'home' ? 'home' : v.mode === 'type' || v.mode === 'tag' ? 'res' : v.mode === 'plan' ? 'plan' : v.mode === 'search' ? 'search' : v.mode === 'level' ? 'lv:' + v.value : v.mode === 'me' ? 'me' : '';
 }
 function renderChrome() {
   const cur = curNav();
-  const items = [['home', '首页', 'i-home'], ...Object.entries(TYPES).map(([k, [l, i]]) => [k, l, i])];
+  const items = [['home', '今天', 'i-sun'], ['plan', '计划', 'i-cal'], ['res', '资源', 'i-grid']];
   $('navBrowse').innerHTML = `<div class="nav-h">浏览</div>` + items.map(([k, l, i]) =>
     `<button class="nav-item" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
   $('navMe').innerHTML = `<button class="nav-item" type="button" data-ch="me" aria-current="${cur === 'me'}">${ic('i-user')}我的</button>`;
   $('navLevels').innerHTML = `<div class="nav-h">难度</div>` + LEVELS.map(l =>
     `<button class="nav-item" type="button" data-level="${l.id}" aria-current="${'lv:' + l.id === cur}"><span class="lv-dot" style="--a:${l.color[0]};--b:${l.color[1]}">${l.id.slice(1)}</span>${l.id} ${l.name}</button>`).join('');
   syncAgeLabels();
-  const tabs = [['home', '首页', 'i-home'], ['song', '儿歌', 'i-music'], ['video', '动画', 'i-tv'], ['book', '绘本', 'i-book'], ['me', '我的', 'i-user']];
+  const tabs = [['home', '今天', 'i-sun'], ['plan', '计划', 'i-cal'], ['res', '资源', 'i-grid'], ['me', '我的', 'i-user']];
   $('tabbar').innerHTML = tabs.map(([k, l, i]) => `<button class="tab${k === bounceTab ? ' bounce' : ''}" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
   bounceTab = null;
 }
@@ -994,7 +1028,7 @@ function lvChipsDesk() {
 }
 /* 首页顶部：手机用新版（方案 A），电脑保持原样 */
 function homeTop(sub) {
-  return `<div class="home-m">${homeHead()}</div><div class="home-d">${pageHead('首页', sub, true)}${lvChipsDesk()}</div>`;
+  return `<div class="home-m">${homeHead()}</div><div class="home-d">${pageHead('今天', sub, true)}${lvChipsDesk()}</div>`;
 }
 /* 难度选择面板（从底部弹出） */
 function openLvMenu() {
@@ -1011,7 +1045,7 @@ function openLvMenu() {
 }
 function homeHead() {
   const l = lvPick && lvOf(lvPick);
-  return `<header class="page-h home-h"><div class="hh-title"><h1>首页</h1>
+  return `<header class="page-h home-h"><div class="hh-title"><h1>今天</h1>
       <button class="lv-btn" type="button" data-lv-menu="1" aria-label="选择难度"${l ? ` style="--c:${l.color[1]}"` : ''}>${l ? `<b>${l.id}</b>${l.name}` : '全部难度'}${ic('i-right')}</button></div>
     <div class="home-acts"><button class="hh-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></div></header>`;
 }
@@ -1061,11 +1095,41 @@ function homeView() {
   return html;
 }
 
+function resSeg(cur) {
+  return `<div class="rseg" role="radiogroup" aria-label="资源类型">${Object.entries(TYPES).map(([k, [l]]) =>
+    `<button type="button" role="radio" aria-checked="${k === cur}" data-res-type="${k}">${l}</button>`).join('')}</div>`;
+}
+function resFilter() {
+  const l = lvPick && lvOf(lvPick);
+  return `<p class="res-filter">${stageById(stage).age} · <button type="button" data-lv-menu="1"${l ? ` style="color:${l.color[1]}"` : ''}>${l ? l.id + ' ' + l.name : '全部难度'}${ic('i-right')}</button></p>`;
+}
 function gridView(title, subText, items, empty) {
   return pageHead(title, subText).replace('class="page-h"', 'class="page-h grid-h"') + mobileHead() +
     (items.length ? `<div class="grid">${items.map(tile).join('')}</div>` : empty);
 }
 
+function planView() {
+  const s = stageById(stage), pct = Math.min(100, months / 72 * 100);
+  const sl = STAGE_LV[stage] || [];
+  return `${pageHead('计划', '按月龄的英语启蒙路线')}
+  <div class="plan-age">
+    <div class="pa-bar"><i style="width:${pct}%"></i><b style="left:${pct}%"></b></div>
+    <div class="pa-ticks"><span>0 岁</span><span>2 岁</span><span>4 岁</span><span>6 岁</span></div>
+    <p><b>宝宝 ${fmtAge(months)}</b> · ${s.age}：${esc(s.title)}</p>
+  </div>
+  <section class="sec">${head('本阶段怎么做')}<div class="guide">
+      <div><h3>${esc(s.title)}</h3><p class="goal">${esc(s.goal)}</p><p class="screen">${ic('i-clock')}<span>${esc(s.screen)}</span></p></div>
+      <div><div class="steps">${s.how.map((h, i) => `<div class="step"><em>${i + 1}</em><span>${esc(h)}</span></div>`).join('')}</div>
+        <div class="phr" aria-label="常用英文短句">${s.phrases.map(p => `<span>${esc(p)}</span>`).join('')}</div></div>
+  </div></section>
+  <section class="sec">${head('启蒙路线图')}<div class="route">${STAGES.map(x => {
+    const st = x.id === stage ? 'now' : STAGES.indexOf(x) < STAGES.indexOf(s) ? 'done' : '';
+    return `<div class="rt ${st}"><i></i><span class="rt-age">${x.age}</span><span class="rt-t">${esc(x.title)}</span></div>`;
+  }).join('')}</div></section>
+  <section class="sec">${head('难度分级')}<div class="settings"><div class="group">${LEVELS.map(l =>
+    `<button class="cell2" type="button" data-level="${l.id}"><span><span class="lv-dot" style="--a:${l.color[0]};--b:${l.color[1]};display:inline-grid;margin-right:8px;vertical-align:-3px">${l.id.slice(1)}</span>${l.id} ${l.name}${sl.includes(l.id) ? ' <em class="rt-rec">建议</em>' : ''}</span><b>›</b></button>`).join('')}</div></div></section>
+  <div class="plan-soon">${ic('i-cal')}<div><b>每周计划即将上线</b><span>每天 3 件事、打卡和成长分享卡，正在制作中</span></div></div>`;
+}
 function levelView() {
   const l = lvOf(view.value), i = LEVELS.indexOf(l), next = LEVELS[i + 1];
   const all = ITEMS.filter(x => x.lv === l.id)
@@ -1099,7 +1163,7 @@ const epShown = (it, m) => { const cur = Math.max(progress[it.n]?.ep || 0, playe
 function detailView() {
   const it = ITEMS[view.value];
   const back = navStack.length ? navStack[navStack.length - 1].view : { mode: 'home' };
-  const backLabel = back.mode === 'me' ? '我的' : back.mode === 'home' ? '首页' : back.mode === 'type' ? TYPES[back.value][0] : back.mode === 'tag' ? TAGS[back.value]
+  const backLabel = back.mode === 'me' ? '我的' : back.mode === 'plan' ? '计划' : back.mode === 'home' ? '今天' : back.mode === 'type' ? TYPES[back.value][0] : back.mode === 'tag' ? TAGS[back.value]
     : back.mode === 'detail' ? ITEMS[back.value].cn : back.mode === 'level' ? back.value + ' ' + lvOf(back.value).name : '搜索';
   const more = ITEMS.filter(i => i.t === it.t && i.id !== it.id && i.s.some(x => it.s.includes(x)));
   const m = media(it);
@@ -1626,28 +1690,68 @@ const fmtAgo = t => {
   const d = (Date.now() - t) / 1000;
   return d < 60 ? '刚刚' : d < 3600 ? Math.floor(d / 60) + ' 分钟前' : d < 86400 ? Math.floor(d / 3600) + ' 小时前' : d < 86400 * 7 ? Math.floor(d / 86400) + ' 天前' : new Date(t).toLocaleDateString('zh-CN');
 };
+const profile = loadJSON('profile', { name: '', env: '', likes: [] });
+const ENV_OPTS = ['还没有人说', '偶尔说几句', '经常说', '双语家庭'];
+const LIKE_OPTS = ['儿歌', '动画', '绘本', '小动物', '汽车', '躲猫猫', '睡前故事', '唱跳律动'];
 function meView() {
   rollDay();
-  const st = stageById(stageFor(months)), lv = STAGE_LV[st.id] || [];
-  const lim = limitSec(), pct = lim === Infinity ? 0 : Math.min(100, Math.round(use.sec / lim * 100));
-  const hist = Object.entries(progress)
-    .map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p })).filter(x => x.it)
-    .sort((a, b) => b.p.at - a.p.at);
-  const locked = settings.pin && !meUnlocked;
-  return `${pageHead('我的', '宝宝资料、观看记录和家长设置', false)}
+  const name = profile.name || '宝宝';
+  const l = lvPick && lvOf(lvPick), sl = STAGE_LV[stageFor(months)] || [];
+  const row = (label, val, attrs) => `<button class="cell2" type="button" ${attrs}><span>${label}</span><b>${esc(val)} ›</b></button>`;
+  return `${pageHead('我的', '', false)}
   <div class="settings me">
-    <button class="me-card" type="button" data-age-pick="1">
-      <span class="me-ava">${ic('i-user')}</span>
-      <span class="me-txt"><b>宝宝 ${fmtAge(months)}</b><span>${st.age}阶段 · 建议从 ${lv.map(x => x + ' ' + lvOf(x).name).join('、')} 开始</span></span>
-      <span class="me-edit">修改${ic('i-right')}</span>
+    <button class="me-card" type="button" data-me-edit="name">
+      <span class="me-ava">${profile.name ? esc(profile.name.slice(0, 1)) : ic('i-user')}</span>
+      <span class="me-txt"><b>${esc(name)}</b><span>${fmtAge(months)} · 今天已看 ${fmtMin(use.sec)}</span></span>
+      <span class="me-edit">编辑${ic('i-right')}</span>
     </button>
-    <h2 class="sec-h me-h">今天</h2>
+    <p class="group-h">宝宝信息</p>
     <div class="group">
-      <div class="cell2"><span>已观看</span><b>${fmtMin(use.sec)}${lim === Infinity ? '' : ' / ' + fmtMin(lim)}</b></div>
-      ${lim === Infinity ? '' : `<div class="me-bar${pct >= 90 ? ' low' : ''}"><i style="width:${pct}%"></i></div>`}
+      ${row('月龄', fmtAge(months), 'data-age-pick="1"')}
+      ${row('难度', l ? l.id + ' ' + l.name : '全部（建议 ' + sl.join('–') + '）', 'data-lv-menu="1"')}
+      ${row('英语环境', profile.env || '未填写', 'data-me-edit="env"')}
+      ${row('宝宝喜欢', profile.likes.length ? profile.likes.join('、') : '未填写', 'data-me-edit="likes"')}
     </div>
-    ${lim === Infinity ? '<p class="group-f">没有设置每日时长上限，可以在下面的家长设置里设置。</p>' : ''}
-    <h2 class="sec-h me-h">观看记录 ${hist.length ? `<span class="ep-count">${hist.length}</span>` : ''}</h2>
+    <div class="group me-vip"><div class="cell2"><span class="vip-ico">${ic('i-star')}</span><span class="vip-txt"><b>成长会员</b><small>解锁全部计划和资料</small></span><b>即将推出</b></div></div>
+    <div class="group">
+      <button class="cell2" type="button" data-me-hist="1"><span>观看记录</span><b>${Object.keys(progress).length} 条 ›</b></button>
+      <button class="cell2" type="button" data-open-settings="1"><span>每天观看时长</span><b>${settings.limit ? settings.limit + ' 分钟' : '不限'} ›</b></button>
+      <button class="cell2" type="button" data-open-settings="1"><span>家长设置</span><b>›</b></button>
+    </div>
+    <p class="group-f" style="text-align:center;padding-top:14px">版本 ${APP_VERSION}</p>
+  </div>`;
+}
+/* 编辑宝宝信息：小名、英语环境、喜好（底部弹出） */
+function openMeEdit(kind) {
+  const save = () => { saveJSON('profile', profile); closeSheet(true); const y = scrollY; render(); scrollTo(0, y); };
+  if (kind === 'name') {
+    const sh = openSheet(`<div class="settings"><div class="set-head"><h3>宝宝的小名</h3><button class="btn btn-accent sm" type="button" data-me-save="1">完成</button></div>
+      <div class="group"><label class="cell2" for="meName"><span>小名</span><input id="meName" class="me-input" type="text" maxlength="12" placeholder="比如 豆豆" value="${esc(profile.name)}"></label></div>
+      <p class="group-f">只保存在这台设备上。</p></div>`);
+    const inp = sh.querySelector('#meName'); setTimeout(() => inp.focus(), 50);
+    sh.querySelector('[data-me-save]').addEventListener('click', () => { profile.name = inp.value.trim(); save(); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { profile.name = inp.value.trim(); save(); } });
+    return;
+  }
+  const multi = kind === 'likes', opts = multi ? LIKE_OPTS : ENV_OPTS;
+  const on = o => multi ? profile.likes.includes(o) : profile.env === o;
+  const sh = openSheet(`<div class="settings"><div class="set-head"><h3>${multi ? '宝宝喜欢（可多选）' : '家里的英语环境'}</h3><button class="btn btn-accent sm" type="button" data-me-save="1">完成</button></div>
+    <div class="group">${opts.map(o => `<button class="cell2" type="button" data-opt="${o}"><span>${o}</span><span class="me-check" aria-hidden="true">${on(o) ? ic('i-check') : ''}</span></button>`).join('')}</div>
+    <p class="group-f">${multi ? '「今天」会优先推荐宝宝喜欢的内容（即将上线）。' : '用来调整每天推荐的难度。'}</p></div>`);
+  sh.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.meSave) return save();
+    const o = b.dataset.opt; if (!o) return;
+    if (multi) { profile.likes = on(o) ? profile.likes.filter(x => x !== o) : [...profile.likes, o]; }
+    else profile.env = o;
+    sh.querySelectorAll('[data-opt]').forEach(x => { x.querySelector('.me-check').innerHTML = on(x.dataset.opt) ? ic('i-check') : ''; });
+    if (!multi) save();
+  });
+}
+/* 观看记录（底部弹出） */
+function openHistory() {
+  const hist = Object.entries(progress).map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p })).filter(x => x.it).sort((a, b) => b.p.at - a.p.at);
+  const sh = openSheet(`<div class="settings"><div class="set-head"><h3>观看记录</h3><button class="btn btn-gray sm" type="button" data-close-hist="1">完成</button></div>
     <div class="group hist">${hist.length ? hist.map(({ it, p }) => {
       const m = media(it), e = m && (m.episodes[p.ep] || m.episodes[0]);
       const where = m && m.episodes.length > 1 ? `看到第 ${p.ep + 1} 集` : p.t ? '看到 ' + fmtDur(p.t) : '看过';
@@ -1656,11 +1760,13 @@ function meView() {
         <span class="track-txt"><b>${esc(it.cn)}</b><span>${where} · ${fmtAgo(p.at)}</span></span></button>
         <button class="h-del" type="button" data-del-hist="${esc(it.n)}" aria-label="删除这条记录">${ic('i-x')}</button></div>`;
     }).join('') : '<div class="cell2"><span style="color:var(--label-2)">还没有观看记录</span></div>'}
-    ${hist.length ? '<button class="cell2 link danger" type="button" data-clear-hist="1">清空观看记录</button>' : ''}</div>
-    <h2 class="sec-h me-h">家长设置</h2>
-    ${locked ? `<div class="group"><button class="cell2 link" type="button" data-me-unlock="1"><span>${ic('i-lock')} 输入家长密码后修改设置</span></button></div>
-      <p class="group-f" style="text-align:center;padding-top:14px">版本 ${APP_VERSION}</p>` : settingsGroups(false)}
-  </div>`;
+    ${hist.length ? '<button class="cell2 link danger" type="button" data-clear-hist="1">清空观看记录</button>' : ''}</div></div>`);
+  sh.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.closeHist) { closeSheet(true); return render(); }
+    if (b.dataset.delHist) { delete progress[b.dataset.delHist]; saveJSON('progress', progress); b.closest('.h-row').remove(); return; }
+    if (b.dataset.clearHist) { if (!confirm('清空全部观看记录？')) return; for (const k of Object.keys(progress)) delete progress[k]; saveJSON('progress', progress); toast('观看记录已清空'); closeSheet(true); return render(); }
+  });
 }
 document.addEventListener('click', async e => {
   const root = e.target.closest('.me'); if (!root) return;
@@ -1688,13 +1794,14 @@ function render() {
   if (view.mode === 'home') html = settings.kid ? kidHomeView() : homeView();
   else if (view.mode === 'type') {
     const items = inStage().filter(i => i.t === view.value);
-    html = gridView(TYPES[view.value][0], `${esc(filterText())} · ${items.length} 项`, items,
-      lvPick ? lvEmpty(TYPES[view.value][0]) : view.value === 'video' ? noVideo() : `<div class="empty"><h3>暂无内容</h3><p>换个年龄看看。</p></div>`);
+    html = pageHead('资源', `${esc(filterText())} · ${items.length} 项`).replace('class="page-h"', 'class="page-h grid-h"') + resSeg(view.value) + resFilter() +
+      (items.length ? `<div class="grid">${items.map(tile).join('')}</div>` : lvPick ? lvEmpty(TYPES[view.value][0]) : view.value === 'video' ? noVideo() : `<div class="empty"><h3>暂无内容</h3><p>换个年龄看看。</p></div>`);
   } else if (view.mode === 'tag') {
     const items = inStage().filter(i => i.tg.includes(view.value));
     html = gridView(TAGS[view.value], `${esc(filterText())} · ${items.length} 项`, items, lvPick ? lvEmpty('内容') : `<div class="empty"><h3>暂无内容</h3></div>`);
   } else if (view.mode === 'level') html = levelView();
   else if (view.mode === 'me') html = meView();
+  else if (view.mode === 'plan') html = planView();
   else if (view.mode === 'search') html = searchView();
   else html = detailView();
   if (view.mode !== 'detail') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
@@ -1927,13 +2034,19 @@ document.addEventListener('click', e => {
     }
     if (t.dataset.ch === 'me') { query = ''; return go({ mode: 'me' }); }
     query = ''; $('q').value = '';
+    if (t.dataset.ch === 'plan') return go({ mode: 'plan' });
+    if (t.dataset.ch === 'res') return go({ mode: 'type', value: store.get('res-type') || 'song' });
     return go(t.dataset.ch === 'home' ? { mode: 'home' } : { mode: 'type', value: t.dataset.ch });
   }
   if (t.dataset.lvMenu) return openLvMenu();
+  if (t.dataset.resType) { store.set('res-type', t.dataset.resType); view = { mode: 'type', value: t.dataset.resType }; render(); return; }
+  if (t.dataset.openSettings) return openSettings();
+  if (t.dataset.meEdit) return openMeEdit(t.dataset.meEdit);
+  if (t.dataset.meHist) return openHistory();
   if (t.dataset.lvpick !== undefined) {
     if (t.closest('.sheet')) closeSheet(true);
     lvPick = t.dataset.lvpick; store.set('lv-pick', lvPick);
-    if (view.mode !== 'home') { navStack = []; return go({ mode: 'home' }); }
+    if (!['home', 'type', 'tag', 'plan'].includes(view.mode)) { navStack = []; return go({ mode: 'home' }); }
     const y = scrollY; render(); scrollTo(0, y); return;
   }
   if (t.dataset.level) { query = ''; $('q').value = ''; return go({ mode: 'level', value: t.dataset.level }); }
@@ -1958,6 +2071,7 @@ document.addEventListener('click', e => {
   if (t.dataset.sovClose) return closeSearch();
   if (t.dataset.allEps) { const m = media(ITEMS[view.value]), ol = $('eps'); ol.insertAdjacentHTML('beforeend', m.episodes.slice(ol.children.length).map((e, k) => epLi(e, ol.children.length + k)).join('')); t.remove(); return syncDock(); }
   if (t.dataset.id !== undefined && t.closest('#sov')) { closeSearch(true); return go({ mode: 'detail', value: Number(t.dataset.id) }, { push: true, dir: 'fwd' }); }
+  if (t.dataset.id !== undefined && t.closest('.sheet')) closeSheet(true);
   if (t.dataset.id !== undefined) {
     if (view.mode === 'detail' && Number(t.dataset.id) === view.value) return;
     return go({ mode: 'detail', value: Number(t.dataset.id) }, { push: true, dir: 'fwd', from: t.querySelector('.art') });
