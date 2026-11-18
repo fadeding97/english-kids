@@ -64,6 +64,28 @@
   </div>
 
   <div class="card">
+    <h2>测试 D：不自动播，点一下有声</h2>
+    <ol>
+      <li>点下面按钮，视频出现后<b>点视频上的播放键</b>。</li>
+      <li>看是不是<b>直接有声音</b>（不用再点喇叭）。</li>
+      <li>唱完看会不会自己从头再唱。</li>
+    </ol>
+    <button type="button" data-run="d">开始测试 D</button>
+    <div class="frame" id="fd" hidden></div>
+  </div>
+
+  <div class="card">
+    <h2>测试 E：要求有声自动播</h2>
+    <ol>
+      <li>点下面按钮，看视频是<b>有声自动播</b>，还是停住（可能提示「播放失败」）。</li>
+      <li>如果停住，点视频上的播放键，看是不是直接有声音。</li>
+      <li>唱完看会不会自己从头再唱。</li>
+    </ol>
+    <button type="button" data-run="e">开始测试 E</button>
+    <div class="frame" id="fe" hidden></div>
+  </div>
+
+  <div class="card">
     <h2>播放器发来的消息</h2>
     <p class="muted">如果这里出现内容，说明播放器会把播放状态告诉网站，截图发我就行。</p>
     <div class="log" id="log">（暂无）</div>
@@ -78,17 +100,24 @@
   mode.style.background = desktop ? '#d1f2dc' : '#e5e5ea';
   document.getElementById('ua').textContent = navigator.userAgent;
 
-  function url(extra) {
-    return `https://player.bilibili.com/player.html?bvid=${BVID}&page=1&p=1&t=${START}&autoplay=true&danmaku=0&danmakuClosed=true&high_quality=1&isOutside=true${extra}`;
+  // 每个测试只差一处参数
+  const RUNS = {
+    a: 'autoplay=true',
+    c: 'autoplay=true&loop=true',
+    d: 'autoplay=1&loop=true',
+    e: 'autoplay=true&autoplayMode=unmuted&loop=true',
+  };
+  function url(k) {
+    return `https://player.bilibili.com/player.html?bvid=${BVID}&page=1&p=1&t=${START}&${RUNS[k]}&danmaku=0&danmakuClosed=true&high_quality=1&isOutside=true`;
   }
   function stopAll() {
-    for (const id of ['fa', 'fc']) { const f = document.getElementById(id); f.innerHTML = ''; f.hidden = true; }
+    for (const k in RUNS) { const f = document.getElementById('f' + k); f.innerHTML = ''; f.hidden = true; }
   }
   document.querySelectorAll('[data-run]').forEach(b => b.addEventListener('click', () => {
     stopAll();
-    const k = b.dataset.run, box = document.getElementById(k === 'a' ? 'fa' : 'fc');
+    const k = b.dataset.run, box = document.getElementById('f' + k);
     box.hidden = false;
-    box.innerHTML = `<iframe src="${url(k === 'c' ? '&loop=true' : '')}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
+    box.innerHTML = `<iframe src="${url(k)}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }));
   document.getElementById('stop').addEventListener('click', stopAll);
