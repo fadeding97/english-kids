@@ -710,6 +710,7 @@ body.fun .grid .t-name { font-family: var(--round); font-weight: 800; color: var
 .gm-card:active, .gm-opt:active { transform: rotate(var(--rot)) translateY(4px); box-shadow: 0 2px 0 color-mix(in srgb, var(--deep) 35%, transparent); }
 .gm-circle { width: 96px; height: 96px; border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: inset 0 -4px 0 color-mix(in srgb, var(--deep) 14%, transparent); }
 .tw { width: 72%; height: 72%; display: block; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.tw.cf { width: 84%; height: 84%; } .tw.cf svg { width: 100%; height: 100%; display: block; }
 .gm-card b, .gm-opt b { background: var(--deep); color: #fff; border-radius: 999px; padding: 3px 16px; font: 900 19px var(--round); letter-spacing: .02em; box-shadow: 0 3px 0 rgba(0, 0, 0, .12); }
 .gm-card b, .gm-opt b { white-space: nowrap; } .gm-card b.long { font-size: 15px; padding: 4px 12px; }
 .gm-card small { font-size: 12px; font-weight: 800; color: var(--deep); min-height: 15px; visibility: hidden; }
@@ -1255,6 +1256,7 @@ a.cell2 { text-decoration: none; }
 <script src="data/media.js"></script>
 <script src="data/plan.js"></script>
 <script src="js/plan-app.js"></script>
+<script src="js/chick-family.js"></script>
 <script src="js/games.js"></script>
 <script>
 
@@ -1265,7 +1267,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-18 贴纸卡片+计划页统一 v1';
+const APP_VERSION = '2026-11-18 啾啾一家贴纸 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;

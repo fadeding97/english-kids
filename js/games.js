@@ -17,7 +17,8 @@ const WORD_PIC = {
 const GAME_FALLBACK = ['dog', 'cat', 'duck', 'cow', 'pig', 'sheep'];
 // 卡通图：Twemoji（CC-BY 4.0）文件放在 img/tw/，用 scripts/get-twemoji.mjs 下载；所有手机画风一致
 const twCode = e => { const cps = [...e].map(c => c.codePointAt(0).toString(16)); return (cps.includes('200d') ? cps : cps.filter(c => c !== 'fe0f')).join('-'); };
-const pic = (w, cls = '') => { const e = (WORD_PIC[w] || ['⭐'])[0]; return `<img class="tw ${cls}" src="img/tw/${twCode(e)}.svg" alt="" draggable="false" onerror="this.replaceWith(document.createTextNode('${e}'))">`; };
+// 人物类单词（妈妈、爸爸、宝宝、你好、再见、晚安）用原创的「啾啾一家」（js/chick-family.js），其余用 Twemoji
+const pic = (w, cls = '') => { if (typeof CHICK_ART !== "undefined" && CHICK_ART[w]) return `<span class="tw cf ${cls}">${CHICK_ART[w]}</span>`; const e = (WORD_PIC[w] || ['⭐'])[0]; return `<img class="tw ${cls}" src="img/tw/${twCode(e)}.svg" alt="" draggable="false" onerror="this.replaceWith(document.createTextNode('${e}'))">`; };
 // 贴纸卡的马卡龙色：[底色, 标签色]
 const GPAL = [['#FFE1E6', '#F27A93'], ['#FFF1C2', '#E0A100'], ['#D9F1FF', '#3FA7D6'], ['#DDF6D8', '#4CB860'], ['#EBDDFF', '#9B6FE8'], ['#FFE4CC', '#F08A3C']];
 const gpal = w => GPAL[Object.keys(WORD_PIC).indexOf(w) % GPAL.length];
