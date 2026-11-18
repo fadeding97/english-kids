@@ -148,7 +148,6 @@ function todayView() {
     .filter(x => x.it && media(x.it)).sort((a, b) => b.p.at - a.p.at).slice(0, 8);
   return `<header class="page-h td-h"><div><p class="td-date">${now.getMonth() + 1}月${now.getDate()}日 星期${WEEKDAY[now.getDay()]}</p><h1>今天</h1></div>
       <button class="gear h-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></header>
-    <button class="lv-btn td-lv" type="button" data-age-pick="1">宝宝 ${fmtAge(months)} · ${s.age}${ic('i-right')}</button>
     <section class="td-card">
       <div class="td-top">
         <div><span class="td-sub">今日启蒙 · 第 ${T.dayN} 天</span><b class="td-title">${left ? `还差 ${left} 件事` : '今天都完成啦'}</b></div>
