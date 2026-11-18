@@ -628,6 +628,120 @@ body.kid .age-pill, body.kid .age-side { display: none !important; }
 .stk-grid div { display: grid; justify-items: center; gap: 8px; } .stk-grid .stk { --sz: 60px; } .stk-grid small { font-size: 11px; color: var(--label-2); }
 .stk-none { color: var(--label-2); font-size: 14px; padding: 4px; }
 @media (prefers-reduced-motion: reduce) { .mas .chick, .dn .chick.cheer, .stk.big { animation: none; } .dn-confetti { display: none; } }
+
+/* ---------- 童趣版：孩子会看的页面（今天、乐园、完成、小游戏） ---------- */
+:root { --fun-bg: #FFF8EC; --fun-card: #FFFFFF; --fun-ink: #3A2A1A; --sky1: #BDE7FF; --sky2: #DDF3FF; --round: ui-rounded, "Arial Rounded MT Bold", var(--font); --star-off: #EFE6D6; --phrase-bg: #FFF0C9; --phrase-bd: #F2C94C; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --fun-bg: #1B1916; --fun-card: #2C2A27; --fun-ink: #F5F0E8; --sky1: #1E3550; --sky2: #2A4560; --star-off: #3A352E; --phrase-bg: #332C1C; --phrase-bd: #6B5A2A; } }
+:root[data-theme="dark"] { --fun-bg: #1B1916; --fun-card: #2C2A27; --fun-ink: #F5F0E8; --sky1: #1E3550; --sky2: #2A4560; --star-off: #3A352E; --phrase-bg: #332C1C; --phrase-bd: #6B5A2A; }
+body.fun, body.fun .main { background: var(--fun-bg); }
+/* 天空草地场景 */
+.sky { position: relative; height: 236px; margin: calc(-14px - env(safe-area-inset-top, 0px)) -16px 0; background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 72%, var(--fun-bg) 100%); overflow: hidden; }
+@media (min-width: 761px) { .sky { margin: 0; border-radius: 28px; max-width: 640px; } }
+.sky-sun { position: absolute; right: 30px; top: calc(62px + env(safe-area-inset-top, 0px)); width: 40px; height: 40px; border-radius: 50%; background: #FFD54A; box-shadow: 0 0 0 10px rgba(255, 213, 74, .25); }
+.sky-cloud { position: absolute; height: 20px; border-radius: 999px; background: #fff; opacity: .9; animation: cloudDrift 14s ease-in-out infinite; }
+.sky-cloud::before { content: ''; position: absolute; left: 20%; top: -12px; width: 30px; height: 26px; border-radius: 50%; background: inherit; }
+.sky-cloud.c1 { left: 44%; top: calc(36px + env(safe-area-inset-top, 0px)); width: 64px; }
+.sky-cloud.c2 { left: 58%; top: calc(112px + env(safe-area-inset-top, 0px)); width: 50px; opacity: .75; animation-duration: 18s; animation-direction: reverse; }
+@keyframes cloudDrift { 50% { transform: translateX(14px); } }
+.sky-grass { position: absolute; left: 0; bottom: 0; width: 100%; height: 64px; }
+.sky-h { position: absolute; left: 16px; top: calc(14px + env(safe-area-inset-top, 0px)); }
+.sky-h h1 { margin: 0; font: 900 34px/1.1 var(--round); color: #1E4E70; letter-spacing: .02em; }
+.sky .td-date { color: #2E6B94; font-weight: 800; margin: 0; }
+.sky-r { position: absolute; right: 12px; top: calc(16px + env(safe-area-inset-top, 0px)); display: flex; gap: 8px; align-items: center; }
+.sky .td-stk { position: static; background: rgba(255, 255, 255, .88); }
+.sky-search { width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, .88); color: var(--accent); align-items: center; justify-content: center; }
+.sky-search .ico { width: 19px; height: 19px; stroke-width: 2.4; }
+@media (min-width: 761px) { .sky-h { left: 24px; } .sky-r { right: 18px; } }
+.sky-chick { position: absolute; left: 14px; bottom: 4px; width: 90px; height: 90px; }
+.sky-chick .chick { width: 100%; height: 100%; animation: chickBob 3s ease-in-out infinite; }
+.sky .mas-say { position: absolute; left: 112px; right: 14px; bottom: 52px; background: #fff; color: #3A2A1A; border-radius: 20px 20px 20px 6px; box-shadow: 0 4px 0 rgba(30, 78, 112, .12); }
+.sky .mas-say::before { display: none; }
+@media (min-width: 761px) { .sky .mas-say { right: auto; max-width: 380px; } }
+/* 3 件事：糖果风格 */
+.td-card.fun { background: none; padding: 0; gap: 12px; margin-top: -10px; }
+.td-card.fun .td-title { font: 900 21px var(--round); color: var(--fun-ink); }
+.td-card.fun .td-sub { font-size: 12px; }
+.td-stars { display: flex; gap: 3px; }
+.td-stars svg { width: 28px; height: 28px; fill: var(--star-off); }
+.td-stars svg.on { fill: #FFC93C; stroke: #E8A800; stroke-width: 1.2; stroke-linejoin: round; animation: gmPop .5s var(--spring-bouncy); }
+.fun .td-task { background: var(--fun-card); border-radius: 22px; padding: 12px; box-shadow: 0 5px 0 color-mix(in srgb, var(--k) 30%, transparent); transition: transform .15s var(--press), box-shadow .15s var(--press); }
+.fun .td-task:active { transform: translateY(3px); box-shadow: 0 2px 0 color-mix(in srgb, var(--k) 30%, transparent); }
+.fun .td-thumb, .fun .td-thumb .art { width: 58px; height: 58px; border-radius: 16px; }
+.fun .td-txt b { font: 800 16px var(--round); color: var(--fun-ink); }
+.fun .td-txt small { color: var(--k); font-weight: 700; }
+.fun .td-task.ok .td-txt b { color: var(--label-3); }
+.fun .td-state { width: 42px; height: 42px; box-shadow: 0 4px 0 #C8102E; }
+.fun .td-task.ok .td-state { box-shadow: 0 4px 0 #2A9D49; }
+.gm-thumb { display: grid; place-items: center; font-size: 30px; background: #FFE9C2; }
+body.fun .td-phrase { background: var(--phrase-bg); border: 2px dashed var(--phrase-bd); border-radius: 20px; }
+body.fun .td-tag { background: none; color: #B07A12; padding: 0; font-size: 13px; }
+body.fun .td-phrase b { font-family: var(--round); font-weight: 800; }
+/* 乐园：胖分类按钮 + 游戏横幅 + 封面加厚阴影 */
+.rseg.pseg { background: none; padding: 0; gap: 10px; margin-top: -10px; max-width: 420px; }
+.rseg.pseg button { height: auto; flex-direction: column; gap: 6px; padding: 0; background: none; box-shadow: none; font-weight: 800; font-size: 13px; color: var(--label-2); }
+.rseg.pseg button span { width: 62px; height: 62px; border-radius: 22px; background: var(--fun-card); box-shadow: 0 5px 0 rgba(120, 90, 50, .15); display: grid; place-items: center; font-size: 29px; transition: transform .2s var(--spring-bouncy); }
+.rseg.pseg button[aria-checked="true"] { color: var(--k); background: none; box-shadow: none; font-weight: 900; }
+.rseg.pseg button[aria-checked="true"] span { background: var(--k); box-shadow: 0 5px 0 color-mix(in srgb, var(--k) 70%, #000); transform: translateY(-2px); }
+.pk-game { display: flex; align-items: center; gap: 8px; width: 100%; max-width: 640px; border-radius: 24px; background: linear-gradient(120deg, #7ED3F7, #A5E887); box-shadow: 0 5px 0 #6CB8D6; padding: 10px 16px 0 6px; text-align: left; color: #fff; overflow: hidden; margin-top: -8px; }
+.pk-game .chick { width: 86px; height: 86px; flex: none; margin-bottom: -10px; }
+.pk-game span { display: grid; gap: 2px; padding-bottom: 12px; }
+.pk-game b { font: 900 19px var(--round); text-shadow: 0 2px 0 rgba(0, 0, 0, .12); }
+.pk-game small { font-size: 13px; }
+.pk-game em { justify-self: start; margin-top: 4px; background: #fff; color: #2E9C8F; border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 800; font-style: normal; }
+body.fun .grid .art.u { border-radius: 22px; box-shadow: 0 5px 0 color-mix(in srgb, var(--u) 70%, #000); }
+body.fun .grid .t-name { font-family: var(--round); font-weight: 800; color: var(--fun-ink); }
+/* 单词小游戏 */
+.gm { display: grid; gap: 16px; width: 100%; max-width: 560px; margin: 0 auto; color: var(--fun-ink); }
+.gm-top { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; }
+.gm-x { width: 40px; height: 40px; border-radius: 50%; background: var(--fun-card); box-shadow: 0 3px 0 rgba(0, 0, 0, .08); display: grid; place-items: center; color: var(--label-2); }
+.gm-x .ico { width: 18px; height: 18px; stroke-width: 2.6; }
+.gm-seg { justify-self: center; display: flex; background: var(--fun-card); border-radius: 999px; padding: 4px; box-shadow: 0 3px 0 rgba(0, 0, 0, .08); }
+.gm-seg button { padding: 7px 16px; border-radius: 999px; font-weight: 800; font-size: 14px; color: var(--label-2); }
+.gm-seg [aria-pressed="true"] { background: #4FC3B5; color: #fff; }
+.gm-find .gm-seg [aria-pressed="true"] { background: #5BC97D; }
+.gm-say { display: flex; align-items: center; gap: 10px; }
+.gm-say .chick { width: 64px; height: 64px; flex: none; }
+.gm-say p { margin: 0; background: var(--fun-card); border-radius: 18px 18px 18px 6px; padding: 10px 14px; font-size: 15px; box-shadow: 0 3px 0 rgba(0, 0, 0, .06); }
+.gm-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (min-width: 761px) { .gm-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.gm-card { border-radius: 26px; background: var(--fun-card); box-shadow: 0 6px 0 rgba(70, 140, 180, .22); padding: 14px 10px 12px; display: grid; justify-items: center; gap: 2px; color: var(--fun-ink); transition: transform .15s var(--press), box-shadow .15s var(--press); }
+.gm-card:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(70, 140, 180, .22); }
+.gm-pic { font-size: 62px; line-height: 1.15; }
+.gm-card b { font: 900 22px var(--round); }
+.gm-card small { font-size: 12px; font-weight: 700; color: var(--label-2); }
+.gm-card.pop { animation: gmPop .5s var(--spring-bouncy); background: #FFF4D6; box-shadow: 0 0 0 4px #FFC93C, 0 6px 0 #E8A800; }
+@keyframes gmPop { 0% { transform: scale(1); } 40% { transform: scale(1.08) rotate(-3deg); } 100% { transform: scale(1); } }
+.gm-tip { margin: 0; background: var(--fun-card); border-radius: 16px; padding: 12px 14px; font-size: 13px; color: var(--label-2); }
+.gm-find .gm-tip { background: none; text-align: center; padding: 0; }
+.gm-prog { display: flex; justify-content: center; gap: 8px; }
+.gm-prog i { width: 30px; height: 10px; border-radius: 999px; background: var(--fill-2); }
+.gm-prog .on { background: #5BC97D; } .gm-prog .cur { background: #FFC93C; }
+.gm-ask { display: grid; justify-items: center; gap: 10px; }
+.gm-ask .chick { width: 100px; height: 100px; }
+.gm-q { display: flex; align-items: center; gap: 10px; background: var(--fun-card); border-radius: 20px; padding: 10px 12px 10px 18px; box-shadow: 0 4px 0 rgba(0, 0, 0, .08); color: var(--fun-ink); }
+.gm-q b { font: 900 22px var(--round); } .gm-q em { font-style: normal; color: #2E9C8F; }
+.gm-q span { width: 36px; height: 36px; border-radius: 50%; background: #4FC3B5; display: grid; place-items: center; box-shadow: 0 3px 0 #2E9C8F; font-size: 16px; }
+.gm-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.gm-opt { aspect-ratio: .82; border-radius: 24px; background: var(--fun-card); box-shadow: 0 6px 0 rgba(90, 150, 60, .22); display: grid; place-items: center; align-content: center; gap: 2px; color: var(--fun-ink); transition: opacity .2s ease, transform .2s var(--spring-bouncy); }
+.gm-opt .gm-pic { font-size: 54px; }
+.gm-opt b { font: 900 18px var(--round); color: #3F7D2A; }
+.gm-opt.right { background: #E6FAEA; box-shadow: 0 0 0 4px #5BC97D, 0 6px 0 #3FA35E; transform: scale(1.06); animation: gmPop .5s var(--spring-bouncy); }
+.gm-opt.dim { opacity: .4; } .gm-opt.wrong { opacity: .45; animation: gmShake .4s ease; }
+@keyframes gmShake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.gm-res { margin: 0; text-align: center; font: 900 19px var(--round); color: #3F7D2A; min-height: 26px; }
+.gm-next { height: 54px; border-radius: 18px; background: #5BC97D; box-shadow: 0 5px 0 #3FA35E; color: #fff; font: 900 18px var(--round); }
+.gm-next:active { transform: translateY(3px); box-shadow: 0 2px 0 #3FA35E; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gm-opt.right { background: #1F3A26; } :root:not([data-theme="light"]) .gm-card.pop { background: #3A3220; } }
+/* 手机底部标签栏：浮起来的圆角条 */
+@media (max-width: 760px) {
+  .tabbar { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); border-radius: 24px; border-top: 0; padding: 6px 8px; box-shadow: 0 6px 20px rgba(80, 60, 20, .16); }
+  .tab { font-weight: 700; }
+  .tab .ico { width: 44px; height: 30px; padding: 3px 10px; box-sizing: border-box; border-radius: 12px; transition: background .2s ease; }
+  .tab[aria-current="true"] .ico { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  .mini { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+  .main { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) { .sky-cloud, .sky-chick .chick, .td-stars svg.on, .gm-card.pop, .gm-opt.right, .gm-opt.wrong { animation: none; } }
 .share-img { width: 100%; border-radius: 16px; display: block; margin: 8px 0 12px; }
 .share-dl { width: 100%; height: 46px; }
 /* 计划（新版） */
@@ -1083,6 +1197,7 @@ a.cell2 { text-decoration: none; }
 <script src="data/media.js"></script>
 <script src="data/plan.js"></script>
 <script src="js/plan-app.js"></script>
+<script src="js/games.js"></script>
 <script>
 
 const LINKS = {
@@ -1092,7 +1207,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-18 统一封面+啾啾+贴纸 v1';
+const APP_VERSION = '2026-11-18 童趣版+单词小游戏 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1186,11 +1301,11 @@ function shelf(key, title, items, more, kind = 'sq') {
 /* ---------- chrome ---------- */
 function curNav() {
   const v = view.mode === 'detail' ? (navStack.find(e => e.view.mode !== 'detail') || { view: { mode: 'home' } }).view : view;
-  return v.mode === 'home' ? 'home' : v.mode === 'type' || v.mode === 'tag' ? 'res' : v.mode === 'plan' || v.mode === 'lib' ? 'plan' : v.mode === 'vip' ? 'me' : v.mode === 'done' ? 'home' : v.mode === 'search' ? 'search' : v.mode === 'level' ? 'lv:' + v.value : v.mode === 'me' ? 'me' : '';
+  return v.mode === 'home' ? 'home' : v.mode === 'type' || v.mode === 'tag' || v.mode === 'game' ? 'res' : v.mode === 'plan' || v.mode === 'lib' ? 'plan' : v.mode === 'vip' ? 'me' : v.mode === 'done' ? 'home' : v.mode === 'search' ? 'search' : v.mode === 'level' ? 'lv:' + v.value : v.mode === 'me' ? 'me' : '';
 }
 function renderChrome() {
   const cur = curNav();
-  const items = [['home', '今天', 'i-sun'], ['plan', '计划', 'i-cal'], ['res', '资源', 'i-grid']];
+  const items = [['home', '今天', 'i-sun'], ['plan', '计划', 'i-cal'], ['res', '乐园', 'i-grid']];
   $('navBrowse').innerHTML = `<div class="nav-h">浏览</div>` + items.map(([k, l, i]) =>
     `<button class="nav-item" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
   $('navMe').innerHTML = `<button class="nav-item" type="button" data-ch="me" aria-current="${cur === 'me'}">${ic('i-user')}我的</button>`;
@@ -1198,7 +1313,7 @@ function renderChrome() {
   void LEVELS.map(l =>
     `<button class="nav-item" type="button" data-level="${l.id}" aria-current="${'lv:' + l.id === cur}"><span class="lv-dot" style="--a:${l.color[0]};--b:${l.color[1]}">${l.id.slice(1)}</span>${l.id} ${l.name}</button>`).join('');
   syncAgeLabels();
-  const tabs = [['home', '今天', 'i-sun'], ['plan', '计划', 'i-cal'], ['res', '资源', 'i-grid'], ['me', '我的', 'i-user']];
+  const tabs = [['home', '今天', 'i-sun'], ['plan', '计划', 'i-cal'], ['res', '乐园', 'i-grid'], ['me', '我的', 'i-user']];
   $('tabbar').innerHTML = tabs.map(([k, l, i]) => `<button class="tab${k === bounceTab ? ' bounce' : ''}" type="button" data-ch="${k}" aria-current="${k === cur}">${ic(i)}${l}</button>`).join('');
   bounceTab = null;
 }
@@ -1312,9 +1427,15 @@ function homeView() {
   return html;
 }
 
+const PARK_EMOJI = { song: '🎵', video: '📺', book: '📖', play: '🤲' };
 function resSeg(cur) {
-  return `<div class="rseg" role="radiogroup" aria-label="资源类型">${Object.entries(TYPES).map(([k, [l]]) =>
-    `<button type="button" role="radio" aria-checked="${k === cur}" data-res-type="${k}">${l}</button>`).join('')}</div>`;
+  return `<div class="rseg pseg" role="radiogroup" aria-label="资源类型">${Object.entries(TYPES).map(([k, [l]]) =>
+    `<button type="button" role="radio" aria-checked="${k === cur}" data-res-type="${k}" style="--k:${UCOL[k][0]}"><span>${PARK_EMOJI[k]}</span>${l}</button>`).join('')}</div>`;
+}
+// 乐园页的小游戏入口
+function parkBanner() {
+  const gw = gameWords();
+  return `<button class="pk-game" type="button" data-go-game="listen">${chick('cheer')}<span><b>单词卡游戏</b><small>${esc(gw.theme)} · 点一点听、找一找</small><em>开始玩 ›</em></span></button>`;
 }
 function resFilter() {
   const l = lvPick && lvOf(lvPick);
@@ -2023,12 +2144,14 @@ function render() {
   if (settings.kid && view.mode !== 'detail' && view.mode !== 'home') view = { mode: 'home' };
   if (settings.elder && !['detail', 'home', 'done'].includes(view.mode)) view = { mode: 'home' };
   renderChrome();
+  // 童趣版：孩子会看的页面用奶油色底（家长看的计划、设置、会员保持简洁）
+  document.body.classList.toggle('fun', ['home', 'type', 'game', 'done'].includes(view.mode) && !settings.kid && !settings.elder);
   const s = stageById(stage);
   let html;
   if (view.mode === 'home') html = settings.kid ? kidHomeView() : settings.elder ? elderView() : todayView();
   else if (view.mode === 'type') {
     const items = inStage().filter(i => i.t === view.value);
-    html = pageHead('资源', `${esc(filterText())} · ${items.length} 项`).replace('class="page-h"', 'class="page-h grid-h"') + resSeg(view.value) + resFilter() +
+    html = pageHead('乐园', `${esc(filterText())} · ${items.length} 项`).replace('class="page-h"', 'class="page-h grid-h"') + resSeg(view.value) + parkBanner() + resFilter() +
       (items.length ? `<div class="grid">${items.map(tile).join('')}</div>` : lvPick ? lvEmpty(TYPES[view.value][0]) : view.value === 'video' ? noVideo() : `<div class="empty"><h3>暂无内容</h3><p>换个年龄看看。</p></div>`);
   } else if (view.mode === 'tag') {
     const items = inStage().filter(i => i.tg.includes(view.value));
@@ -2039,9 +2162,10 @@ function render() {
   else if (view.mode === 'lib') html = libView();
   else if (view.mode === 'vip') html = vipView();
   else if (view.mode === 'done') html = doneView();
+  else if (view.mode === 'game') html = gameView();
   else if (view.mode === 'search') html = searchView();
   else html = detailView();
-  if (view.mode !== 'detail') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
+  if (view.mode !== 'detail' && view.mode !== 'game') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
   $('main').innerHTML = html;
   syncDock(); placePlayer(); renderTopbar();
   if (view.mode === 'detail') {

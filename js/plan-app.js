@@ -216,26 +216,37 @@ function todayView() {
   const say = nx ? `${hi}！今天和<b>啾啾</b>一起${verb[nx.label] || '玩'}<br><b class="mas-hl">${esc(nx.name)}</b> 吧`
     : `今天的 3 件事都完成啦！<br>明天啾啾还在这里等你`;
   const wk = weekStickers(T).filter(Boolean).length;
-  return `<header class="page-h td-h"><div><p class="td-date">${now.getMonth() + 1}月${now.getDate()}日 星期${WEEKDAY[now.getDay()]}</p><h1>今天</h1></div>
-      <button class="td-stk" type="button" data-stickers="1" aria-label="贴纸册">${ic('i-star')}<b>本周 ${wk} / 7</b></button>
-      <button class="gear h-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></header>
-    <section class="mas">${chick()}<p class="mas-say">${say}</p></section>
-    <section class="td-card">
+  const star = on => `<svg viewBox="0 0 24 24" class="${on ? 'on' : ''}" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6L2.5 9.3l6.6-.8z"/></svg>`;
+  const gw = gameWords();
+  // 童趣版：天空草地场景 + 啾啾 + 糖果风格任务卡
+  return `<section class="sky">
+      <span class="sky-sun" aria-hidden="true"></span><span class="sky-cloud c1" aria-hidden="true"></span><span class="sky-cloud c2" aria-hidden="true"></span>
+      <svg class="sky-grass" viewBox="0 0 390 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40Q60 10 130 32T260 28T390 30V60H0Z" fill="#B8E986"/><path d="M0 50Q90 30 200 46T390 44V60H0Z" fill="#9BDB6A"/></svg>
+      <div class="sky-h"><p class="td-date">${now.getMonth() + 1}月${now.getDate()}日 星期${WEEKDAY[now.getDay()]}</p><h1>今天</h1></div>
+      <div class="sky-r"><button class="td-stk" type="button" data-stickers="1" aria-label="贴纸册">${ic('i-star')}<b>本周 ${wk} / 7</b></button>
+        <button class="sky-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></div>
+      <div class="sky-chick">${chick()}</div>
+      <p class="mas-say">${say}</p>
+    </section>
+    <section class="td-card fun">
       <div class="td-top">
-        <div><span class="td-sub">今日启蒙 · 第 ${T.dayN} 天</span><b class="td-title">${left ? `还差 ${left} 件事` : '今天都完成啦'}</b></div>
-        ${st ? `<span class="td-streak">${ic('i-flame')}连续 ${st} 天</span>` : ''}
+        <div><b class="td-title">今天的 3 件事</b><span class="td-sub">第 ${T.dayN} 天${st ? ` · 连续 ${st} 天` : ''}</span></div>
+        <span class="td-stars" aria-label="完成 ${done.length} / 3">${[0, 1, 2].map(i => star(i < done.length)).join('')}</span>
       </div>
-      <div class="td-bar"><i style="width:${Math.round(done.length / 3 * 100)}%"></i></div>
       <div class="td-tasks">${T.tasks.map(x => {
         const ok = done.includes(x.k);
-        return `<button class="td-task${ok ? ' ok' : ''}" type="button" data-task="${x.k}">
+        return `<button class="td-task${ok ? ' ok' : ''}" type="button" data-task="${x.k}" style="--k:${UCOL[x.it.t][0]}">
           <span class="td-thumb">${art(x.it, '', 120)}</span>
-          <span class="td-txt"><small>${'①②③'[x.k]} ${x.label}${x.from ? ' · ' + esc(x.from) : ''}</small><b>${esc(x.name)}</b></span>
+          <span class="td-txt"><small>${ok ? '✓ ' : ''}${x.label}${x.from ? ' · ' + esc(x.from) : ''}</small><b>${esc(x.name)}</b></span>
           <span class="td-state" aria-label="${ok ? '已完成' : '开始'}">${ok ? ic('i-check') : ic('i-play')}</span></button>`;
-      }).join('')}</div>
+      }).join('')}
+        <button class="td-task td-game" type="button" data-go-game="find" style="--k:#F59E2B">
+          <span class="td-thumb gm-thumb">${WORD_PIC[gw.words[0]][0]}</span>
+          <span class="td-txt"><small>玩一玩 · 不算在 3 件事里</small><b>单词卡：找一找</b></span>
+          <span class="td-state" aria-label="开始">${ic('i-play')}</span></button></div>
       ${T.locked ? `<button class="td-lock" type="button" data-go-vip="1">第 ${PLAN_FREE_WEEKS + 1} 周起的主题计划是会员内容，现在是自由练习 · 了解会员 ›</button>` : ''}
     </section>
-    <section class="td-phrase"><span class="td-tag">今天一句</span><div><b>${esc(ph[0])}</b><span>${esc(ph[1])}</span></div></section>
+    <section class="td-phrase"><span class="td-tag">💬 今天一句</span><div><b>${esc(ph[0])}</b><span>${esc(ph[1])}</span></div></section>
     <section class="sec">
       <div class="td-sechead"><h2 class="sec-h">本周计划 · 第 ${T.w + 1} 周</h2><button type="button" data-ch="plan">全部计划</button></div>
       <button class="td-week" type="button" data-ch="plan"><span><b>主题：${esc(T.week.theme)}</b><small>${esc(T.week.en)}</small></span><em>${ws.days} / 7 天</em></button>
