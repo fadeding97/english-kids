@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>连播测试</title>
+<style>
+  :root { --bg: #f2f2f7; --card: #fff; --label: #111; --label-2: #6e6e73; --accent: #ff3b30; }
+  body { margin: 0; background: var(--bg); color: var(--label); font: 16px/1.5 -apple-system, "PingFang SC", sans-serif; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 26px; margin: 8px 0 4px; }
+  .muted { color: var(--label-2); font-size: 14px; }
+  .card { background: var(--card); border-radius: 14px; padding: 14px; margin: 14px 0; }
+  .card h2 { font-size: 18px; margin: 0 0 6px; }
+  ol { margin: 6px 0; padding-left: 20px; }
+  button { font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 10px 14px; background: var(--accent); color: #fff; width: 100%; }
+  button.ghost { background: #e5e5ea; color: var(--label); margin-top: 8px; }
+  .frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+  .frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .ua { font-size: 12px; word-break: break-all; color: var(--label-2); }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+  .log { font: 12px/1.4 ui-monospace, Menlo, monospace; max-height: 140px; overflow: auto; background: #f7f7f9; border-radius: 8px; padding: 8px; margin-top: 8px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>iPhone 连播测试</h1>
+  <p class="muted">测试用合集：Super Simple Songs。第 1 首是 Five Little Monkeys，第 2 首是 Twinkle Twinkle Little Star。每个测试都从第 1 首结尾前约 15 秒开始，不用等太久。</p>
+
+  <div class="card">
+    <div>当前模式：<span id="mode" class="tag"></span></div>
+    <div class="ua" id="ua"></div>
+  </div>
+
+  <div class="card">
+    <h2>测试 A：普通模式连播</h2>
+    <ol>
+      <li>点下面按钮开始播放（第一次可能还要再点一下视频）。</li>
+      <li>等 15 秒左右第 1 首唱完。</li>
+      <li>看会不会<b>自己</b>接着唱 Twinkle Twinkle Little Star。</li>
+    </ol>
+    <button type="button" data-run="a">开始测试 A</button>
+    <div class="frame" id="fa" hidden></div>
+  </div>
+
+  <div class="card">
+    <h2>测试 B：桌面模式连播</h2>
+    <ol>
+      <li>在 Safari 地址栏左边点「<b>大小</b>」图标（aA），选「<b>请求桌面网站</b>」。</li>
+      <li>页面刷新后，上面的「当前模式」应变成<b>桌面模式</b>。</li>
+      <li>再点「开始测试 A」，看能不能播、唱完会不会自己接下一首。</li>
+      <li>测完在同一个菜单里选「请求移动网站」改回来。</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>测试 C：单曲循环</h2>
+    <ol>
+      <li>点下面按钮开始播放。</li>
+      <li>等第 1 首唱完，看会不会<b>自己从头再唱</b> Five Little Monkeys。</li>
+    </ol>
+    <button type="button" data-run="c">开始测试 C</button>
+    <div class="frame" id="fc" hidden></div>
+  </div>
+
+  <div class="card">
+    <h2>播放器发来的消息</h2>
+    <p class="muted">如果这里出现内容，说明播放器会把播放状态告诉网站，截图发我就行。</p>
+    <div class="log" id="log">（暂无）</div>
+    <button type="button" class="ghost" id="stop">停止所有播放</button>
+  </div>
+</div>
+<script>
+  const BVID = 'BV1vJc7z4E8s', START = 115;
+  const desktop = !/Mobile/.test(navigator.userAgent);
+  const mode = document.getElementById('mode');
+  mode.textContent = desktop ? '桌面模式' : '普通（手机）模式';
+  mode.style.background = desktop ? '#d1f2dc' : '#e5e5ea';
+  document.getElementById('ua').textContent = navigator.userAgent;
+
+  function url(extra) {
+    return `https://player.bilibili.com/player.html?bvid=${BVID}&page=1&p=1&t=${START}&autoplay=true&danmaku=0&danmakuClosed=true&high_quality=1&isOutside=true${extra}`;
+  }
+  function stopAll() {
+    for (const id of ['fa', 'fc']) { const f = document.getElementById(id); f.innerHTML = ''; f.hidden = true; }
+  }
+  document.querySelectorAll('[data-run]').forEach(b => b.addEventListener('click', () => {
+    stopAll();
+    const k = b.dataset.run, box = document.getElementById(k === 'a' ? 'fa' : 'fc');
+    box.hidden = false;
+    box.innerHTML = `<iframe src="${url(k === 'c' ? '&loop=true' : '')}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }));
+  document.getElementById('stop').addEventListener('click', stopAll);
+
+  const log = document.getElementById('log');
+  let n = 0;
+  window.addEventListener('message', e => {
+    if (!/bilibili\.com$/.test(new URL(e.origin).hostname)) return;
+    let d = e.data; try { d = typeof d === 'string' ? d : JSON.stringify(d); } catch (_) { d = String(d); }
+    if (n++ === 0) log.textContent = '';
+    log.textContent += new Date().toLocaleTimeString() + '  ' + String(d).slice(0, 160) + '\n';
+    log.scrollTop = log.scrollHeight;
+  });
+</script>
+</body>
+</html>
