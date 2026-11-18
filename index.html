@@ -729,7 +729,7 @@ body.fun .grid .t-name { font-family: var(--round); font-weight: 800; color: var
 .gm-opt.dim { opacity: .4; } .gm-opt.wrong { opacity: .45; animation: gmShake .4s ease; }
 @keyframes gmShake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
 .gm-res { margin: 0; text-align: center; font: 900 19px var(--round); color: #3F7D2A; min-height: 26px; }
-.gm-next { height: 54px; border-radius: 18px; background: #5BC97D; box-shadow: 0 5px 0 #3FA35E; color: #fff; font: 900 18px var(--round); }
+.gm-next { justify-self: center; width: min(100%, 320px); display: flex; align-items: center; justify-content: center; text-align: center; height: 54px; border-radius: 18px; background: #5BC97D; box-shadow: 0 5px 0 #3FA35E; color: #fff; font: 900 18px var(--round); }
 .gm-next:active { transform: translateY(3px); box-shadow: 0 2px 0 #3FA35E; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gm-opt.right { background: #1F3A26; } :root:not([data-theme="light"]) .gm-card.pop { background: #3A3220; } }
 /* 手机底部标签栏：浮起来的圆角条 */
@@ -1207,7 +1207,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-18 童趣版+单词小游戏 v1';
+const APP_VERSION = '2026-11-18 游戏按钮居中+童声 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;

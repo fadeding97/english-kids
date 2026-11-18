@@ -27,8 +27,11 @@ function speak(text) {
     const s = window.speechSynthesis; if (!s) { toast('这个浏览器不支持朗读'); return; }
     s.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = .8; u.pitch = 1.15;
-    const v = s.getVoices().find(x => /^en(-|_)US/i.test(x.lang)) || s.getVoices().find(x => /^en/i.test(x.lang));
+    // 啾啾的声音：音调调高、语速放慢，优先用女声（系统语音做不出真正的童声，这样最接近）
+    u.lang = 'en-US'; u.rate = .82; u.pitch = 1.7;
+    const vs = s.getVoices().filter(x => /^en/i.test(x.lang)), us = vs.filter(x => /^en(-|_)US/i.test(x.lang));
+    const female = /samantha|karen|moira|tessa|victoria|allison|ava|susan|zira|aria|jenny|female|google us english/i;
+    const v = us.find(x => female.test(x.name)) || vs.find(x => female.test(x.name)) || us[0] || vs[0];
     if (v) u.voice = v;
     s.speak(u);
   } catch (e) {}
