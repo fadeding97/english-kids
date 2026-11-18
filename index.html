@@ -969,6 +969,7 @@ a.cell2 { text-decoration: none; }
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/><path d="M11 10h1v4"/></symbol>
   <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
   <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
   <symbol id="i-shrink" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></symbol>
@@ -1034,7 +1035,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-18 有声开播 v1';
+const APP_VERSION = '2026-11-18 单曲循环 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1335,6 +1336,7 @@ function detailView() {
         <span class="elapsed" id="elapsed" title="本集已播放时间（页面估算）"></span>
         <span class="quota" id="quota" hidden></span>
         <button class="icon-btn" type="button" id="listenBtn" data-listen="1" aria-pressed="false">${ic('i-headphones')}<span>只听声音</span></button>
+        <button class="icon-btn" type="button" id="loopBtn" data-loop="1" aria-pressed="${!!settings.loop}" title="单曲循环">${ic('i-repeat')}<span>单曲循环</span></button>
         <button class="icon-btn" type="button" data-fs="1" title="全屏">${ic('i-expand')}<span>全屏</span></button>
         <button class="btn btn-gray sm" type="button" id="nextBtn" data-next="1">下一集${ic('i-right')}</button>
       </div>
@@ -1389,9 +1391,10 @@ const remaining = () => limitSec() - use.sec;
 
 const player = { item: null, idx: 0, t: 0, dur: 0, tick: 0, countdown: 0, locked: false };
 function biliEmbed(e, t) {
-  // 手机上 B站会跳到另一个手机版播放器：它只认 p（不认 page）、布尔值只认 true（不认 1），所以两种写法都带上
+  // 手机上 B站会跳到另一个手机版播放器：它只认 p（不认 page）、布尔值只认 true（不认 1），所以两种写法都带上。
+  // autoplayMode=unmuted：iPhone 不让有声自动播时，不退回静音播放；loop=true：播放器自己单曲循环（iPhone 实测可用）
   const p = e.page || 1;
-  return `https://player.bilibili.com/player.html?bvid=${e.bvid}&page=${p}&p=${p}&autoplay=true&autoplayMode=unmuted&danmaku=0&danmakuClosed=true&high_quality=1&isOutside=true`;
+  return `https://player.bilibili.com/player.html?bvid=${e.bvid}&page=${p}&p=${p}&autoplay=true&autoplayMode=unmuted${settings.loop ? '&loop=true' : ''}&danmaku=0&danmakuClosed=true&high_quality=1&isOutside=true`;
 }
 function saveProgress() {
   if (player.item == null) return;
@@ -1449,6 +1452,7 @@ function syncDock() {
   $('nextBtn').hidden = player.idx >= m.episodes.length - 1;
   document.querySelectorAll('.ep').forEach(b => b.setAttribute('aria-current', String(Number(b.dataset.ep) === player.idx)));
   const b = $('listenBtn');
+  $('loopBtn')?.setAttribute('aria-pressed', String(!!settings.loop));
   if (b) { b.setAttribute('aria-pressed', String(!!player.listen)); b.querySelector('span').textContent = player.listen ? '显示画面' : '只听声音'; }
   updateElapsed(); updateQuota();
 }
@@ -1523,6 +1527,13 @@ function applyListen() {
   const shield = box.querySelector('.shield');
   box.insertBefore(el, shield ? shield.nextSibling : null);
 }
+/* 单曲循环：参数只能在打开播放器时带上，所以切换后重新载入当前这一首 */
+function toggleLoop() {
+  settings.loop = !settings.loop; saveJSON('settings', settings);
+  syncDock();
+  toast(settings.loop ? '单曲循环已打开' : '单曲循环已关闭');
+  if (player.item != null && !player.locked) playItem(player.item, player.idx, { instant: true });
+}
 function toggleListen() { player.listen = !player.listen; applyListen(); }
 
 /* 全屏：优先用浏览器全屏；iPhone 不支持对普通元素全屏，就把播放器铺满屏幕（伪全屏） */
@@ -1578,6 +1589,8 @@ function onTick() {
   const hasNext = player.idx < m.episodes.length - 1;
   updateElapsed();
   if (!$('mini').hidden) $('miniProg').style.width = player.dur ? Math.min(100, player.t / player.dur * 100) + '%' : '0%';
+  // 单曲循环：播放器自己从头再播，这里只把页面的计时归零，不弹“下一集”
+  if (settings.loop) { if (player.dur && player.t >= player.dur + 1) player.t = 0; return; }
   if (player.dur && hasNext && !player.pulsed && player.t >= player.dur - 8) { player.pulsed = true; if (isHere()) $('nextBtn')?.classList.add('pulse'); }
   if (player.dur && hasNext && settings.autoNext && !player.upShown && !player.endShown && player.t >= player.dur + 1) { player.upShown = true; startCountdown(); }
   else if (player.dur && (!hasNext || !settings.autoNext) && !player.endShown && player.t >= player.dur + 1) { player.endShown = true; showEnd(hasNext); }
@@ -2228,6 +2241,7 @@ document.addEventListener('click', e => {
   if (t.dataset.unlock) return unlockMore();
   if (t.dataset.settings) { navStack = []; return go({ mode: 'me' }); }
   if (t.dataset.listen) return toggleListen();
+  if (t.dataset.loop) return toggleLoop();
   if (t.dataset.fs) return toggleFs();
   if (t.dataset.kidExit) return exitKid();
   if (t.dataset.back) return goBack();
