@@ -15,6 +15,12 @@ const WORD_PIC = {
   car: ['🚗', 'beep beep!', 1], bus: ['🚌', '', 1], go: ['🏃', '', 0], stop: ['🛑', '', 0], tree: ['🌳', '', 1], sun: ['☀️', '', 1],
 };
 const GAME_FALLBACK = ['dog', 'cat', 'duck', 'cow', 'pig', 'sheep'];
+// 卡通图：Twemoji（CC-BY 4.0）文件放在 img/tw/，用 scripts/get-twemoji.mjs 下载；所有手机画风一致
+const twCode = e => { const cps = [...e].map(c => c.codePointAt(0).toString(16)); return (cps.includes('200d') ? cps : cps.filter(c => c !== 'fe0f')).join('-'); };
+const pic = (w, cls = '') => { const e = (WORD_PIC[w] || ['⭐'])[0]; return `<img class="tw ${cls}" src="img/tw/${twCode(e)}.svg" alt="" draggable="false" onerror="this.replaceWith(document.createTextNode('${e}'))">`; };
+// 贴纸卡的马卡龙色：[底色, 标签色]
+const GPAL = [['#FFE1E6', '#F27A93'], ['#FFF1C2', '#E0A100'], ['#D9F1FF', '#3FA7D6'], ['#DDF6D8', '#4CB860'], ['#EBDDFF', '#9B6FE8'], ['#FFE4CC', '#F08A3C']];
+const gpal = w => GPAL[Object.keys(WORD_PIC).indexOf(w) % GPAL.length];
 // 这周能玩的词：本周单词里有图的；不够 3 个就用动物
 function gameWords() {
   let T = null; try { T = todayTasks(); } catch (e) {}
@@ -58,7 +64,9 @@ function gameView() {
   if (kind === 'listen') {
     return `<div class="gm gm-listen">${top}
       <div class="gm-say">${chick()}<p>${esc(theme)}<br><b>点一张卡，听啾啾读 🔊</b></p></div>
-      <div class="gm-cards">${words.map(w => `<button class="gm-card" type="button" data-say="${esc(w)}"><span class="gm-pic">${WORD_PIC[w][0]}</span><b>${esc(w)}</b>${WORD_PIC[w][1] ? `<small>${esc(WORD_PIC[w][1])}</small>` : ''}</button>`).join('')}</div>
+      <div class="gm-cards">${words.map((w, i) => { const [bg, deep] = gpal(w);
+        return `<button class="gm-card" type="button" data-say="${esc(w)}" style="--bg:${bg};--deep:${deep};--rot:${[-2, 1.5, -1, 2, -1.5, 1][i % 6]}deg">
+          <span class="gm-spark" aria-hidden="true">⭐</span><span class="gm-circle">${pic(w)}</span><b${w.length > 7 ? ' class="long"' : ''}>${esc(w)}</b>${WORD_PIC[w][1] ? `<small>🔊 ${esc(WORD_PIC[w][1])}</small>` : ''}</button>`; }).join('')}</div>
       <p class="gm-tip"><b>家长：</b>读完和宝宝一起学一学，再指着家里的东西说一遍。</p></div>`;
   }
   if (!G.order.length || G.order.some(w => !words.includes(w))) newFind();
@@ -67,7 +75,9 @@ function gameView() {
     <div class="gm-prog">${G.order.map((_, i) => `<i class="${i < G.round || (i === G.round && ok) ? 'on' : i === G.round ? 'cur' : ''}"></i>`).join('')}</div>
     <div class="gm-ask">${chick(ok ? 'cheer' : 'hi')}
       <button class="gm-q" type="button" data-say-q="1"><b>${WORD_PIC[w][2] ? `Where is the <em>${esc(w)}</em>?` : `Find <em>${esc(w)}</em>!`}</b><span>🔊</span></button></div>
-    <div class="gm-opts">${G.opts.map(x => `<button class="gm-opt${ok ? (x === w ? ' right' : ' dim') : G.wrong.includes(x) ? ' wrong' : ''}" type="button" data-pick="${esc(x)}"${ok ? ' disabled' : ''}><span class="gm-pic">${WORD_PIC[x][0]}</span>${ok && x === w ? `<b>${esc(x)}</b>` : ''}</button>`).join('')}</div>
+    <div class="gm-opts">${G.opts.map((x, i) => { const [bg, deep] = gpal(x);
+      return `<button class="gm-opt${ok ? (x === w ? ' right' : ' dim') : G.wrong.includes(x) ? ' wrong' : ''}" type="button" data-pick="${esc(x)}" style="--bg:${bg};--deep:${deep};--rot:${[-2, 1.5, -1][i]}deg"${ok ? ' disabled' : ''}>
+        ${ok && x === w ? '<span class="gm-ok" aria-hidden="true">✓</span><span class="gm-spark" aria-hidden="true">⭐</span>' : ''}<span class="gm-circle">${pic(x)}</span>${ok && x === w ? `<b>${esc(x)}</b>` : ''}</button>`; }).join('')}</div>
     <p class="gm-res">${ok ? `⭐ 答对啦！${esc(WORD_PIC[w][1] || w + '!')} ⭐` : G.wrong.length ? '再听一遍，找找看～' : '点一张图片'}</p>
     ${ok ? `<button class="gm-next" type="button" data-gnext="1">${last ? '再玩一次' : '下一个 ›'}</button>` : ''}
     <p class="gm-tip">点错了也没关系，啾啾会再读一遍</p></div>`;

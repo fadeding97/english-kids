@@ -702,15 +702,31 @@ body.fun .grid .t-name { font-family: var(--round); font-weight: 800; color: var
 .gm-say { display: flex; align-items: center; gap: 10px; }
 .gm-say .chick { width: 64px; height: 64px; flex: none; }
 .gm-say p { margin: 0; background: var(--fun-card); border-radius: 18px 18px 18px 6px; padding: 10px 14px; font-size: 15px; box-shadow: 0 3px 0 rgba(0, 0, 0, .06); }
-.gm-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.gm-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; padding: 4px 4px 0; }
 @media (min-width: 761px) { .gm-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.gm-card { border-radius: 26px; background: var(--fun-card); box-shadow: 0 6px 0 rgba(70, 140, 180, .22); padding: 14px 10px 12px; display: grid; justify-items: center; gap: 2px; color: var(--fun-ink); transition: transform .15s var(--press), box-shadow .15s var(--press); }
-.gm-card:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(70, 140, 180, .22); }
-.gm-pic { font-size: 62px; line-height: 1.15; }
-.gm-card b { font: 900 22px var(--round); }
-.gm-card small { font-size: 12px; font-weight: 700; color: var(--label-2); }
-.gm-card.pop { animation: gmPop .5s var(--spring-bouncy); background: #FFF4D6; box-shadow: 0 0 0 4px #FFC93C, 0 6px 0 #E8A800; }
-@keyframes gmPop { 0% { transform: scale(1); } 40% { transform: scale(1.08) rotate(-3deg); } 100% { transform: scale(1); } }
+/* 贴纸卡：马卡龙底 + 粗白边 + 微歪；图垫白圆，单词放彩色标签 */
+.gm-card, .gm-opt { position: relative; border-radius: 28px; background: var(--bg); border: 4px solid #fff; box-shadow: 0 6px 0 color-mix(in srgb, var(--deep) 35%, transparent), 0 10px 18px rgba(0, 0, 0, .06); transform: rotate(var(--rot)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--fun-ink); transition: transform .2s var(--spring-bouncy), box-shadow .15s var(--press), opacity .2s ease; -webkit-tap-highlight-color: transparent; }
+.gm-card { padding: 14px 8px 12px; }
+.gm-card:active, .gm-opt:active { transform: rotate(var(--rot)) translateY(4px); box-shadow: 0 2px 0 color-mix(in srgb, var(--deep) 35%, transparent); }
+.gm-circle { width: 96px; height: 96px; border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: inset 0 -4px 0 color-mix(in srgb, var(--deep) 14%, transparent); }
+.tw { width: 72%; height: 72%; display: block; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.gm-card b, .gm-opt b { background: var(--deep); color: #fff; border-radius: 999px; padding: 3px 16px; font: 900 19px var(--round); letter-spacing: .02em; box-shadow: 0 3px 0 rgba(0, 0, 0, .12); }
+.gm-card b, .gm-opt b { white-space: nowrap; } .gm-card b.long { font-size: 15px; padding: 4px 12px; }
+.gm-card small { font-size: 12px; font-weight: 800; color: var(--deep); min-height: 15px; visibility: hidden; }
+.gm-spark { position: absolute; right: -8px; top: -12px; font-size: 22px; opacity: 0; transform: scale(.3); pointer-events: none; }
+.gm-card.pop { transform: rotate(var(--rot)) scale(1.07); animation: gmPop .5s var(--spring-bouncy); z-index: 1; }
+.gm-card.pop small { visibility: visible; }
+.gm-card.pop .gm-spark, .gm-opt.right .gm-spark { opacity: 1; transform: scale(1); transition: transform .4s var(--spring-bouncy), opacity .2s ease; }
+@keyframes gmPop { 0% { scale: 1; } 40% { scale: 1.1; rotate: -4deg; } 100% { scale: 1; rotate: 0deg; } }
+.gm-opt { padding: 14px 4px 10px; min-height: 128px; }
+.gm-opt .gm-circle { width: 78px; height: 78px; }
+.gm-opt b { font-size: 16px; padding: 2px 12px; }
+.gm-opt.right { --bg: #DDF6D8; --deep: #4CB860; transform: scale(1.05); box-shadow: 0 0 0 4px #5BC97D, 0 7px 0 #3FA35E; animation: gmPop .5s var(--spring-bouncy); z-index: 1; }
+.gm-opt.right .gm-spark { left: -12px; right: auto; }
+.gm-ok { position: absolute; right: -14px; top: -16px; width: 30px; height: 30px; border-radius: 50%; background: #5BC97D; color: #fff; display: grid; place-items: center; font-weight: 900; box-shadow: 0 0 0 3px #fff; }
+.gm-opt.dim { opacity: .4; } .gm-opt.wrong { opacity: .45; animation: gmShake .4s ease; }
+@keyframes gmShake { 20%, 60% { translate: -6px 0; } 40%, 80% { translate: 6px 0; } }
+.gm-thumb .tw { width: 76%; height: 76%; }
 .gm-tip { margin: 0; background: var(--fun-card); border-radius: 16px; padding: 12px 14px; font-size: 13px; color: var(--label-2); }
 .gm-find .gm-tip { background: none; text-align: center; padding: 0; }
 .gm-prog { display: flex; justify-content: center; gap: 8px; }
@@ -721,17 +737,11 @@ body.fun .grid .t-name { font-family: var(--round); font-weight: 800; color: var
 .gm-q { display: flex; align-items: center; gap: 10px; background: var(--fun-card); border-radius: 20px; padding: 10px 12px 10px 18px; box-shadow: 0 4px 0 rgba(0, 0, 0, .08); color: var(--fun-ink); }
 .gm-q b { font: 900 22px var(--round); } .gm-q em { font-style: normal; color: #2E9C8F; }
 .gm-q span { width: 36px; height: 36px; border-radius: 50%; background: #4FC3B5; display: grid; place-items: center; box-shadow: 0 3px 0 #2E9C8F; font-size: 16px; }
-.gm-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.gm-opt { aspect-ratio: .82; border-radius: 24px; background: var(--fun-card); box-shadow: 0 6px 0 rgba(90, 150, 60, .22); display: grid; place-items: center; align-content: center; gap: 2px; color: var(--fun-ink); transition: opacity .2s ease, transform .2s var(--spring-bouncy); }
-.gm-opt .gm-pic { font-size: 54px; }
-.gm-opt b { font: 900 18px var(--round); color: #3F7D2A; }
-.gm-opt.right { background: #E6FAEA; box-shadow: 0 0 0 4px #5BC97D, 0 6px 0 #3FA35E; transform: scale(1.06); animation: gmPop .5s var(--spring-bouncy); }
-.gm-opt.dim { opacity: .4; } .gm-opt.wrong { opacity: .45; animation: gmShake .4s ease; }
-@keyframes gmShake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.gm-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: center; padding: 10px 14px 0; }
 .gm-res { margin: 0; text-align: center; font: 900 19px var(--round); color: #3F7D2A; min-height: 26px; }
 .gm-next { justify-self: center; width: min(100%, 320px); display: flex; align-items: center; justify-content: center; text-align: center; height: 54px; border-radius: 18px; background: #5BC97D; box-shadow: 0 5px 0 #3FA35E; color: #fff; font: 900 18px var(--round); }
 .gm-next:active { transform: translateY(3px); box-shadow: 0 2px 0 #3FA35E; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gm-opt.right { background: #1F3A26; } :root:not([data-theme="light"]) .gm-card.pop { background: #3A3220; } }
+
 /* 手机底部标签栏：浮起来的圆角条 */
 @media (max-width: 760px) {
   .tabbar { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); border-radius: 24px; border-top: 0; padding: 6px 8px; box-shadow: 0 6px 20px rgba(80, 60, 20, .16); }
@@ -742,6 +752,54 @@ body.fun .grid .t-name { font-family: var(--round); font-weight: 800; color: var
   .main { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
 }
 @media (prefers-reduced-motion: reduce) { .sky-cloud, .sky-chick .chick, .td-stars svg.on, .gm-card.pop, .gm-opt.right, .gm-opt.wrong { animation: none; } }
+
+/* ---------- 计划页：和整站统一的童趣样式 ---------- */
+.pl-h { border-bottom: 0; padding-bottom: 0; align-items: flex-end; }
+.pl-h .td-date { margin: 0; font-weight: 800; }
+.pl-age { background: var(--fun-card); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 800; color: #8A5A00; box-shadow: 0 3px 0 rgba(120, 90, 50, .15); }
+.road { position: relative; height: 104px; max-width: 640px; border-radius: 24px; background: linear-gradient(180deg, var(--sky2), #E9F8DF); box-shadow: 0 5px 0 #CFE6C2; overflow: hidden; margin-top: -10px; }
+.rd-path { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rd-path path { fill: none; stroke: #fff; stroke-width: 14; stroke-linecap: round; }
+.rd-stone { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 3px dashed #D9CBB5; box-sizing: border-box; }
+.rd-stone.past { background: #5BC97D; border: 3px solid #fff; }
+.rd-stone.now { background: #FFC93C; border: 3px solid #fff; box-shadow: 0 0 0 4px rgba(255, 201, 60, .35); }
+.rd-chick { position: absolute; width: 46px; height: 46px; } .rd-chick .chick { width: 100%; height: 100%; animation: chickBob 3s ease-in-out infinite; }
+.rd-say { position: absolute; top: 10px; display: grid; gap: 1px; background: #fff; color: #3A2A1A; border-radius: 14px 14px 14px 4px; padding: 5px 10px; font-size: 12px; font-weight: 700; box-shadow: 0 3px 0 rgba(30, 78, 112, .1); max-width: 190px; }
+.rd-say b { font-size: 11px; color: #2E6B94; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .road { background: linear-gradient(180deg, var(--sky2), #24361F); box-shadow: 0 5px 0 #1E2E19; } }
+body.fun .pw { background: var(--fun-card); border-radius: 24px; padding: 14px; box-shadow: 0 5px 0 rgba(120, 90, 50, .14); }
+body.fun .pw-top b { font: 900 17px var(--round); }
+body.fun .pw-day i { width: 36px; height: 36px; border: 2px dashed var(--label-3); box-sizing: border-box; background: none; }
+body.fun .pw-day i.ok { border: 0; color: #fff; box-shadow: 0 0 0 2px #fff, 0 2px 5px rgba(0, 0, 0, .12); background: #F2675A; }
+body.fun .pw-day:nth-child(7n+2) i.ok { background: #4FC3B5; } body.fun .pw-day:nth-child(7n+3) i.ok { background: #4C8DF0; } body.fun .pw-day:nth-child(7n+4) i.ok { background: #9B6FE8; } body.fun .pw-day:nth-child(7n+5) i.ok { background: #F59E2B; }
+body.fun .pw-day i.cur { border: 3px solid #FFC93C; color: #C27406; }
+body.fun .pw-day.now > span { color: #C27406; font-weight: 800; }
+.pt2 { max-width: 640px; box-sizing: border-box; border-radius: 26px; background: var(--bg); border: 4px solid #fff; box-shadow: 0 6px 0 color-mix(in srgb, var(--deep) 35%, transparent); padding: 14px; display: grid; gap: 10px; color: #3A2A1A; }
+.pt2-h { display: flex; align-items: center; gap: 12px; }
+.pt2-pic { width: 64px; height: 64px; border-radius: 50%; background: #fff; display: grid; place-items: center; flex: none; }
+.pt2-h small { font-size: 12px; font-weight: 800; color: #B07A12; } .pt2-h b { display: block; font: 900 22px var(--round); }
+.pt2-words { display: flex; flex-wrap: wrap; gap: 6px; }
+.pt2-words span { color: #fff; border-radius: 999px; padding: 3px 12px; font-size: 14px; font-weight: 900; font-family: var(--round); }
+.pt2 p { font-size: 13px; color: #6E5A2E; line-height: 1.5; }
+.pt2-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.pt2-acts button { background: #fff; color: #B07A12; border-radius: 999px; padding: 6px 14px; font-size: 14px; font-weight: 800; box-shadow: 0 3px 0 rgba(176, 122, 18, .2); }
+.pc2 { flex: none; width: 124px; display: grid; gap: 4px; text-align: left; color: var(--fun-ink); scroll-snap-align: start; padding: 6px 2px 4px; }
+.pc2-cv { position: relative; height: 112px; border-radius: 24px; background: var(--bg); border: 4px solid #fff; box-shadow: 0 5px 0 color-mix(in srgb, var(--deep) 35%, transparent); display: grid; place-items: center; transform: rotate(var(--rot)); }
+.pc2-pic { width: 66px; height: 66px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+.pc2.lk .pc2-pic { opacity: .8; }
+.pc2 small { font-size: 12px; font-weight: 800; color: var(--label-2); margin-top: 4px; } .pc2 b { font: 900 14px var(--round); margin-top: -2px; }
+.pc2 .pc-lock { right: 8px; bottom: 8px; }
+body.fun .pcs { padding-top: 4px; padding-bottom: 8px; }
+body.fun .pl-lib { background: var(--fun-card); border-radius: 22px; box-shadow: 0 5px 0 rgba(120, 90, 50, .14); }
+body.fun .pl-unlock { background: #FA233B; color: #fff; border-radius: 18px; box-shadow: 0 5px 0 #C8102E; }
+body.fun .pl-adv { border-radius: 16px; }
+/* ---------- 其他页面统一：奶油底、圆体标题、白色胖圆角卡片 ---------- */
+body.fun .page-h { border-bottom: 0; }
+body.fun .page-h h1, body.fun .sec-h { font-family: var(--round); font-weight: 900; color: var(--fun-ink); }
+body.fun .group, body.fun .me .group, body.fun .me-card { background: var(--fun-card); border-radius: 20px; box-shadow: 0 4px 0 rgba(120, 90, 50, .12); }
+body.fun .td-week { background: var(--fun-card); border-radius: 20px; box-shadow: 0 4px 0 rgba(120, 90, 50, .12); }
+body.fun .album .art.u { border-radius: 26px; box-shadow: 0 6px 0 color-mix(in srgb, var(--u) 70%, #000); }
+body.fun .player-bar .icon-btn { background: var(--fun-card); box-shadow: 0 3px 0 rgba(120, 90, 50, .14); }
 .share-img { width: 100%; border-radius: 16px; display: block; margin: 8px 0 12px; }
 .share-dl { width: 100%; height: 46px; }
 /* 计划（新版） */
@@ -1207,7 +1265,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-18 游戏按钮居中+童声 v1';
+const APP_VERSION = '2026-11-18 贴纸卡片+计划页统一 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -2144,8 +2202,8 @@ function render() {
   if (settings.kid && view.mode !== 'detail' && view.mode !== 'home') view = { mode: 'home' };
   if (settings.elder && !['detail', 'home', 'done'].includes(view.mode)) view = { mode: 'home' };
   renderChrome();
-  // 童趣版：孩子会看的页面用奶油色底（家长看的计划、设置、会员保持简洁）
-  document.body.classList.toggle('fun', ['home', 'type', 'game', 'done'].includes(view.mode) && !settings.kid && !settings.elder);
+  // 童趣版：整站统一奶油底、圆体标题、胖圆角卡片（儿童模式、老人模式有自己的样式）
+  document.body.classList.toggle('fun', !settings.kid && !settings.elder);
   const s = stageById(stage);
   let html;
   if (view.mode === 'home') html = settings.kid ? kidHomeView() : settings.elder ? elderView() : todayView();
@@ -2165,7 +2223,7 @@ function render() {
   else if (view.mode === 'game') html = gameView();
   else if (view.mode === 'search') html = searchView();
   else html = detailView();
-  if (view.mode !== 'detail' && view.mode !== 'game') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p></footer>`;
+  if (view.mode !== 'detail' && view.mode !== 'game') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p><p>小游戏卡通图标来自 Twemoji（CC-BY 4.0）。</p></footer>`;
   $('main').innerHTML = html;
   syncDock(); placePlayer(); renderTopbar();
   if (view.mode === 'detail') {

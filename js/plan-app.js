@@ -241,7 +241,7 @@ function todayView() {
           <span class="td-state" aria-label="${ok ? '已完成' : '开始'}">${ok ? ic('i-check') : ic('i-play')}</span></button>`;
       }).join('')}
         <button class="td-task td-game" type="button" data-go-game="find" style="--k:#F59E2B">
-          <span class="td-thumb gm-thumb">${WORD_PIC[gw.words[0]][0]}</span>
+          <span class="td-thumb gm-thumb">${pic(gw.words[0])}</span>
           <span class="td-txt"><small>玩一玩 · 不算在 3 件事里</small><b>单词卡：找一找</b></span>
           <span class="td-state" aria-label="开始">${ic('i-play')}</span></button></div>
       ${T.locked ? `<button class="td-lock" type="button" data-go-vip="1">第 ${PLAN_FREE_WEEKS + 1} 周起的主题计划是会员内容，现在是自由练习 · 了解会员 ›</button>` : ''}
@@ -347,32 +347,35 @@ function planView2() {
     const lab = isToday ? '今天' : WEEKDAY[new Date(t).getDay()];
     return `<div class="pw-day${isToday ? ' now' : ''}"><span>${lab}</span><i class="${ok ? 'ok' : isToday ? 'cur' : ''}">${ok ? ic('i-check') : isToday ? `${doneToday().length}/3` : ''}</i></div>`;
   }).join('');
+  // 每周的卡通图：这周单词里第一个有图的；没有就用星星
+  const wkPic = w => { const x = (w.words || []).find(v => WORD_PIC[v]); return x ? pic(x) : pic('⭐'); };
   const covers = ws.map((w, i) => ({ w, i })).filter(x => x.i > pos.w).slice(0, 8).map(({ w, i }) => {
-    const lk = weekLocked(i);
-    return `<button class="pc${lk ? ' lk' : ''}" type="button" ${lk ? 'data-go-vip="1"' : 'data-ch="plan"'}>
-      <span class="pc-cv" style="background:${w.color}"><em aria-hidden="true">${esc(w.cover)}</em>${lk ? `<span class="pc-lock">${ic('i-lock')}会员</span>` : ''}</span>
+    const lk = weekLocked(i), [bg, deep] = GPAL[i % GPAL.length];
+    return `<button class="pc2${lk ? ' lk' : ''}" type="button" ${lk ? 'data-go-vip="1"' : 'data-ch="plan"'} style="--bg:${bg};--deep:${deep};--rot:${[-2, 1.5, -1, 2][i % 4]}deg">
+      <span class="pc2-cv"><span class="pc2-pic">${wkPic(w)}</span>${lk ? `<span class="pc-lock">${ic('i-lock')}会员</span>` : ''}</span>
       <small>第 ${i + 1} 周</small><b>${esc(w.theme)}</b></button>`;
   }).join('');
-  return `${pageHead('计划', '按月龄的英语启蒙路线')}
-  <div class="plan-age">
-    <div class="pa-bar"><i style="width:${pct}%"></i><b style="left:${pct}%"></b></div>
-    <div class="pa-ticks"><span>0 岁</span><span>2 岁</span><span>4 岁</span><span>6 岁</span></div>
-    <p><b>宝宝 ${fmtAge(months)}</b> · ${s.age}：${esc(s.title)} <button type="button" data-guide="1">本阶段怎么做 ›</button></p>
-    ${advanced() && planStage() !== stage ? `<p class="pl-adv">英语环境是「${esc(profile.env)}」，计划提前用 ${stageById(planStage()).age} 的内容。可在「我的 → 英语环境」修改。</p>` : ''}
-  </div>
+  // 成长小路：6 个阶段一路排开，啾啾站在当前阶段
+  const si = STAGES.findIndex(x => x.id === stage), ys = [64, 50, 58, 40, 50, 34];
+  const road = STAGES.map((x, i) => `<span class="rd-stone${i < si ? ' past' : i === si ? ' now' : ''}" style="left:${3 + i * 17.4}%;top:${ys[i]}px" title="${esc(x.age)}"></span>`).join('');
+  const [tbg, tdeep] = GPAL[1];
+  return `<header class="page-h pl-h"><div><p class="td-date">按月龄的启蒙路线</p><h1>计划</h1></div><span class="pl-age">宝宝 ${fmtAge(months)}</span></header>
+  <section class="road">
+    <svg class="rd-path" viewBox="0 0 100 96" preserveAspectRatio="none" aria-hidden="true"><path d="M4 76 C 20 40, 30 86, 50 62 S 80 36, 98 48" vector-effect="non-scaling-stroke"/></svg>
+    ${road}
+    <span class="rd-chick" style="left:calc(${3 + si * 17.4}% - 12px);top:${ys[si] - 44}px">${chick()}</span>
+    <button class="rd-say" type="button" data-guide="1" style="${si > 3 ? 'right:12px' : `left:calc(${3 + si * 17.4}% + 44px)`}"><b>${s.age}</b>${esc(s.title)} ›</button>
+  </section>
+  ${advanced() && planStage() !== stage ? `<p class="pl-adv">英语环境是「${esc(profile.env)}」，计划提前用 ${stageById(planStage()).age} 的内容。可在「我的 → 英语环境」修改。</p>` : ''}
   <section class="pw">
-    <div class="pw-top"><b>本周已打卡 ${stt.days} 天</b><span>听了 ${stt.min} 分钟${wk.words && wk.words.length ? ` · ${wk.words.length} 个新词` : ''}</span></div>
+    <div class="pw-top"><b>本周打卡 ${stt.days} 天</b><span>听了 ${stt.min} 分钟${wk.words && wk.words.length ? ` · ${wk.words.length} 个新词` : ''}</span></div>
     <div class="pw-days">${dots}</div>
   </section>
-  <section class="sec"><h2 class="sec-h">本周主题</h2>
-    <div class="pt">
-      <div class="pt-cv" style="background:${wk.color}"><em aria-hidden="true">${esc(wk.cover)}</em><div><small>第 ${pos.w + 1} 周</small><b>${esc(wk.theme)}</b></div></div>
-      <div class="pt-body">
-        ${wk.words && wk.words.length ? `<div class="pt-words">${wk.words.map(w => `<span>${esc(w)}</span>`).join('')}</div>` : ''}
-        <p>家长重点：${esc(wk.focus)}</p>
-        <button type="button" data-ch="home">查看今天的 3 件事 ›</button>
-      </div>
-    </div>
+  <section class="pt2" style="--bg:${tbg};--deep:${tdeep}">
+    <div class="pt2-h"><span class="pt2-pic">${wkPic(wk)}</span><div><small>第 ${pos.w + 1} 周 · 本周主题</small><b>${esc(wk.theme)}</b></div></div>
+    ${wk.words && wk.words.length ? `<div class="pt2-words">${wk.words.map(w => `<span style="background:${(WORD_PIC[w] ? gpal(w) : GPAL[0])[1]}">${esc(w)}</span>`).join('')}</div>` : ''}
+    <p>家长重点：${esc(wk.focus)}</p>
+    <div class="pt2-acts"><button type="button" data-ch="home">今天的 3 件事 ›</button>${wk.words && wk.words.some(v => WORD_PIC[v]) ? '<button type="button" data-go-game="listen">玩单词卡 ›</button>' : ''}</div>
   </section>
   ${covers ? `<section class="sec"><div class="td-sechead"><h2 class="sec-h">接下来</h2><span class="pc-count">共 ${ws.length} 周${ws[0].generic ? ' · 通用安排' : ''}</span></div><div class="pcs">${covers}</div></section>` : ''}
   <button class="pl-lib" type="button" data-ch="lib"><span>${ic('i-download')}</span><div><b>打印资料</b><small>单词卡、亲子游戏卡、家长指南</small></div><em>›</em></button>
