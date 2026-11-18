@@ -60,7 +60,7 @@ function preloadVoices(lines) {
 }
 // 游戏会说的话：单词（带叫声）、问句、答错提示、夸奖
 function gameLines(words) {
-  const out = ['Yes!'];
+  const out = ['Great!'];
   for (const w of words) { const x = WORD_PIC[w] || []; out.push(x[1] ? `${w}! ${x[1]}` : `${w}!`, askText(w), `That's ${w}.`); }
   return out;
 }
@@ -162,7 +162,7 @@ document.addEventListener('click', e => {
   if (b.dataset.sayQ) return speak(askText(G.order[G.round]));
   if (b.dataset.pick) {
     const w = G.order[G.round], x = b.dataset.pick;
-    if (x === w) { G.picked = w; render(); say(['Yes!', WORD_PIC[w][1] ? `${w}! ${WORD_PIC[w][1]}` : `${w}!`]); }
+    if (x === w) { G.picked = w; render(); say(['Great!', WORD_PIC[w][1] ? `${w}! ${WORD_PIC[w][1]}` : `${w}!`]); }
     else { if (!G.wrong.includes(x)) G.wrong.push(x); render(); say([`That's ${x}.`, askText(w)]); }
     return;
   }

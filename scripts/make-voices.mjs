@@ -57,7 +57,7 @@ if (mode === 'samples') {
   fs.mkdirSync(dir, { recursive: true });
   // 文件名规则和 js/games.js 里的 audioName 一致
   const name = t => t.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '');
-  const lines = new Set(['Yes!', 'Great job!']);
+  const lines = new Set(['Great!', 'Yes!', 'Great job!']);
   for (const [w, sound, thing] of words) {
     lines.add(w + '!'); if (sound) lines.add(`${w}! ${sound}`);
     lines.add(thing ? `Where is the ${w}?` : `Find ${w}!`); lines.add(`That's ${w}.`);
