@@ -29,7 +29,26 @@ function gameWords() {
   return { theme: ws.length >= 3 ? `第 ${T.w + 1} 周 · ${T.week.theme}` : '小动物', words: ws.length >= 3 ? ws.slice(0, 6) : GAME_FALLBACK };
 }
 
-function speak(text) {
+/* 啾啾的声音：优先播提前录好的真人感语音（Azure 神经语音 Maisie，慢一点、音调高 10%，scripts/make-voices.mjs 生成，放在 audio/）。
+   一次可以连着播几句；某句没有录音时，退回手机自带朗读。用同一个 <audio> 元素连续播放，苹果手机点一下后就能接着播。 */
+const audioName = t => t.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '');
+const VOICE = new Audio();
+VOICE.preload = 'auto';
+let voiceQueue = [];
+function say(lines) {
+  voiceQueue = (Array.isArray(lines) ? lines : [lines]).filter(Boolean);
+  try { speechSynthesis.cancel(); } catch (e) {}
+  playNext();
+}
+function playNext() {
+  const t = voiceQueue.shift(); if (!t) return;
+  VOICE.onended = playNext;
+  VOICE.onerror = () => { VOICE.onerror = null; speakTTS([t, ...voiceQueue].join(' ')); voiceQueue = []; };
+  VOICE.src = `audio/${audioName(t)}.mp3`;
+  const p = VOICE.play(); if (p && p.catch) p.catch(() => {});
+}
+function speak(text) { return say(text); }
+function speakTTS(text) {
   try {
     const s = window.speechSynthesis; if (!s) { toast('这个浏览器不支持朗读'); return; }
     s.cancel();
@@ -86,20 +105,20 @@ function gameView() {
 
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.gback) { try { speechSynthesis.cancel(); } catch (x) {} const en = navStack.pop(); return go(en ? en.view : { mode: 'home' }, { dir: 'back' }); }
+  if (b.dataset.gback) { try { speechSynthesis.cancel(); VOICE.pause(); voiceQueue = []; } catch (x) {} const en = navStack.pop(); return go(en ? en.view : { mode: 'home' }, { dir: 'back' }); }
   if (b.dataset.game && view.mode === 'game') { if (b.dataset.game === 'find') newFind(); view = { mode: 'game', value: b.dataset.game }; render(); if (b.dataset.game === 'find') speak(askText(G.order[0])); return; }
-  if (b.dataset.goGame) { if (b.dataset.goGame === 'find') newFind(); go({ mode: 'game', value: b.dataset.goGame }, { push: true, dir: 'fwd' }); if (b.dataset.goGame === 'find') setTimeout(() => speak(askText(G.order[0])), 350); return; }
+  if (b.dataset.goGame) { if (b.dataset.goGame === 'find') { newFind(); say(askText(G.order[0])); } go({ mode: 'game', value: b.dataset.goGame }, { push: true, dir: 'fwd' }); return; }
   if (b.dataset.say) {
     const w = b.dataset.say, x = WORD_PIC[w] || [];
-    speak(x[1] ? `${w}. ${x[1]}` : w);
+    say(x[1] ? `${w}! ${x[1]}` : `${w}!`);
     b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
     return;
   }
   if (b.dataset.sayQ) return speak(askText(G.order[G.round]));
   if (b.dataset.pick) {
     const w = G.order[G.round], x = b.dataset.pick;
-    if (x === w) { G.picked = w; render(); speak(`Yes! ${w}! ${WORD_PIC[w][1] || ''}`); }
-    else { if (!G.wrong.includes(x)) G.wrong.push(x); render(); speak(`That's ${x}. ${askText(w)}`); }
+    if (x === w) { G.picked = w; render(); say(['Yes!', WORD_PIC[w][1] ? `${w}! ${WORD_PIC[w][1]}` : `${w}!`]); }
+    else { if (!G.wrong.includes(x)) G.wrong.push(x); render(); say([`That's ${x}.`, askText(w)]); }
     return;
   }
   if (b.dataset.gnext) {
