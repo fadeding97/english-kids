@@ -84,31 +84,48 @@ const weekLocked = w => w >= PLAN_FREE_WEEKS && !isVip();
 const SLOTS = [['song', '儿歌', 5], ['book', '绘本跟读', 3], ['play', '亲子游戏', 5]];
 // 集名清理：去掉前面的编号（012. / 0A 1. / 第1季•第12集）和后面的说明（_ Nursery Rhymes、| …）
 const cleanEp = t => {
-  const s = String(t).replace(/Knees - Toes/i, 'Knees & Toes').replace(/^第\d+季•第\d+集/, '').replace(/^\s*(\d+[A-Z]?\s+)?\d+[.、]\s*/, '').replace(/^.*?Unit\d+\s*/, '').replace(/^\d+-\d+\s+/, '');
+  const s = String(t).replace(/_/g, ' ').split(/\s{2,}/)[0].replace(/^第\d+季/, '').replace(/^.*?S\d+\s*E\d+[.\s]*/i, '').replace(/^第\d+[话集]\s*/, '').replace(/\s+\d+$/, '').replace(/^\d+(\s+|-)(?=[A-Za-z])/, '').replace(/Knees - Toes/i, 'Knees & Toes').replace(/^第\d+季•第\d+集/, '').replace(/^\s*(\d+[A-Z]?\s+)?\d+[.、]\s*/, '').replace(/^.*?Unit\d+\s*/, '').replace(/^\d+-\d+\s+/, '');
   const segs = s.split(/\s+[_|]\s+|\s+-\s+|\s+_\s*$/).map(x => x.split('(')[0].replace(/[-–\s,_]+$/, '').trim()).filter(Boolean);
   const brand = /^(little baby bum|the wiggles( nursery rhymes)?|mother goose club|super simple songs|english rhymes|nursery rhymes)$/i;
   return segs.find(x => !brand.test(x)) || segs[0] || t;
 };
+/* 每天 3 件事：每个年龄段固定 3 个画质好的系列（都是 720p 以上），每天从上次看到的那集接着往下播。
+   [资源名, 标签, 分钟, 家长怎么陪] */
+const SERIES = {
+  s0: [['Super Simple Songs', '儿歌', 5, '抱着宝宝跟着节奏轻轻摇，唱到动作就带着做。'], ['Little Baby Bum', '儿歌', 5, '当背景音放着就好，换尿布、喂奶时都可以。'], ['English Lullabies', '哄睡', 5, '睡前关灯放，声音调小一点。']],
+  s1: [['Super Simple Songs', '儿歌', 5, '唱到身体部位、动物就指给宝宝看。'], ['Yakka Dee', '学单词', 5, '每集只学一个词，看完在家里找到这个东西说给宝宝听。'], ['Little Baby Bum', '儿歌', 5, '跟着拍手、摇摆，不用管宝宝会不会唱。']],
+  s2: [['Super Simple Songs', '儿歌', 5, '唱到动作就一起做，做错了也没关系。'], ['Yakka Dee', '学单词', 5, '看完把今天的词用在生活里说 3 遍。'], ['Ms Rachel', '跟着说', 8, '她停下来等回应时，你也停一下，给宝宝时间。']],
+  s3: [['Super Simple Songs', '儿歌', 5, '让孩子当小老师，唱给你听。'], ['Peppa Pig', '动画', 5, '看完问一句：What did Peppa do?'], ['Pete the Cat', '绘本', 5, '读到重复的句子停一下，让孩子接。']],
+  s4: [['Jack Hartmann', '儿歌', 5, '站起来跟着做动作，边跳边唱。'], ['Daniel Tiger', '动画', 8, '把里面的小歌用到生活里，比如该收玩具时唱。'], ['Elephant & Piggie', '绘本', 5, '你读一个角色，孩子读另一个。']],
+  s5: [['Alphablocks', '自然拼读', 5, '看完找家里同一个字母开头的东西。'], ['Curious George', '动画', 8, '看完让孩子用一句英文讲讲发生了什么。'], ['Elephant & Piggie', '绘本', 5, '轮流读，读完一起演一遍。']],
+};
+// 今天每个系列播第几集：第一次打开当天算好并记下来，这一天里不再变
+function seriesEp(it) {
+  const day = pstore.get('series-day', {});
+  if (day.d !== todayIso()) { day.d = todayIso(); day.eps = {}; }
+  if (day.eps[it.n] == null) {
+    const m = media(it), p = progress[it.n];
+    let ep = 0;
+    if (p) {
+      const e = m.episodes[p.ep], left = e && e.duration ? e.duration - p.t : 0;
+      ep = left > 20 ? p.ep : p.ep + 1;      // 上次没看完就接着这集，看完了就下一集
+    }
+    day.eps[it.n] = ep % m.episodes.length;  // 全部看完从头再来
+    pstore.set('series-day', day);
+  }
+  return day.eps[it.n];
+}
 function todayTasks() {
   const pos = planPos();
   const locked = weekLocked(pos.w);
   const week = locked ? Object.assign(genericWeeks(planStage())[pos.w % 6], { theme: '自由练习', en: 'Free practice', locked: true }) : pos.ws[pos.w];
-  const tasks = SLOTS.map(([t, label, min], k) => {
-    const list = week[t] && week[t].length ? week[t] : [];
-    let it = null, ep = null, epTitle = '';
-    for (let j = 0; j < list.length && !it; j++) {
-      const x = list[(pos.d + j) % list.length], n = typeof x === 'string' ? x : x.n;
-      const cand = ITEMS.find(i => i.n === n && media(i));
-      if (!cand) continue;
-      if (typeof x !== 'string' && x.t) {   // 固定播放这一集（这周要学的词就在这首歌里）
-        const eps = media(cand).episodes, i = eps.findIndex(e => e.title.toLowerCase().includes(x.t.toLowerCase()));
-        if (i < 0) continue;
-        ep = i; epTitle = cleanEp(eps[i].title);
-      }
-      it = cand;
-    }
-    if (!it) it = ITEMS.find(i => i.s.includes(planStage()) && media(i) && (i.t === t || i.t === 'song')) || ITEMS.find(i => media(i));
-    return { k, t, label, min, it, ep, name: epTitle || it.cn, from: epTitle ? it.cn : '', tip: (week.tips && week.tips[t]) || '' };
+  const list = (SERIES[planStage()] || SERIES.s1).map(([n, label, min, tip]) => ({ it: ITEMS.find(i => i.n === n && media(i)), label, min, tip })).filter(x => x.it);
+  const tasks = list.slice(0, 3).map(({ it, label, min, tip }, k) => {
+    const ep = seriesEp(it), eps = media(it).episodes;
+    let name = eps.length > 1 ? cleanEp(eps[ep].title).trim() : it.cn;
+    const bare = !/[A-Za-z一-龥]/.test(name) || /^S\d+\s*E\d+/i.test(name) || name.toLowerCase() === it.n.toLowerCase();
+    if (bare) name = it.cn;   // 集名只有编号时，就显示系列名
+    return { k, t: it.t, label, min, it, ep, name, from: eps.length > 1 ? (bare ? '' : it.cn + ' · ') + `第 ${ep + 1} 集` : '', tip };
   });
   return Object.assign({}, pos, { week, locked, tasks });
 }
