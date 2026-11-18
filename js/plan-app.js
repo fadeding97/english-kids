@@ -137,7 +137,53 @@ function markDone(k) {
   const c = checks(), d = c[todayIso()] || [];
   if (!d.includes(k)) d.push(k);
   c[todayIso()] = d; pstore.set('checks', c);
+  if (d.length >= 3) awardSticker();
   return d.length >= 3;
+}
+
+/* ---------- 小角色「啾啾」和贴纸 ---------- */
+// 原创小黄鸡；pose: 'hi' 平常，'cheer' 举起翅膀欢呼
+function chick(pose = 'hi') {
+  const cheer = pose === 'cheer';
+  const wings = cheer
+    ? '<ellipse cx="14" cy="40" rx="9" ry="15" transform="rotate(-35 14 40)" fill="#F7C531"/><ellipse cx="86" cy="40" rx="9" ry="15" transform="rotate(35 86 40)" fill="#F7C531"/>'
+    : '<ellipse cx="17" cy="62" rx="9" ry="14" transform="rotate(25 17 62)" fill="#F7C531"/><ellipse cx="83" cy="62" rx="9" ry="14" transform="rotate(-25 83 62)" fill="#F7C531"/>';
+  const eyes = cheer
+    ? '<path d="M33 51q5-6 10 0M57 51q5-6 10 0" fill="none" stroke="#3A2A1A" stroke-width="3.4" stroke-linecap="round"/>'
+    : '<circle cx="38" cy="51" r="4.6" fill="#3A2A1A"/><circle cx="39.6" cy="49.4" r="1.5" fill="#fff"/><circle cx="62" cy="51" r="4.6" fill="#3A2A1A"/><circle cx="63.6" cy="49.4" r="1.5" fill="#fff"/>';
+  const beak = cheer ? '<path d="M43 58h14q-2 11-7 11t-7-11z" fill="#FF8A3D"/>' : '<path d="M44.5 58h11L50 65.5z" fill="#FF8A3D" stroke="#FF8A3D" stroke-width="2" stroke-linejoin="round"/>';
+  return `<svg class="chick${cheer ? ' cheer' : ''}" viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="95" rx="24" ry="4" fill="#000" opacity=".07"/>${wings}
+    <ellipse cx="50" cy="57" rx="36" ry="34" fill="#FFD54A"/><path d="M44 25q4-12 8-2q3-8 6 1" fill="none" stroke="#F2B705" stroke-width="4" stroke-linecap="round"/>${eyes}${beak}
+    <ellipse cx="30" cy="62" rx="5.5" ry="3.2" fill="#FF9AA2" opacity=".75"/><ellipse cx="70" cy="62" rx="5.5" ry="3.2" fill="#FF9AA2" opacity=".75"/><path d="M42 90v4M58 90v4" stroke="#FF8A3D" stroke-width="3.5" stroke-linecap="round"/></svg>`;
+}
+const STK = ['#F2675A', '#4FC3B5', '#4C8DF0', '#9B6FE8', '#F59E2B'];
+const stickers = () => pstore.get('stickers', {});
+// 3 件事都做完 → 发今天的贴纸：上面写本周单词里的一个（这周在生活里多说的词）
+function awardSticker() {
+  const s = stickers(), k = todayIso();
+  if (!s[k]) {
+    const T = todayTasks(), ws = T.week.words || [];
+    s[k] = { w: ws.length ? ws[T.d % ws.length] : 'great', c: T.dayN % STK.length };
+    pstore.set('stickers', s);
+  }
+  return s[k];
+}
+const stk = (x, cls = '') => x ? `<span class="stk ${cls}" style="--s:${STK[x.c % STK.length]}">${ic('i-star')}<b>${esc(String(x.w).toUpperCase())}</b></span>` : `<span class="stk stk-empty ${cls}"></span>`;
+function weekStickers(pos) {
+  const s = stickers();
+  return Array.from({ length: 7 }, (_, i) => s[dkey(pos.weekStart + i * DAY)] || null);
+}
+const BADGES = [[7, '一周小达人'], [14, '两周不间断'], [30, '一个月'], [100, '一百天']];
+function openStickers() {
+  const s = stickers(), keys = Object.keys(s).sort().reverse(), n = keys.length;
+  const sh = openSheet(`<div class="settings stk-book"><div class="set-head"><h3>贴纸册</h3><button class="btn btn-gray sm" type="button" data-close-stk="1">完成</button></div>
+    <div class="stk-hero">${chick()}<div><b>一共集了 ${n} 个贴纸</b><span>每天做完 3 件事，啾啾就送一个</span></div></div>
+    <h4 class="stk-h">徽章</h4>
+    <div class="stk-badges">${BADGES.map(([need, name], i) => `<div class="${n >= need ? 'on' : ''}"><span style="--s:${STK[i % STK.length]}">${n >= need ? ic('i-star') : need}</span><small>${name}</small></div>`).join('')}</div>
+    <h4 class="stk-h">我的贴纸</h4>
+    ${n ? `<div class="stk-grid">${keys.map(k => `<div>${stk(s[k])}<small>${Number(k.slice(5, 7))}月${Number(k.slice(8))}日</small></div>`).join('')}</div>`
+      : '<p class="stk-none">还没有贴纸。今天做完 3 件事，就能拿到第一个！</p>'}</div>`);
+  sh.addEventListener('click', e => { if (e.target.closest('[data-close-stk]')) closeSheet(true); });
 }
 const dayDone = t => (checks()[dkey(t)] || []).length >= 3;
 function streak() {
@@ -163,8 +209,17 @@ function todayView() {
   const now = new Date(), st = streak(), ws = weekStats(T);
   const recent = Object.entries(progress).map(([n, p]) => ({ it: ITEMS.find(i => i.n === n), p }))
     .filter(x => x.it && media(x.it)).sort((a, b) => b.p.at - a.p.at).slice(0, 8);
+  // 啾啾说的话：带出下一件没做的事
+  const nx = T.tasks.find(x => !done.includes(x.k)), hr = now.getHours();
+  const hi = hr < 11 ? '早上好' : hr < 18 ? '下午好' : '晚上好';
+  const verb = { 儿歌: '唱', 哄睡: '听', 学单词: '学', 动画: '看', 绘本: '读', 跟着说: '说', 自然拼读: '学' };
+  const say = nx ? `${hi}！今天和<b>啾啾</b>一起${verb[nx.label] || '玩'}<br><b class="mas-hl">${esc(nx.name)}</b> 吧`
+    : `今天的 3 件事都完成啦！<br>明天啾啾还在这里等你`;
+  const wk = weekStickers(T).filter(Boolean).length;
   return `<header class="page-h td-h"><div><p class="td-date">${now.getMonth() + 1}月${now.getDate()}日 星期${WEEKDAY[now.getDay()]}</p><h1>今天</h1></div>
+      <button class="td-stk" type="button" data-stickers="1" aria-label="贴纸册">${ic('i-star')}<b>本周 ${wk} / 7</b></button>
       <button class="gear h-search m-only" type="button" data-ch="search" aria-label="搜索">${ic('i-search')}</button></header>
+    <section class="mas">${chick()}<p class="mas-say">${say}</p></section>
     <section class="td-card">
       <div class="td-top">
         <div><span class="td-sub">今日启蒙 · 第 ${T.dayN} 天</span><b class="td-title">${left ? `还差 ${left} 件事` : '今天都完成啦'}</b></div>
@@ -223,20 +278,22 @@ function openTask(k) {
 /* ---------- 打卡完成 + 分享卡 ---------- */
 function doneView() {
   const T = todayTasks(), st = streak(), sec = (useHist()[todayIso()] || 0);
-  const words = (T.week.words || []).slice(0, 4);
+  const today = doneToday().length >= 3 ? awardSticker() : null, wk = weekStickers(T), got = wk.filter(Boolean).length;
+  const confetti = Array.from({ length: 14 }, (_, i) => `<i style="--x:${(i * 37) % 100}%;--d:${(i % 5) * .18}s;--c:${STK[i % STK.length]};--r:${(i * 47) % 180}deg"></i>`).join('');
   return `<div class="dn">
-    <span class="dn-ok">${ic('i-check')}</span>
-    <h1>今天的 3 件事都完成啦</h1>
-    <p>已连续打卡 ${st} 天</p>
-    <div class="dn-card" id="shareCard">
-      <div class="dn-row"><b>${esc(profile.name || '宝宝')}的英语时间</b><span>第 ${T.dayN} 天</span></div>
-      <div class="dn-stats"><div><b>${Math.max(1, Math.round(sec / 60))}</b><span>今天（分钟）</span></div><div><b>${st}</b><span>连续打卡</span></div><div><b>${T.w + 1}</b><span>计划第几周</span></div></div>
-      <p class="dn-words">本周主题：${esc(T.week.theme)}${words.length ? ' · ' + words.map(esc).join(' · ') : ''}</p>
-      <div class="dn-foot"><b>英语启蒙地图</b><span>fadeding97.github.io/english-kids</span></div>
+    <div class="dn-confetti" aria-hidden="true">${confetti}</div>
+    ${chick('cheer')}
+    <h1>太棒啦！3 件事都完成了</h1>
+    <p>${today ? '啾啾送你今天的贴纸' : '今天的贴纸已经收好啦'} · 已连续 ${st} 天</p>
+    ${stk(today || stickers()[todayIso()], 'big')}
+    ${today ? `<p class="dn-word">今天的词：<b>${esc(today.w)}</b>，在生活里多说几遍</p>` : ''}
+    <div class="dn-week">
+      <div class="dn-row"><b>本周贴纸</b><span>${got >= 7 ? '集满啦！' : `再集 ${7 - got} 个，这周就集满了`}</span></div>
+      <div class="dn-dots">${wk.map(x => stk(x, 'stk-sm')).join('')}</div>
     </div>
     <div class="dn-acts">
-      <button class="btn btn-accent" type="button" data-share="1">保存图片，分享给朋友</button>
-      <button class="btn btn-gray" type="button" data-ch="home">回到今天</button>
+      <button class="btn btn-accent" type="button" data-ch="home">收下贴纸</button>
+      <button class="btn btn-gray" type="button" data-share="1">生成分享卡</button>
     </div>
   </div>`;
 }
@@ -392,6 +449,7 @@ document.addEventListener('click', async e => {
   if (t.dataset.task != null) return openTask(Number(t.dataset.task));
   if (t.dataset.taskDone != null) return finishTask(Number(t.dataset.taskDone));
   if (t.dataset.share) return shareCard();
+  if (t.dataset.stickers) return openStickers();
   if (t.dataset.goVip) { navStack = []; return go({ mode: 'vip' }); }
   if (t.dataset.guide) return openGuide();
   if (t.dataset.lib) { view = { mode: 'lib', value: t.dataset.lib }; return render(); }

@@ -280,6 +280,21 @@ body.swiping { background: var(--card); overflow: hidden; }
 
 /* real cover art */
 .art.has-img { background: var(--c2); }
+/* 统一封面 */
+.art.u { container-type: inline-size; background: var(--u); box-shadow: none; }
+.art.u::after { content: ''; position: absolute; inset: 0; background: radial-gradient(120% 90% at 0% 100%, rgba(255,255,255,.18), transparent 60%); pointer-events: none; }
+.u-ic { position: absolute; left: 9cqw; top: 9cqw; width: 17cqw; height: 17cqw; color: rgba(255,255,255,.95); }
+.u-ic .ico { width: 100%; height: 100%; stroke-width: 2.2; }
+.u-thumb { position: absolute; right: 7cqw; top: 7cqw; width: 36cqw; height: 36cqw; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 2.4cqw rgba(255,255,255,.9), 0 2cqw 5cqw rgba(0,0,0,.18); background: rgba(255,255,255,.4); }
+.u-thumb img { position: static; width: 100%; height: 100%; object-fit: cover; display: block; }
+.u-name { position: absolute; left: 9cqw; right: 8cqw; bottom: 20cqw; font-size: var(--fs); font-weight: 800; line-height: 1.05; letter-spacing: -.02em; color: #fff; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.u-kind { position: absolute; left: 9cqw; bottom: 8cqw; font-size: 7.5cqw; font-weight: 700; color: rgba(255,255,255,.85); letter-spacing: .04em; }
+@container (max-width: 90px) {
+  .u-name, .u-kind { display: none; }
+  .u-ic { left: 12cqw; top: auto; bottom: 12cqw; width: 30cqw; height: 30cqw; }
+  .u-thumb { width: 52cqw; height: 52cqw; right: 8cqw; top: 8cqw; }
+}
+.tile:hover .art.u .u-kind { opacity: 0; }
 .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .art.has-img .a-play { z-index: 1; }
 
@@ -571,6 +586,48 @@ body.kid .age-pill, body.kid .age-side { display: none !important; }
 .dn-words { font-size: 14px; }
 .dn-foot { display: grid; gap: 2px; border-top: 1px dashed #E8CF9E; padding-top: 12px; } .dn-foot b { font-size: 13px; } .dn-foot span { font-size: 12px; color: #6E5A2E; }
 .dn-acts { width: 100%; display: grid; gap: 10px; } .dn-acts .btn { height: 50px; }
+/* 小角色啾啾 */
+.chick { display: block; }
+.mas { display: flex; align-items: center; gap: 10px; margin: 4px 0 14px; }
+.mas .chick { width: 66px; height: 66px; flex: none; animation: chickBob 3s ease-in-out infinite; }
+.mas-say { position: relative; margin: 0; background: var(--fill); border-radius: 18px; padding: 10px 14px; font-size: 15px; line-height: 1.45; color: var(--label); }
+.mas-say::before { content: ''; position: absolute; left: -5px; top: 50%; width: 12px; height: 12px; margin-top: -6px; background: inherit; transform: rotate(45deg); border-radius: 2px; }
+.mas-hl { color: #E5533D; }
+@keyframes chickBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.td-stk { position: absolute; right: 40px; top: 8px; display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px 0 7px; border-radius: 999px; background: #FFF4D6; color: #8A5A00; font-size: 13px; }
+.td-stk .ico { width: 16px; height: 16px; fill: #FFB800; stroke: #FFB800; }
+@media (min-width: 761px) { .td-stk { right: 0; } }
+/* 贴纸 */
+.stk { --sz: 44px; position: relative; width: var(--sz); height: var(--sz); border-radius: 50%; background: var(--s); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--sz) * .03); box-sizing: border-box; box-shadow: 0 0 0 3px #fff, 0 3px 8px rgba(0, 0, 0, .14); flex: none; }
+.stk .ico { width: calc(var(--sz) * .28); height: calc(var(--sz) * .28); fill: #fff; stroke: none; opacity: .9; }
+.stk b { font-size: calc(var(--sz) * .15); font-weight: 800; letter-spacing: .03em; max-width: 84%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.1; }
+.stk.stk-empty { background: none; box-shadow: none; border: 2px dashed var(--label-3); box-sizing: border-box; opacity: .6; }
+.stk.big { --sz: 150px; transform: rotate(-6deg); box-shadow: 0 0 0 8px #fff, 0 10px 26px rgba(180, 120, 0, .22); animation: stkPop .7s cubic-bezier(.3, 1.5, .5, 1) .25s both; }
+@keyframes stkPop { from { transform: scale(.3) rotate(-40deg); opacity: 0; } to { transform: scale(1) rotate(-6deg); opacity: 1; } }
+.stk.stk-sm { width: 100%; height: auto; aspect-ratio: 1; align-self: start; box-shadow: 0 0 0 2px #fff, 0 2px 5px rgba(0, 0, 0, .12); }
+.stk.stk-sm .ico, .stk.stk-sm b { display: none; }
+.dn { position: relative; width: 100%; }
+.dn .chick.cheer { width: 130px; height: 130px; animation: chickHop 1.3s ease-in-out infinite; }
+@keyframes chickHop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } }
+.dn-word { font-size: 14px; color: var(--label-2); margin-top: 6px; } .dn-word b { color: var(--label); }
+.dn-week { width: 100%; box-sizing: border-box; background: var(--fill); border-radius: 18px; padding: 14px 16px; display: grid; gap: 12px; text-align: left; }
+.dn-week .dn-row span { font-weight: 600; color: var(--label-2); }
+.dn-dots { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.dn-confetti { position: absolute; left: 0; right: 0; top: -10px; height: 300px; pointer-events: none; overflow: hidden; }
+.dn-confetti i { position: absolute; left: var(--x); top: -14px; width: 8px; height: 12px; border-radius: 2px; background: var(--c); opacity: 0; animation: confFall 2.6s ease-in var(--d) both; }
+@keyframes confFall { 0% { opacity: 1; transform: translateY(0) rotate(var(--r)); } 100% { opacity: 0; transform: translateY(300px) rotate(calc(var(--r) + 240deg)); } }
+.stk-hero { display: flex; align-items: center; gap: 12px; padding: 4px 4px 8px; } .stk-hero .chick { width: 56px; height: 56px; flex: none; }
+.stk-hero div { display: grid; gap: 2px; } .stk-hero span { font-size: 13px; color: var(--label-2); }
+.stk-h { font-size: 15px; margin: 14px 4px 10px; }
+.stk-badges { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; text-align: center; }
+.stk-badges div { display: grid; justify-items: center; gap: 5px; }
+.stk-badges span { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--label-3); border: 2px dashed var(--label-3); box-sizing: border-box; }
+.stk-badges .on span { background: var(--s); color: #fff; border: 0; box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .45); }
+.stk-badges .ico { width: 24px; height: 24px; fill: #fff; stroke: none; } .stk-badges small { font-size: 11px; color: var(--label-2); }
+.stk-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 8px; padding: 4px 0 8px; }
+.stk-grid div { display: grid; justify-items: center; gap: 8px; } .stk-grid .stk { --sz: 60px; } .stk-grid small { font-size: 11px; color: var(--label-2); }
+.stk-none { color: var(--label-2); font-size: 14px; padding: 4px; }
+@media (prefers-reduced-motion: reduce) { .mas .chick, .dn .chick.cheer, .stk.big { animation: none; } .dn-confetti { display: none; } }
 .share-img { width: 100%; border-radius: 16px; display: block; margin: 8px 0 12px; }
 .share-dl { width: 100%; height: 46px; }
 /* 计划（新版） */
@@ -1035,7 +1092,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-18 任务小字一行 v1';
+const APP_VERSION = '2026-11-18 统一封面+啾啾+贴纸 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -1071,12 +1128,18 @@ const MEDIA_ = window.MEDIA || {};
 const media = it => MEDIA_[it.n];
 // B站图片服务：按尺寸居中裁切并转 webp
 const coverUrl = (url, w, h = w) => `${url}@${w}w_${h}h_1c.webp`;
+const UCOL = { song: ['#F2675A', '#EF7F4C'], video: ['#4C8DF0', '#3FA7D6'], book: ['#9B6FE8', '#C06BD6'], play: ['#F59E2B', '#E7B416'] };
 function art(it, extra = '', size = 360) {
   const tt = TINTS[it.t][hash(it.n) % TINTS[it.t].length];
   const m = media(it);
-  if (m && m.cover) {
-    return `<div class="art has-img" style="--c1:${tt[0]};--c2:${tt[1]}">
-      <img src="${esc(coverUrl(m.cover, size))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">
+  if (m) {
+    // 统一封面：类型定颜色，写系列英文名，右上角小圆图是原视频封面（孩子认得出角色）
+    const [kind, icon] = TYPES[it.t], name = it.n, len = name.length;
+    const fs = len <= 6 ? 18 : len <= 11 ? 14 : len <= 18 ? 12 : 10.5;
+    return `<div class="art u" style="--u:${UCOL[it.t][hash(it.n) % 2]};--fs:${fs}cqw">
+      <span class="u-ic">${ic(icon)}</span>
+      ${m.cover ? `<span class="u-thumb"><img src="${esc(coverUrl(m.cover, Math.min(240, size)))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></span>` : ''}
+      <span class="u-name">${esc(name)}</span><span class="u-kind">${kind}</span>
       ${extra}
     </div>`;
   }
@@ -1882,6 +1945,7 @@ function meView() {
     <div class="group">
       <button class="cell2" type="button" data-ch="lib"><span>打印资料</span><b>›</b></button>
       <button class="cell2" type="button" data-elder-toggle="1"><span>老人模式</span><span class="sw${settings.elder ? ' on' : ''}" aria-hidden="true"></span></button>
+      <button class="cell2" type="button" data-stickers="1"><span>贴纸册</span><b>${Object.keys(stickers()).length} 个 ›</b></button>
       <button class="cell2" type="button" data-me-hist="1"><span>观看记录</span><b>${Object.keys(progress).length} 条 ›</b></button>
       <button class="cell2" type="button" data-open-settings="1"><span>每天观看时长</span><b>${settings.limit ? settings.limit + ' 分钟' : '不限'} ›</b></button>
       <button class="cell2" type="button" data-open-settings="1"><span>家长设置</span><b>›</b></button>
@@ -1981,7 +2045,7 @@ function render() {
   $('main').innerHTML = html;
   syncDock(); placePlayer(); renderTopbar();
   if (view.mode === 'detail') {
-    const img = document.querySelector('#albumArt img'), m = media(ITEMS[view.value]);
+    const img = document.querySelector('#albumArt:not(.u) img'), m = media(ITEMS[view.value]);
     if (img && m && m.cover) setTimeout(() => { const hi = new Image(); hi.referrerPolicy = 'no-referrer'; hi.onload = () => { if (img.isConnected) img.src = hi.src; }; hi.src = coverUrl(m.cover, 540); }, 450);
   }
   // 儿童模式：进详情直接开始播放
