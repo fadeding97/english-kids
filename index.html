@@ -481,7 +481,7 @@ body.kid .age-pill, body.kid .age-side { display: none !important; }
 
 /* ---------- 第一批框架：资源分段、计划页、我的 ---------- */
 .rseg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 2px; border-radius: 10px; background: var(--fill-2); max-width: 520px; margin-top: -14px; }
-.rseg button { height: 34px; border-radius: 8px; font-size: 14px; color: var(--label); }
+.rseg button { height: 34px; border-radius: 8px; font-size: 14px; color: var(--label); display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 4px; white-space: nowrap; }
 .rseg button[aria-checked="true"] { background: var(--bg); font-weight: 700; box-shadow: 0 1px 4px rgba(0, 0, 0, .12); }
 .res-filter { font-size: 14px; color: var(--label-2); margin-top: -18px; }
 .res-filter button { font-weight: 700; color: var(--label); display: inline-flex; align-items: center; gap: 2px; }
@@ -1034,7 +1034,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-17 今天去掉年龄 v1';
+const APP_VERSION = '2026-11-18 资源标签居中 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
