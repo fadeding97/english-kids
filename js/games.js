@@ -26,6 +26,9 @@ const gpal = w => GPAL[Object.keys(WORD_PIC).indexOf(w) % GPAL.length];
 function gameWords() {
   let T = null; try { T = todayTasks(); } catch (e) {}
   const ws = ((T && T.week.words) || []).filter(w => WORD_PIC[w]);
+  // 本周的录音提前下载好（只下载一次），点卡片时马上出声
+  const list = ws.length >= 3 ? ws.slice(0, 6) : GAME_FALLBACK;
+  setTimeout(() => preloadVoices(gameLines(list)), 400);
   return { theme: ws.length >= 3 ? `第 ${T.w + 1} 周 · ${T.week.theme}` : '小动物', words: ws.length >= 3 ? ws.slice(0, 6) : GAME_FALLBACK };
 }
 
@@ -35,13 +38,55 @@ const audioName = t => t.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g
 const VOICE = new Audio();
 VOICE.preload = 'auto';
 let voiceQueue = [];
+/* 为了点下去马上出声：进游戏就把本周要用的录音全部下载并解码好（Web Audio），播放时跳过开头的静音。
+   苹果手机上 Web Audio 默认跟随静音键，设成 playback 让它和视频一样出声。 */
+const AC = window.AudioContext || window.webkitAudioContext;
+let actx = null, curSrc = null;
+const BUF = new Map();   // 文件名 → { buf, start }
+try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+function getCtx() { if (!actx && AC) { try { actx = new AC(); } catch (e) {} } return actx; }
+function preloadVoices(lines) {
+  const c = getCtx(); if (!c) return;
+  for (const t of lines) {
+    const n = audioName(t); if (BUF.has(n)) continue;
+    BUF.set(n, null);
+    fetch(`audio/${n}.mp3`).then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(a => new Promise((ok, no) => c.decodeAudioData(a, ok, no)))
+      .then(buf => {
+        // 找到第一个有声音的位置，往前留 0.02 秒
+        const d = buf.getChannelData(0); let i = 0; while (i < d.length && Math.abs(d[i]) < .01) i++;
+        BUF.set(n, { buf, start: Math.max(0, i / buf.sampleRate - .02) });
+      }).catch(() => BUF.delete(n));
+  }
+}
+// 游戏会说的话：单词（带叫声）、问句、答错提示、夸奖
+function gameLines(words) {
+  const out = ['Yes!'];
+  for (const w of words) { const x = WORD_PIC[w] || []; out.push(x[1] ? `${w}! ${x[1]}` : `${w}!`, askText(w), `That's ${w}.`); }
+  return out;
+}
+function stopVoice() {
+  voiceQueue = [];
+  try { if (curSrc) { curSrc.onended = null; curSrc.stop(); } } catch (e) {}
+  curSrc = null; VOICE.pause();
+}
 function say(lines) {
+  stopVoice();
   voiceQueue = (Array.isArray(lines) ? lines : [lines]).filter(Boolean);
   try { speechSynthesis.cancel(); } catch (e) {}
+  const c = getCtx(); if (c && c.state !== 'running') c.resume().catch(() => {});   // 必须在点击里解锁
   playNext();
 }
 function playNext() {
   const t = voiceQueue.shift(); if (!t) return;
+  const hit = BUF.get(audioName(t)), c = actx;
+  if (hit && c) {
+    try {
+      const s = c.createBufferSource(); s.buffer = hit.buf; s.connect(c.destination);
+      s.onended = () => { if (curSrc === s) { curSrc = null; playNext(); } };
+      curSrc = s; s.start(0, hit.start); return;
+    } catch (e) {}
+  }
+  // 还没下载好：用 <audio> 边下边播
   VOICE.onended = playNext;
   VOICE.onerror = () => { VOICE.onerror = null; speakTTS([t, ...voiceQueue].join(' ')); voiceQueue = []; };
   VOICE.src = `audio/${audioName(t)}.mp3`;
@@ -105,7 +150,7 @@ function gameView() {
 
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.gback) { try { speechSynthesis.cancel(); VOICE.pause(); voiceQueue = []; } catch (x) {} const en = navStack.pop(); return go(en ? en.view : { mode: 'home' }, { dir: 'back' }); }
+  if (b.dataset.gback) { try { speechSynthesis.cancel(); stopVoice(); } catch (x) {} const en = navStack.pop(); return go(en ? en.view : { mode: 'home' }, { dir: 'back' }); }
   if (b.dataset.game && view.mode === 'game') { if (b.dataset.game === 'find') newFind(); view = { mode: 'game', value: b.dataset.game }; render(); if (b.dataset.game === 'find') speak(askText(G.order[0])); return; }
   if (b.dataset.goGame) { if (b.dataset.goGame === 'find') { newFind(); say(askText(G.order[0])); } go({ mode: 'game', value: b.dataset.goGame }, { push: true, dir: 'fwd' }); return; }
   if (b.dataset.say) {
