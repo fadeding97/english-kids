@@ -530,7 +530,7 @@ body.kid .age-pill, body.kid .age-side { display: none !important; }
 .td-thumb .art { border-radius: 10px; }
 .td-thumb .a-title, .td-thumb .a-kind { display: none; }
 .td-txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
-.td-txt small { font-size: 12px; color: var(--label-2); }
+.td-txt small { font-size: 12px; color: var(--label-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .td-txt b { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .td-task.ok .td-txt b { color: var(--label-2); text-decoration: line-through; }
 .td-state { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #fff; }
@@ -1035,7 +1035,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-18 每天跟系列顺着播 v1';
+const APP_VERSION = '2026-11-18 任务小字一行 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;

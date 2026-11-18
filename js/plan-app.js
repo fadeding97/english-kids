@@ -125,7 +125,7 @@ function todayTasks() {
     let name = eps.length > 1 ? cleanEp(eps[ep].title).trim() : it.cn;
     const bare = !/[A-Za-z一-龥]/.test(name) || /^S\d+\s*E\d+/i.test(name) || name.toLowerCase() === it.n.toLowerCase();
     if (bare) name = it.cn;   // 集名只有编号时，就显示系列名
-    return { k, t: it.t, label, min, it, ep, name, from: eps.length > 1 ? (bare ? '' : it.cn + ' · ') + `第 ${ep + 1} 集` : '', tip };
+    return { k, t: it.t, label, min, it, ep, name, from: eps.length > 1 ? `第 ${ep + 1} 集` + (bare ? '' : ' · ' + it.cn) : '', tip };
   });
   return Object.assign({}, pos, { week, locked, tasks });
 }
@@ -175,7 +175,7 @@ function todayView() {
         const ok = done.includes(x.k);
         return `<button class="td-task${ok ? ' ok' : ''}" type="button" data-task="${x.k}">
           <span class="td-thumb">${art(x.it, '', 120)}</span>
-          <span class="td-txt"><small>${'①②③'[x.k]} ${x.label} · ${x.min} 分钟${x.from ? ' · ' + esc(x.from) : ''}</small><b>${esc(x.name)}</b></span>
+          <span class="td-txt"><small>${'①②③'[x.k]} ${x.label}${x.from ? ' · ' + esc(x.from) : ''}</small><b>${esc(x.name)}</b></span>
           <span class="td-state" aria-label="${ok ? '已完成' : '开始'}">${ok ? ic('i-check') : ic('i-play')}</span></button>`;
       }).join('')}</div>
       ${T.locked ? `<button class="td-lock" type="button" data-go-vip="1">第 ${PLAN_FREE_WEEKS + 1} 周起的主题计划是会员内容，现在是自由练习 · 了解会员 ›</button>` : ''}
@@ -202,7 +202,7 @@ function taskPanel(it) {
   return `<section class="tk">
       <div class="tk-head"><span>任务 ${x.k + 1} / 3 · ${x.label}${x.from ? '：' + esc(x.name) : ''}</span>${ok ? '<em>已完成</em>' : ''}</div>
       ${x.tip ? `<div class="tk-tip"><b>家长怎么陪</b><span>${esc(x.tip)}</span></div>` : ''}
-      ${T.week.words && T.week.words.length ? `<div class="tk-words"><b>这周会听到的词</b><div>${T.week.words.map(w => `<span>${esc(w)}</span>`).join('')}</div></div>` : ''}
+      ${T.week.words && T.week.words.length ? `<div class="tk-words"><b>这周在生活里多说的词</b><div>${T.week.words.map(w => `<span>${esc(w)}</span>`).join('')}</div></div>` : ''}
       <button class="btn btn-accent tk-done" type="button" data-task-done="${x.k}">${last ? '完成，今天打卡' : '完成，下一件事'}</button>
     </section>`;
 }
