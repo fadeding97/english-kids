@@ -30,7 +30,7 @@ function parseCode(raw) {
   return codeCheck(m[1] + m[2]) === m[3] ? { type: m[1], code: `QM${m[1]}-${m[2]}-${m[3]}` } : null;
 }
 const vipInfo = () => pstore.get('vip', { until: '' });
-const isVip = () => { const v = vipInfo(); return !!v.until && v.until >= todayIso(); };
+const isVip = () => { if (!MEMBERSHIP) return true; const v = vipInfo(); return !!v.until && v.until >= todayIso(); };
 function redeem(raw) {
   const r = parseCode(raw);
   if (!r) return '兑换码不正确，请检查后再试';
@@ -379,7 +379,7 @@ function planView2() {
   </section>
   ${covers ? `<section class="sec"><div class="td-sechead"><h2 class="sec-h">接下来</h2><span class="pc-count">共 ${ws.length} 周${ws[0].generic ? ' · 通用安排' : ''}</span></div><div class="pcs">${covers}</div></section>` : ''}
   <button class="pl-lib" type="button" data-ch="lib"><span>${ic('i-download')}</span><div><b>打印资料</b><small>单词卡、亲子游戏卡、家长指南</small></div><em>›</em></button>
-  ${vip ? `<p class="pl-vip">已是成长会员，全部 ${ws.length} 周计划已解锁（到 ${vipInfo().until}）</p>`
+  ${!MEMBERSHIP ? '' : vip ? `<p class="pl-vip">已是成长会员，全部 ${ws.length} 周计划已解锁（到 ${vipInfo().until}）</p>`
     : `<button class="pl-unlock" type="button" data-go-vip="1"><b>解锁全部 ${ws.length} 周计划</b><small>前 ${PLAN_FREE_WEEKS} 周免费体验</small></button>`}`;
 }
 function openGuide() {
@@ -409,7 +409,7 @@ function libView() {
     return `<${open ? `a href="${x.href}" target="_blank" rel="noopener"` : 'button type="button" data-go-vip="1"'} class="lb">
       <span class="lb-cv" style="background:${x.bg};color:${x.fg}">${esc(x.cover)}</span>
       <b>${esc(x.title)} · ${esc(x.sub)}</b>
-      <small class="${open ? 'ok' : ''}">${x.free ? '免费下载' : vip ? '会员 · 已解锁' : '会员'}</small></${open ? 'a' : 'button'}>`;
+      <small class="${open ? 'ok' : ''}">${x.free || !MEMBERSHIP ? '免费下载' : vip ? '会员 · 已解锁' : '会员'}</small></${open ? 'a' : 'button'}>`;
   }).join('')}</div>
   ${vip ? '' : `<button class="pl-unlock" type="button" data-go-vip="1"><b>会员可下载全部资料</b><small>单词卡、游戏卡、家长指南</small></button>`}`;
 }
@@ -464,7 +464,7 @@ document.addEventListener('click', async e => {
   if (t.dataset.taskDone != null) return finishTask(Number(t.dataset.taskDone));
   if (t.dataset.share) return shareCard();
   if (t.dataset.stickers) return openStickers();
-  if (t.dataset.goVip) { navStack = []; return go({ mode: 'vip' }); }
+  if (t.dataset.goVip) { if (!MEMBERSHIP) return; navStack = []; return go({ mode: 'vip' }); }
   if (t.dataset.guide) return openGuide();
   if (t.dataset.lib) { view = { mode: 'lib', value: t.dataset.lib }; return render(); }
   if (t.dataset.elderExit) return exitElder();

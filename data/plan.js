@@ -118,4 +118,6 @@ const PLAN_WEEKS = {
     },
   ],
 };
-const PLAN_FREE_WEEKS = 2;   // 前 2 周免费，之后需要会员
+const PLAN_FREE_WEEKS = 2;   // 前 2 周免费，之后需要会员（MEMBERSHIP 关掉时不生效）
+// 会员功能总开关：false = 暂不收费，所有计划和资料都免费，界面上不出现会员入口（2026-11-19 先发朋友引流）
+const MEMBERSHIP = false;

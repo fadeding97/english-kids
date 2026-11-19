@@ -1,5 +1,8 @@
 /* 会员资料：本设备没有开通成长会员时，只显示提示（兑换码在网站「我的 → 成长会员」里输入） */
 (function () {
+  // 会员功能暂停（和 data/plan.js 的 MEMBERSHIP 一起改）：资料全部免费
+  const MEMBERSHIP = false;
+  if (!MEMBERSHIP) return;
   let until = '';
   try { until = (JSON.parse(localStorage.getItem('vip') || '{}').until) || ''; } catch (e) {}
   const d = new Date(), today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;

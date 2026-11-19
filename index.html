@@ -1267,7 +1267,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-18 答对说 Great v1';
+const APP_VERSION = '2026-11-19 全部免费 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -2122,7 +2122,7 @@ function meView() {
       ${row('英语环境', profile.env || '未填写', 'data-me-edit="env"')}
       ${row('宝宝喜欢', profile.likes.length ? profile.likes.join('、') : '未填写', 'data-me-edit="likes"')}
     </div>
-    <div class="group me-vip"><button class="cell2" type="button" data-go-vip="1"><span class="vip-ico">${ic('i-star')}</span><span class="vip-txt"><b>成长会员</b><small>${isVip() ? '有效期到 ' + vipInfo().until : '解锁全部计划和资料 · 可用兑换码'}</small></span><b>${isVip() ? '已开通' : ''} ›</b></button></div>
+    ${MEMBERSHIP ? `<div class="group me-vip"><button class="cell2" type="button" data-go-vip="1"><span class="vip-ico">${ic('i-star')}</span><span class="vip-txt"><b>成长会员</b><small>${isVip() ? '有效期到 ' + vipInfo().until : '解锁全部计划和资料 · 可用兑换码'}</small></span><b>${isVip() ? '已开通' : ''} ›</b></button></div>` : ''}
     <div class="group">
       <button class="cell2" type="button" data-ch="lib"><span>打印资料</span><b>›</b></button>
       <button class="cell2" type="button" data-elder-toggle="1"><span>老人模式</span><span class="sw${settings.elder ? ' on' : ''}" aria-hidden="true"></span></button>
@@ -2220,7 +2220,7 @@ function render() {
   else if (view.mode === 'me') html = meView();
   else if (view.mode === 'plan') html = planView2();
   else if (view.mode === 'lib') html = libView();
-  else if (view.mode === 'vip') html = vipView();
+  else if (view.mode === 'vip') html = MEMBERSHIP ? vipView() : meView();
   else if (view.mode === 'done') html = doneView();
   else if (view.mode === 'game') html = gameView();
   else if (view.mode === 'search') html = searchView();
