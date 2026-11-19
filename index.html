@@ -5,13 +5,13 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="英语启蒙">
+<meta name="apple-mobile-web-app-title" content="啾啾英语">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>英语启蒙地图</title>
+<title>啾啾英语</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: 音乐 App 式。桌面：左侧半透明侧栏（搜索 / 浏览 / 年龄 / 月龄）+ 右侧内容（大标题 → 精选大卡 → 方形封面横排 → 列表式分栏）；手机：底部标签栏。点卡片进入“专辑页”式详情 */
@@ -1269,7 +1269,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-19 底部小字移到我的 v1';
+const APP_VERSION = '2026-11-19 啾啾英语+苹果图标 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;

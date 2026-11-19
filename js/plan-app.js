@@ -326,8 +326,8 @@ async function shareCard() {
   rr(120, 840, W - 240, 220, 32, '#FFFFFF'); g.fillStyle = '#6E6E73'; g.font = `600 32px ${F}`; g.fillText('今天一句', 160, 905);
   g.fillStyle = '#1D1D1F'; g.font = `800 60px ${F}`; g.fillText(ph[0], 160, 990);
   g.strokeStyle = '#E8CF9E'; g.setLineDash([12, 12]); g.lineWidth = 3; g.beginPath(); g.moveTo(120, 1130); g.lineTo(W - 120, 1130); g.stroke(); g.setLineDash([]);
-  g.fillStyle = '#4A3200'; g.font = `800 40px ${F}`; g.fillText('英语启蒙地图', 120, 1205);
-  g.fillStyle = '#6E5A2E'; g.font = `500 32px ${F}`; g.fillText('fadeding97.github.io/english-kids', 120, 1255);
+  g.fillStyle = '#4A3200'; g.font = `800 40px ${F}`; g.fillText('啾啾英语', 120, 1205);
+  g.fillStyle = '#6E5A2E'; g.font = `500 32px ${F}`; g.fillText('jiujiu-english.pages.dev', 120, 1255);
   const blob = await new Promise(r => c.toBlob(r, 'image/png'));
   const file = new File([blob], 'english-time.png', { type: 'image/png' });
   try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: '宝宝的英语时间' }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }

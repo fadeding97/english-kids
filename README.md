@@ -2,7 +2,7 @@
 
 按月龄整理的英文儿歌、动画、绘本和亲子游戏。纯静态网站，视频由 B站官方嵌入播放器播放，本站不存储视频。
 
-线上地址：<https://fadeding97.github.io/english-kids/>（GitHub Pages，main 分支根目录；推送到 main 后一两分钟自动更新）
+线上地址：<https://jiujiu-english.pages.dev/>（Cloudflare Pages，连接 GitHub main 分支自动部署）；备用 <https://fadeding97.github.io/english-kids/>（GitHub Pages）
 
 ## 本地预览
 
