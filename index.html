@@ -425,6 +425,8 @@ body.swiping { background: var(--card); overflow: hidden; }
 .fit button { color: var(--accent); }
 
 .foot { font-size: 12px; color: var(--label-2); display: grid; gap: 4px; padding-top: 14px; border-top: .5px solid var(--sep); }
+/* 「我的」最下面的关于说明（原来每页底部的小字） */
+.me-about { display: grid; gap: 3px; padding: 14px 8px 0; text-align: center; font-size: 11px; line-height: 1.5; color: var(--label-3); }
 
 /* ---------- mobile tab bar ---------- */
 .tabbar { display: none; }
@@ -1267,7 +1269,7 @@ const LINKS = {
   play: [['B站看示范', q => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(q)]],
 };
 const PACE = ['', '慢', '中', '快'];
-const APP_VERSION = '2026-11-19 全部免费 v1';
+const APP_VERSION = '2026-11-19 底部小字移到我的 v1';
 
 const $ = id => document.getElementById(id);
 const ic = id => `<svg class="ico" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -2131,7 +2133,12 @@ function meView() {
       <button class="cell2" type="button" data-open-settings="1"><span>每天观看时长</span><b>${settings.limit ? settings.limit + ' 分钟' : '不限'} ›</b></button>
       <button class="cell2" type="button" data-open-settings="1"><span>家长设置</span><b>›</b></button>
     </div>
-    <p class="group-f" style="text-align:center;padding-top:14px">版本 ${APP_VERSION}</p>
+    <div class="me-about">
+      <p>版本 ${APP_VERSION}</p>
+      <p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p>
+      <p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频。</p>
+      <p>小游戏卡通图标来自 Twemoji（CC-BY 4.0）。</p>
+    </div>
   </div>`;
 }
 /* 编辑宝宝信息：小名、英语环境、喜好（底部弹出） */
@@ -2225,7 +2232,6 @@ function render() {
   else if (view.mode === 'game') html = gameView();
   else if (view.mode === 'search') html = searchView();
   else html = detailView();
-  if (view.mode !== 'detail' && view.mode !== 'game') html += `<footer class="foot"><p>版本 ${APP_VERSION}</p><p>屏幕时间建议参考 WHO（2019）与美国儿科学会（2016）指南。</p><p>封面和视频来自 B站，由 B站播放器播放，本站不存储视频；暂未收录视频的条目显示示意色块和平台搜索链接。</p><p>小游戏卡通图标来自 Twemoji（CC-BY 4.0）。</p></footer>`;
   $('main').innerHTML = html;
   syncDock(); placePlayer(); renderTopbar();
   if (view.mode === 'detail') {
